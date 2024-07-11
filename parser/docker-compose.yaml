@@ -1,0 +1,11 @@
+services:
+  queue:
+    image: rabbitmq:3-management
+    container_name: wb_rabbit
+    restart: unless-stopped
+    environment:
+        RABBITMQ_DEFAULT_USER: "guest"
+        RABBITMQ_DEFAULT_PASS: "guest"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
