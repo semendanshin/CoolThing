@@ -29,6 +29,7 @@ class EnhancedJSONEncoder(json.JSONEncoder):
 @dataclass
 class RabbitMQEventRepository(EventRepository):
     url: str
+    queue: str
 
     connection_pool: Pool = field(init=False)
     channel_pool: Pool = field(init=False)
@@ -51,6 +52,6 @@ class RabbitMQEventRepository(EventRepository):
                 aio_pika.Message(
                     body=json.dumps(event, cls=EnhancedJSONEncoder).encode(),
                 ),
-                routing_key='events',
+                routing_key=self.queue,
             )
             logger.debug(f"Published event: {event}")

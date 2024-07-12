@@ -9,15 +9,19 @@
         "port": 5672,
         "user": "guest",
         "password": "guest",
-        "vhost": ""
+        "vhost": "",
         "queue": "events"
     },
-    "keywords": {
-        "positive": [
-            "привет"
-        ],
-        "negative": [
-            "пока"
-        ]
-    }
+    "parser": {
+        "keywords": {
+            "positive": [
+                "привет"
+            ],
+            "negative": [
+                "пока"
+            ]
+        },
+        "chats": [-123123123, -123123123]
+    },
+    "debug": true
 }

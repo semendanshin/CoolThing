@@ -11,6 +11,11 @@ class Keywords(BaseSettings):
     negative: list[str]
 
 
+class ParserSettings(BaseSettings):
+    keywords: Keywords
+    chats: list[int]
+
+
 class AppSettings(BaseSettings):
     api_id: int
     api_hash: str
@@ -23,14 +28,15 @@ class RabbitSettings(BaseSettings):
     user: str
     password: str
     vhost: str
+    queue: str
 
 
 class Settings(BaseSettings):
     app: AppSettings
-
     rabbit: RabbitSettings
+    parser: ParserSettings
 
-    keywords: Keywords
+    debug: bool = False
 
     model_config = SettingsConfigDict(
         extra='allow',

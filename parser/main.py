@@ -11,7 +11,7 @@ from settings import settings
 from usecases.events import EventUseCases
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.DEBUG if settings.debug else logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
 )
 logging.getLogger("pyrogram").setLevel(logging.WARNING)
@@ -20,17 +20,16 @@ logging.getLogger("aiormq").setLevel(logging.WARNING)
 
 
 async def main():
-    chats = [-4270454508]
-
     stemmer = SnowballStemmer("russian")
-    positive_key_words = set([stemmer.stem(word) for word in ["квартира", "дом", "снять", "аренда", "арендовать"]])
-    negative_key_words = set([stemmer.stem(word) for word in ["продажа", "продать", "сдать", "покупка", "купить"]])
+    positive_key_words = set([stemmer.stem(word) for word in settings.parser.keywords.positive])
+    negative_key_words = set([stemmer.stem(word) for word in settings.parser.keywords.negative])
 
     rmq_url = (f"amqp://{settings.rabbit.user}:{settings.rabbit.password}@"
                f"{settings.rabbit.host}:{settings.rabbit.port}/{settings.rabbit.vhost}")
 
     event_repository = RabbitMQEventRepository(
         url=rmq_url,
+        queue=settings.rabbit.queue,
     )
 
     event_use_cases = EventUseCases(
@@ -38,7 +37,7 @@ async def main():
     )
 
     main_handler = GroupMessageHandler(
-        chats=chats,
+        chats=settings.parser.chats,
         positive_key_words=positive_key_words,
         negative_key_words=negative_key_words,
         event_use_cases=event_use_cases,
