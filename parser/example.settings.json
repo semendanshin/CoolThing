@@ -1,0 +1,23 @@
+{
+    "app": {
+        "api_id": 123123,
+        "api_hash": "123abc123",
+        "session_string": "wow123"
+    },
+    "rabbit": {
+        "host": "localhost",
+        "port": 5672,
+        "user": "guest",
+        "password": "guest",
+        "vhost": ""
+        "queue": "events"
+    },
+    "keywords": {
+        "positive": [
+            "привет"
+        ],
+        "negative": [
+            "пока"
+        ]
+    }
+}
