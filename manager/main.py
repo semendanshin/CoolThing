@@ -112,8 +112,9 @@ async def main():
     async def callback(message: IncomingMessage) -> None:
         event = NewTargetMessage(**json.loads(message.body.decode()))
         logger.info(f"New target message received: {event}")
-        message = await app.send_message(chat_id=event.username, text=settings.welcome_message)
-        logger.info(f"Message sent: {message}")
+        logger.debug("Sending welcome message...")
+        sent_message = await app.send_message(chat_id=event.username, text=settings.welcome_message)
+        logger.info(f"Sent message: {sent_message}")
 
     listener = RabbitListener(
         url=rmq_url,
