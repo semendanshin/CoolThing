@@ -14,7 +14,6 @@ class Keywords(BaseSettings):
 class AppSettings(BaseSettings):
     api_id: int
     api_hash: str
-    phone: str
     session_string: str
 
 
