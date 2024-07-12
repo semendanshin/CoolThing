@@ -18,33 +18,6 @@ logging.getLogger("pyrogram").setLevel(logging.WARNING)
 logging.getLogger("aio_pika").setLevel(logging.WARNING)
 logging.getLogger("aiormq").setLevel(logging.WARNING)
 
-# class MyClient(Client):
-#     async def custom_start(self):
-#         """
-#         Custom start method to avoid auto authorization
-#
-#         :return:
-#         """
-#         await self.connect()
-#         await self.initialize()
-#
-#
-# async def get_session_string() -> str:
-#     app = MyClient("my_account", api_id, api_hash, in_memory=True)
-#     await app.custom_start()
-#
-#     sent_code = await app.send_code(phone_number)
-#
-#     input_code = input("Enter the code: ")
-#
-#     try:
-#         await app.sign_in(phone_number, sent_code.phone_code_hash, input_code)
-#     except SessionPasswordNeeded as e:
-#         password = input(f"Enter 2FA password: ")
-#         await app.check_password(password)
-#
-#     return await app.storage.export_session_string()
-
 
 async def main():
     chats = [-4270454508]
