@@ -7,7 +7,7 @@ from pathlib import Path
 from abstractions.repositories.bot_settings import BotSettingsRepositoryInterface
 from abstractions.repositories.container_manager import ContainerManagerInterface
 from abstractions.repositories.worker import WorkerRepositoryInterface
-from domain.worker_settings import WorkerSettings, RabbitMQSettings, ManagerSettings, ParserSettings
+from domain.worker_settings import WorkerSettings, RabbitMQSettings, ManagerSettings, ParserSettings, DBSettings
 
 logger = getLogger(__name__)
 
@@ -23,7 +23,9 @@ class ManageBotsUseCase:
     container_manager: ContainerManagerInterface
     bot_repository: BotSettingsRepositoryInterface
     worker_repository: WorkerRepositoryInterface
+
     rabbit_settings: RabbitMQSettings
+    db_settings: DBSettings
 
     async def execute(self):
         bots_settings = await self.bot_repository.get_active_bot_settings()
@@ -52,6 +54,7 @@ class ManageBotsUseCase:
     async def _structure_manager_settings(self, manager_settings: ManagerSettings) -> dict:
         return {
             "app": {
+                "id": manager_settings.id,
                 "api_id": manager_settings.app_id,
                 "api_hash": manager_settings.app_hash,
                 "session_string": manager_settings.session_string
@@ -64,12 +67,24 @@ class ManageBotsUseCase:
                 "vhost": self.rabbit_settings.vhost,
                 "queue": manager_settings.topic
             },
+            "openai": {
+                "model": manager_settings.model,
+                "api_key": manager_settings.token,
+            },
+            "db": {
+                "host": self.db_settings.host,
+                "port": self.db_settings.port,
+                "user": self.db_settings.user,
+                "password": self.db_settings.password,
+                "name": self.db_settings.name
+            },
             "welcome_message": manager_settings.welcome_message
         }
 
     async def _structure_parser_settings(self, parser_settings: ParserSettings) -> dict:
         return {
             "app": {
+                "id": parser_settings.id,
                 "api_id": parser_settings.app_id,
                 "api_hash": parser_settings.app_hash,
                 "session_string": parser_settings.session_string

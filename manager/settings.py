@@ -1,5 +1,3 @@
-import os
-
 from pathlib import Path
 from typing import Type, Tuple
 
@@ -7,9 +5,18 @@ from pydantic_settings import BaseSettings, SettingsConfigDict, PydanticBaseSett
 
 
 class AppSettings(BaseSettings):
+    id: str
     api_id: int
     api_hash: str
     session_string: str
+
+
+class DBSettings(BaseSettings):
+    name: str
+    user: str
+    password: str
+    host: str
+    port: int
 
 
 class RabbitSettings(BaseSettings):
@@ -21,9 +28,16 @@ class RabbitSettings(BaseSettings):
     queue: str
 
 
+class OpenAISettings(BaseSettings):
+    api_key: str
+    model: str
+
+
 class Settings(BaseSettings):
     app: AppSettings
     rabbit: RabbitSettings
+    openai: OpenAISettings
+    db: DBSettings
 
     welcome_message: str
 

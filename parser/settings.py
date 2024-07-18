@@ -17,6 +17,7 @@ class ParserSettings(BaseSettings):
 
 
 class AppSettings(BaseSettings):
+    id: str
     api_id: int
     api_hash: str
     session_string: str

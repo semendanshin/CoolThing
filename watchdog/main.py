@@ -69,6 +69,7 @@ async def main():
             password=settings.rabbit.password,
             vhost=settings.rabbit.vhost,
         ),
+        db_settings=settings.db,
     )
 
     scheduler.add_job(

@@ -1,10 +1,14 @@
+import logging
 from abc import abstractmethod
+from contextlib import contextmanager, asynccontextmanager
 from dataclasses import dataclass
 
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import async_sessionmaker
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from abstractions.repositories import CRUDRepositoryInterface
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -15,8 +19,8 @@ class AbstractSQLAlchemyRepository[Entity, Model, CreateDTO, UpdateDTO](
 
     async def create(self, obj: CreateDTO) -> None:
         async with self.session_maker() as session:
-            async with session.begin():
-                session.add(self.model_to_entity(obj))
+            session.add(self.model_to_entity(obj))
+            await session.commit()
 
     async def get(self, obj_id: str) -> Model:
         async with self.session_maker() as session:
@@ -24,13 +28,13 @@ class AbstractSQLAlchemyRepository[Entity, Model, CreateDTO, UpdateDTO](
 
     async def update(self, obj: UpdateDTO) -> None:
         async with self.session_maker() as session:
-            async with session.begin():
-                await session.merge(self.model_to_entity(obj))
+            await session.merge(self.model_to_entity(obj))
+            await session.commit()
 
     async def delete(self, obj_id: str) -> None:
         async with self.session_maker() as session:
-            async with session.begin():
-                await session.delete(await session.get(Entity, obj_id))
+            await session.delete(await session.get(Entity, obj_id))
+            await session.commit()
 
     async def get_all(self, limit: int = 100, offset: int = 0) -> list[Model]:
         async with self.session_maker() as session:

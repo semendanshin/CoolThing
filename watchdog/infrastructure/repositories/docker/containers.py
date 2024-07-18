@@ -40,6 +40,11 @@ class DockerAPIRepository(ContainerManagerInterface):
             auto_remove=True,
         )
 
+        # wait for container to start
+        container.reload()
+        while container.status != "running":
+            container.reload()
+
         bot = Bot(
             id=worker_id,
             name=container.name,
@@ -65,5 +70,9 @@ class DockerAPIRepository(ContainerManagerInterface):
         return list(self._containers.values())
 
     async def check_health(self, worker_id: str) -> bool:
-        container = self.client.containers.get(worker_id)
+        bot = self._containers.get(worker_id)
+        if not bot:
+            return False
+
+        container = self.client.containers.get(bot.container_id)
         return container.status == "running"

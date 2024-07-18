@@ -46,7 +46,7 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
                 result = await session.execute(text(self._query))
                 for row in result:
                     base = WorkerSettings(
-                        id=row.id,
+                        id=str(row.id),
                         app_id=row.app_id,
                         app_hash=row.app_hash,
                         session_string=row.session_string,

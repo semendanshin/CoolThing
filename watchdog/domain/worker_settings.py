@@ -37,3 +37,12 @@ class RabbitMQSettings:
     user: str
     password: str
     vhost: str
+
+
+@dataclass
+class DBSettings:
+    host: str
+    port: int
+    user: str
+    password: str
+    name: str
