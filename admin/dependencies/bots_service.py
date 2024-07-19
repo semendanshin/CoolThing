@@ -1,5 +1,5 @@
-from infrastructure.BotsService import BotsService
+from infrastructure.MockBotsService import MockBotsService
 
 
-def get_bots_service():
-    return BotsService()
+def get_bots_service() -> MockBotsService:
+    return MockBotsService()

@@ -1,0 +1,208 @@
+/* CSS Variables */
+:root {
+    --background-color: #4A4A4A;
+    --text-color: #EFEFEF;
+    --list-background: #333;
+    --item-background: #444;
+    --item-hover-background: #555;
+    --border-radius: 10px;
+    --padding: 20px;
+    --input-background: #666;
+    --button-background: #6A1B9A;
+    --button-hover-background: #8E24AA;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+    --status-online: green;
+    --status-offline: red;
+}
+
+/* Chat Container Styling */
+.container {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    height: calc(100vh - 50px);
+    padding: var(--padding);
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Chat List Styling */
+.chat-list {
+    width: 25%;
+    background-color: var(--list-background);
+    border-radius: var(--border-radius);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+}
+
+.chat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--item-background);
+    padding: 10px;
+    border-radius: 5px;
+    color: var(--text-color);
+    position: relative;
+    transition: background-color 0.3s ease;
+}
+
+.chat-item:hover {
+    background-color: var(--item-hover-background);
+}
+
+.chat-item-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.chat-item-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.chat-item-message {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.chat-item .bot-name {
+    font-weight: bold;
+}
+
+.chat-item .user-name {
+    margin-left: 10px;
+}
+
+.chat-item .last-message {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+}
+
+.chat-item .status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 10px;
+}
+
+.chat-item .status.online {
+    background-color: var(--status-online);
+}
+
+.chat-item .status.offline {
+    background-color: var(--status-offline);
+}
+
+/* Chat Content Styling */
+.chat-content {
+    width: 70%;
+    background-color: var(--item-hover-background);
+    border-radius: var(--border-radius);
+    padding: var(--padding);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.main-chat .bot-name,
+.main-chat .user-name {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.main-chat .status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 10px;
+}
+
+.main-chat .status.online {
+    background-color: var(--status-online);
+}
+
+.main-chat .status.offline {
+    background-color: var(--status-offline);
+}
+
+.messages {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+}
+
+.message {
+    background-color: var(--item-background);
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+    color: var(--text-color);
+}
+
+.message.income {
+    align-self: flex-start;
+}
+
+.message.outcome {
+    align-self: flex-end;
+}
+
+/* Input Area Styling */
+.input-area {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: var(--item-background);
+    border-radius: var(--border-radius);
+}
+
+.input-area input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: var(--border-radius);
+    margin-right: 10px;
+    background-color: var(--input-background);
+    color: var(--text-color);
+}
+
+.input-area button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--button-background);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-area button:hover {
+    background-color: var(--button-hover-background);
+    box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+/* No Chat Message */
+.no-chat {
+    text-align: center;
+    color: var(--text-color);
+    margin-top: 20px;
+    font-size: 1.2em;
+}

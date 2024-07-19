@@ -1,35 +1,49 @@
 {% extends 'base.html' %}
 
+{% block head %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectors = document.querySelectorAll('.bot-type-selector p');
+            selectors.forEach(selector => {
+                selector.addEventListener('click', function() {
+                    selectors.forEach(s => s.classList.remove('active')); // Remove active class from all
+                    this.classList.add('active'); // Add active class to clicked element
+                    window.location.href = this.getAttribute('data-url');
+                });
+            });
+            document.querySelector('#{{ active }}').classList.add('active');
+        });
+    </script>
+    <link href="{{ url_for('static', path='/bots.css') }}" rel="stylesheet">
+{% endblock %}
 
 
 {% block content %}
     <div class="bot-type-selector">
-        <p>Managers</p>
-        <p>Parsers</p>
+{#    {% if managers %}#}
+        <p id="managers" data-url="/bots/managers">Managers</p>
+        <p id="parsers" data-url="/bots/parsers">Parsers</p>
+
     </div>
     <table>
         <tr>
             <th>Nickname</th>
             <th>Scope</th>
-            <th>Messages</th>
-            <th>New chats</th>
+            {% block table_headers %} {% endblock %}
             <th>Proxy</th>
-            <th>Unread messages in manual</th>
         </tr>
     {% for bot in bots %}
         <tr>
             <td>{{ bot.nickname }}</td>
             <td>{{ bot.scope }}</td>
-            <td>{{ bot.messages_count }}</td>
-            <td>{{ bot.chats_ratio }}</td>
+
+            {% block specific_fields %} {% endblock %}
 
             {% if bot.proxy_status %}
                 <td class="bot-proxy-up">{{ bot.proxy }}</td>
             {% else %}
                 <td class="bot-proxy-down">{{ bot.proxy }}</td>
             {% endif %}
-
-            <td>{{ bot.unread_messages }}</td>
         </tr>
     {% endfor %}
     </table>

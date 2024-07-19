@@ -3,15 +3,23 @@ from dataclasses import dataclass
 from pydantic import BaseModel
 
 
-@dataclass(kw_only=True)
-class BotOverview:
+class BaseBotOverview(BaseModel):
     nickname: str
     scope: str
-    messages_count: int
-    chats_ratio: str
     proxy: str
     proxy_status: bool
+
+
+class ManagerBotOverview(BaseBotOverview):
     unread_messages: int
+    messages_count: int
+    chats_ratio: str
+
+
+class ParserBotOverview(BaseBotOverview):
+    positive_keywords: list[str]
+    negative_keywords: list[str]
+    chats: list[str]
 
 
 class BotCreate(BaseModel):
@@ -26,3 +34,24 @@ class BotConnect(BaseModel):
 
 class BotConnect2FA(BaseModel):
     password: str
+
+
+class BaseBotDetails(BaseModel):
+    avatar: str
+    nickname: str
+    bio: str
+    scope: str
+    proxy: str
+
+
+class ManagerBotDetails(BaseBotDetails):
+    chats: int
+    api_key: str
+    chatgpt_model: str
+    chatgpt_assistant: str
+
+
+class ParserBotDetails(BaseBotDetails):
+    positive_keywords: list[str]
+    negative_keywords: list[str]
+    chats: list[str]

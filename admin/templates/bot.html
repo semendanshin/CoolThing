@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Bot overview
+{% endblock %}
+
+{% block head %}
+    <link href="{{ url_for('static', path='/profile.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Bot details</h1>
+    <p>Here you can see detail about the bot.</p>
+    <div class="avatar_editable">
+        <img src="{{ bot.avatar }}" alt="Bot avatar" id="bot_avatar" name="bot_avatar">
+        <form action="/bot/{{ bot.id }}/edit_avatar" method="post" enctype="multipart/form-data">
+            <input type="file" id="avatar" name="avatar" accept="image/*">
+            <input type="submit" value="Change avatar">
+        </form>
+    </div>
+    <div class="row">
+        <label for="bot_nickname" class="bot-field-label">Bot name</label>
+        <input class="bot-field" type="text" id="bot_nickname" name="bot_nickname" value="{{ bot.nickname }}" readonly>
+    </div>
+    <div class="row">
+        <label for="bot_bio" class="bot-field-label">Bot bio</label>
+        <textarea class="bot-field" id="bot_bio" name="bot_bio" readonly>{{ bot.bio }}</textarea>
+    </div>
+    <div class="row">
+        <label for="bot_scope" class="bot-field-label">Bot scope</label>
+        <textarea class="bot-field" id="bot_scope" name="bot_scope" readonly>{{ bot.scope }}</textarea>
+    </div>
+    <div class="row">
+        <label for="bot_proxy" class="bot-field-label">Bot proxy</label>
+        <textarea class="bot-field" id="bot_proxy" name="bot_proxy" readonly>{{ bot.proxy }}</textarea>
+    </div>
+    {% block specific_fields %} {% endblock %}
+</div>
+{% endblock %}
