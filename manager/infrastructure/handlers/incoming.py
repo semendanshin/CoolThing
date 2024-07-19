@@ -69,6 +69,7 @@ class IncomingMessageHandler:
         app.add_handler(
             MessageHandler(
                 self.response_to_user,
-                filters.text & ~filters.me & filters.chat(self.chats),
+                filters.text & ~filters.me,
+                # filters.text & ~filters.me & filters.chat(self.chats),
             ),
         )

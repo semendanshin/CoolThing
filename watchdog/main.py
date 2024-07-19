@@ -2,6 +2,7 @@ import asyncio
 import logging
 import signal
 from logging import getLogger
+from pathlib import Path
 
 import docker
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -26,6 +27,10 @@ logging.getLogger("apscheduler").setLevel(logging.WARNING)
 logging.getLogger("docker").setLevel(logging.INFO)
 
 
+TMP_CONFIG_DIR = Path(__file__).parent / "tmp"
+TMP_CONFIG_DIR.mkdir(exist_ok=True)
+
+
 class GracefulKiller:
     kill_now = False
 
@@ -34,6 +39,7 @@ class GracefulKiller:
         signal.signal(signal.SIGTERM, self.exit_gracefully)
 
     def exit_gracefully(self, signum, frame):
+        logger.info("Exiting gracefully")
         self.kill_now = True
 
 
@@ -42,10 +48,15 @@ async def main():
 
     client = docker.from_env()
 
-    container_manager = DockerAPIRepository(client)
+    container_manager = DockerAPIRepository(
+        client=client,
+        root_config_path=settings.watchdog.root_config_path,
+    )
 
     db_url = (f"postgresql+asyncpg://{settings.db.user}:{settings.db.password}"
               f"@{settings.db.host}:{settings.db.port}/{settings.db.name}")
+
+    logger.info(f"Connecting to database: {settings.db.host}:{settings.db.port}/{settings.db.name}")
 
     engine = create_async_engine(db_url, echo=False)
     session_maker = async_sessionmaker(engine, expire_on_commit=False)
@@ -70,6 +81,7 @@ async def main():
             vhost=settings.rabbit.vhost,
         ),
         db_settings=settings.db,
+        tmp_config_dir=TMP_CONFIG_DIR,
     )
 
     scheduler.add_job(
@@ -88,6 +100,8 @@ async def main():
     scheduler.shutdown()
 
     await manage_bot_use_case.cleanup()
+
+    logger.info("Clean up complete. Exiting.")
 
 
 if __name__ == "__main__":

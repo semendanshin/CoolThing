@@ -51,7 +51,7 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
                         app_hash=row.app_hash,
                         session_string=row.session_string,
                         proxy=row.proxy,
-                        campaign_id=row.campaign_id,
+                        campaign_id=str(row.campaign_id),
                         role=row.role,
                         status=row.status,
                     )

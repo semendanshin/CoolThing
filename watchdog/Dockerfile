@@ -4,9 +4,9 @@ FROM python:${PYTHON_VERSION}-slim AS base
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-RUN apt-get update && apt-get install -y \
-	gcc \
-	&& rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y gcc docker.io && \
+	rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -24,10 +24,13 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
     python -m pip install -r requirements.txt
 
-USER appuser
+#USER docker
+
+# Add user to docker
+# RUN	usermod -aG docker appuser
 
 # Copy the source code into the container.
 COPY . .
 
 # Run the application.
-ENTRYPOINT python main.py
+ENTRYPOINT ["python", "main.py"]

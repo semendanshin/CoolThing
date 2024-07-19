@@ -1,5 +1,7 @@
+import asyncio
 import json
 import uuid
+from contextlib import suppress
 from dataclasses import dataclass
 from logging import getLogger
 from pathlib import Path
@@ -14,9 +16,6 @@ logger = getLogger(__name__)
 MANAGER_IMAGE = "tg-groups-manager"
 PARSER_IMAGE = "tg-groups-parser"
 
-TMP_CONFIG_DIR = Path("/tmp/configs")
-TMP_CONFIG_DIR.mkdir(exist_ok=True)
-
 
 @dataclass
 class ManageBotsUseCase:
@@ -27,10 +26,12 @@ class ManageBotsUseCase:
     rabbit_settings: RabbitMQSettings
     db_settings: DBSettings
 
+    tmp_config_dir: Path
+
     async def execute(self):
         bots_settings = await self.bot_repository.get_active_bot_settings()
 
-        logger.info(f"Active bots: {bots_settings}")
+        # logger.debug(f"Active bots: {bots_settings}")
 
         actual_bot_ids = [bot.app_id for bot in bots_settings]
 
@@ -39,11 +40,12 @@ class ManageBotsUseCase:
 
         bots_to_start = [bot for bot in bots_settings if bot.app_id not in running_containers_ids]
         for bot in bots_to_start:
-            logger.debug(f"Starting bot: {bot}")
+            logger.info(f"Starting bot: {bot.id}")
             await self.start_bot(bot)
 
         containers_to_stop = [container for container in running_containers if container.id not in actual_bot_ids]
         for container in containers_to_stop:
+            logger.info(f"Stopping bot: {container.id}")
             await self.container_manager.stop_container(container.id)
 
         # check health of running containers
@@ -78,7 +80,8 @@ class ManageBotsUseCase:
                 "password": self.db_settings.password,
                 "name": self.db_settings.name
             },
-            "welcome_message": manager_settings.welcome_message
+            "welcome_message": manager_settings.welcome_message,
+            "campaign_id": manager_settings.campaign_id,
         }
 
     async def _structure_parser_settings(self, parser_settings: ParserSettings) -> dict:
@@ -103,12 +106,13 @@ class ManageBotsUseCase:
                     "negative": parser_settings.minus_keywords
                 },
                 "chats": parser_settings.chats
-            }
+            },
+            "debug": True,
         }
 
     async def settings_to_file(self, settings: WorkerSettings) -> Path:
         filename = f"{settings.app_id}.{str(uuid.uuid4())}.json"
-        file_path = TMP_CONFIG_DIR / filename
+        file_path = self.tmp_config_dir / filename
 
         if isinstance(settings, ManagerSettings):
             structured_settings = await self._structure_manager_settings(settings)
@@ -134,7 +138,7 @@ class ManageBotsUseCase:
         settings_file = await self.settings_to_file(bot_settings)
 
         # start container
-        container_id = await self.container_manager.start_container(
+        await self.container_manager.start_container(
             worker_id=bot_settings.app_id,
             image=MANAGER_IMAGE if bot_settings.role == "manager" else PARSER_IMAGE,
             config_path=settings_file
@@ -144,6 +148,24 @@ class ManageBotsUseCase:
         # await self.worker_repository.update_status(bot_settings.app_id, "running")
 
     async def cleanup(self):
+        # containers = await self.container_manager.get_running_containers()
+        # for container in containers:
+        #     await self.container_manager.stop_container(container.id)
+        #     with suppress(Exception):
+        #         container.config_path.unlink()
+
         containers = await self.container_manager.get_running_containers()
+
+        logger.debug(f"Stopping containers: {containers}")
+
+        future = asyncio.gather(
+            *[self.container_manager.stop_container(container.id)
+              for container in containers],
+            return_exceptions=True
+        )
+
         for container in containers:
-            await self.container_manager.stop_container(container.id)
+            with suppress(Exception):
+                container.config_path.unlink()
+
+        await future

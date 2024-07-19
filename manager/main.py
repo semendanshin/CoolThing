@@ -1,35 +1,23 @@
 import asyncio
-import json
 import logging
-from collections import defaultdict
-from dataclasses import dataclass, asdict
 
-from aio_pika.message import IncomingMessage
-from openai import OpenAI
-from pyrogram import Client, idle, filters
-from pyrogram.enums import ChatAction
-from pyrogram.handlers import MessageHandler
-from pyrogram.types import Message as PyrogramMessage
+from pyrogram import Client, idle
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
-from abstractions.repositories.chat import ChatRepositoryInterface, ChatCreateDTO
-from abstractions.repositories.message import MessageCreateDTO, MessageRepositoryInterface
-from domain.new_target_message import NewTargetMessage
 from infrastructure.handlers.incoming import IncomingMessageHandler
 from infrastructure.openai import GPTRepository
 from infrastructure.rabbit import RabbitListener
 from infrastructure.sqlalchemy import SQLAlchemyMessagesRepository, SQLAlchemyChatsRepository
 from settings import settings
-
-from typing import Literal
-
 from use_cases.gpt_response import GPTUseCase
 from use_cases.target_message import TargetMessageEventHandler
 
 logger = logging.getLogger(__name__)
+# Json handler to stdout
 logging.basicConfig(
     level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+
 )
 logging.getLogger("pyrogram").setLevel(logging.WARNING)
 
@@ -53,7 +41,7 @@ async def main():
     db_url = (f"postgresql+asyncpg://{settings.db.user}:{settings.db.password}"
               f"@{settings.db.host}:{settings.db.port}/{settings.db.name}")
 
-    engine = create_async_engine(db_url, echo=True)
+    engine = create_async_engine(db_url, echo=False)
     session_maker = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
     messages_repo = SQLAlchemyMessagesRepository(
@@ -79,7 +67,7 @@ async def main():
         messages_repo=messages_repo,
         app=app,
         welcome_message=settings.welcome_message,
-        campaign_id="971ed010-0152-4125-bdd1-b313d9ceeb7c",
+        campaign_id=settings.campaign_id,
         worker_id=settings.app.id,
     )
 

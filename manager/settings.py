@@ -40,6 +40,7 @@ class Settings(BaseSettings):
     db: DBSettings
 
     welcome_message: str
+    campaign_id: str
 
     model_config = SettingsConfigDict(
         extra='allow',

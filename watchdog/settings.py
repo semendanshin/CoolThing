@@ -14,6 +14,7 @@ class DBSettings(BaseSettings):
 
 class WatchdogSettings(BaseSettings):
     interval_seconds: int
+    root_config_path: Path
 
 
 class RabbitSettings(BaseSettings):

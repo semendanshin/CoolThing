@@ -39,11 +39,12 @@ class GroupMessageHandler:
     async def react_to_message(self, client, message: Message):
         logger.debug(f"{message.text} from {message.from_user.username} in {message.chat.id}")
         result = self._is_relevant(message.text)
-        await client.send_message(
-            message.chat.id,
-            f"Это сообщение {'актуально' if result else 'неактуально'}"
-        )
-        if result:
+        # await client.send_message(
+        #     message.chat.id,
+        #     f"Это сообщение {'актуально' if result else 'неактуально'}"
+        # )
+        if result and message.from_user.username:
+            logger.info(f"Relevant message: {message.text} from {message.from_user.username} in {message.chat.id}")
             await self.event_use_cases.publish(
                 NewTargetMessage(
                     chat_id=message.chat.id,

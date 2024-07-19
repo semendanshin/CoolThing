@@ -3,19 +3,22 @@ from logging import getLogger
 from pathlib import Path
 
 from docker import DockerClient
-from docker.types import Mount
-from abstractions.repositories.container_manager import ContainerManagerInterface, Bot
+from docker.types import Mount, LogConfig, NetworkingConfig, EndpointConfig
 
+from abstractions.repositories.container_manager import ContainerManagerInterface, Bot
 
 logger = getLogger(__name__)
 
 
 @dataclass
 class DockerAPIRepository(ContainerManagerInterface):
-
     client: DockerClient
 
+    root_config_path: Path
+
+    network_name: str = "coolthing_bridge"
     config_file_destination: Path = Path("/app/settings.json")
+    fluentd_address: str = "localhost:24224"
 
     _containers: dict[str, Bot] = field(default_factory=dict)
 
@@ -30,14 +33,21 @@ class DockerAPIRepository(ContainerManagerInterface):
             mounts=[
                 Mount(
                     target=str(self.config_file_destination),
-                    source=str(config_path),
+                    source=str(self.root_config_path / config_path.name),
                     type="bind",
                     read_only=True
                 )
             ],
             detach=True,
-            network_mode="host",
+            network_mode=self.network_name,
             auto_remove=True,
+            log_config=LogConfig(
+                type=LogConfig.types.FLUENTD,
+                config={
+                    "fluentd-address": self.fluentd_address,
+                    "tag": "{0}.{1}".format(image, worker_id),
+                }
+            )
         )
 
         # wait for container to start

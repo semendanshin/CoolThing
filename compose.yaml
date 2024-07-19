@@ -1,0 +1,30 @@
+include:
+  - ./database/db-compose.yaml
+  - rabbit_mq/rabbit-compose.yaml
+  - fluentd/fluentd-compose.yaml
+
+
+services:
+  watchdog:
+    build:
+      context: ./watchdog
+      dockerfile: Dockerfile
+    container_name: cool_thing_watchdog
+    restart: unless-stopped
+    networks:
+      - bridge
+    volumes:
+      - ./watchdog/tmp:/app/tmp
+      - ./watchdog/settings.json:/app/settings.json
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    depends_on:
+      - db
+      - queue
+      - fluentd
+    stop_grace_period: 2m
+
+networks:
+    bridge:
+        driver: bridge
