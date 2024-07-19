@@ -14,11 +14,13 @@ templates = Jinja2Templates(directory='templates')
 @router.get("")
 async def get_fallback(
         request: Request,
+        msg: str = None,
 ) -> HTMLResponse:
+    print(msg)
     return templates.TemplateResponse(
         request=request,
         name='fallback.html',
         context={
-            'error': 'Something went wrong. Please try again later.',
+            'error': msg or 'Something went wrong. Please try again later.',
         },
     )
