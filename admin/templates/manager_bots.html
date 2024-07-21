@@ -1,0 +1,13 @@
+{% extends 'bots.html' %}
+
+{% block table_headers %}
+<th>Messages</th>
+<th>New chats</th>
+<th>Unread messages in manual</th>
+{% endblock %}
+
+{% block specific_fields %}
+<td>bot.unread_messages</td>
+<td>bot.chats_ratio</td>
+<td>bot.messages_count</td>
+{% endblock %}

@@ -1,0 +1,45 @@
+/* Prompt Row Styling */
+.row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+}
+
+/* Label Styling */
+.prompt-aim {
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+    font-size: 14px; /* Smaller text size */
+}
+
+/* Textarea Styling */
+.prompt-text-field {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: var(--background-color);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+    font-size: 14px; /* Smaller text size */
+    resize: none; /* Disable resizing */
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .row {
+        padding: 10px;
+    }
+    .prompt-aim {
+        font-size: 12px; /* Adjust font size for smaller screens */
+    }
+    .prompt-text-field {
+        font-size: 12px; /* Adjust font size for smaller screens */
+    }
+}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Home</h1>
+    <p id="welcome_message"></p>
+
+    <script>
+        let allowedIds = []
+        let tg = window.Telegram.WebApp;
+        let displayName = 'Anonymous';
+        if (!tg.initDataUnsafe.user) {
+            window.alert('Could you please use Telegram to open this page?');
+        } else {
+            displayName = tg.initDataUnsafe.user.first_name;
+        }
+        document.getElementById('welcome_message').innerText = 'Welcome, ' + displayName + '!';
+    </script>
+{% endblock %}

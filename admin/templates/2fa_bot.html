@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}
+2FA
+{% endblock %}
+
+{% block head %}
+    <link href="{{ url_for('static', path='/form.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<h1>2FA</h1>
+<form action="/bots/connect/2fa" method="post">
+    <div class="form-group">
+        <label for="password">2FA password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your 2FA password">
+    </div>
+    <button type="submit">Connect</button>
+</form>
+{% endblock %}

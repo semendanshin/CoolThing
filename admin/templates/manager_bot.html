@@ -1,0 +1,20 @@
+{% extends 'bot.html' %}
+
+{% block specific_fields %}
+    <div class="row">
+        <label for="bot_chats" class="bot-field-label">New chats</label>
+        <textarea class="bot-field" id="bot_chats" name="bot_chats" readonly>bot.chats</textarea>
+    </div>
+    <div class="row">
+        <label for="bot_api_key" class="bot-field-label">Bot API key</label>
+        <textarea class="bot-field" id="bot_api_key" name="bot_api_key" readonly>bot.api_key</textarea>
+    </div>
+    <div class="row">
+        <label for="bot_chatgpt_model" class="bot-field-label">ChatGPT model</label>
+        <textarea class="bot-field" id="bot_chatgpt_model" name="bot_chatgpt_model" readonly>bot.chatgpt_model</textarea>
+    </div>
+    <div class="row">
+        <label for="bot_chatgpt_assistant" class="bot-field-label">ChatGPT assistant</label>
+        <textarea class="bot-field" id="bot_chatgpt_assistant" name="bot_chatgpt_assistant" readonly>bot.chatgpt_assistant</textarea>
+    </div>
+{% endblock %}
