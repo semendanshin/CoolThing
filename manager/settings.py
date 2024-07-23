@@ -25,12 +25,13 @@ class RabbitSettings(BaseSettings):
     user: str
     password: str
     vhost: str
-    queue: str
+    campaign_id: str
 
 
 class OpenAISettings(BaseSettings):
     api_key: str
     model: str
+    service_prompt: str
 
 
 class Settings(BaseSettings):

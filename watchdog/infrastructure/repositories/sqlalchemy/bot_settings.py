@@ -24,6 +24,7 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
             g.model,
             g.assistant,
             g.token,
+            g.service_prompt,
             c.welcome_message,
             c.topic,
             c.chats,
@@ -62,6 +63,7 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
                                 model=row.model,
                                 assistant=row.assistant,
                                 token=row.token,
+                                service_prompt=row.service_prompt,
                                 welcome_message=row.welcome_message,
                                 topic=row.topic,
                             )

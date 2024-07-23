@@ -2,7 +2,7 @@ import asyncio
 import json
 import uuid
 from contextlib import suppress
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from logging import getLogger
 from pathlib import Path
 
@@ -28,17 +28,17 @@ class ManageBotsUseCase:
 
     tmp_config_dir: Path
 
+    _containers_settings_hashes: dict[str, int] = field(default_factory=dict, init=False)
+
     async def execute(self):
         bots_settings = await self.bot_repository.get_active_bot_settings()
 
-        # logger.debug(f"Active bots: {bots_settings}")
-
-        actual_bot_ids = [bot.app_id for bot in bots_settings]
+        actual_bot_ids = [bot.id for bot in bots_settings]
 
         running_containers = await self.container_manager.get_running_containers()
         running_containers_ids = [container.id for container in running_containers]
 
-        bots_to_start = [bot for bot in bots_settings if bot.app_id not in running_containers_ids]
+        bots_to_start = [bot for bot in bots_settings if bot.id not in running_containers_ids]
         for bot in bots_to_start:
             logger.info(f"Starting bot: {bot.id}")
             await self.start_bot(bot)
@@ -47,6 +47,14 @@ class ManageBotsUseCase:
         for container in containers_to_stop:
             logger.info(f"Stopping bot: {container.id}")
             await self.container_manager.stop_container(container.id)
+
+        # Compare settings hash of running containers and actual settings
+        containers_to_update = [container for container in bots_settings if
+                                self._containers_settings_hashes.get(container.id) != hash(container)]
+        for container in containers_to_update:
+            logger.info(f"Updating bot: {container.id}")
+            await self.container_manager.stop_container(container.id)
+            await self.start_bot(container)
 
         # check health of running containers
         # for container in running_containers:
@@ -67,11 +75,12 @@ class ManageBotsUseCase:
                 "user": self.rabbit_settings.user,
                 "password": self.rabbit_settings.password,
                 "vhost": self.rabbit_settings.vhost,
-                "queue": manager_settings.topic
+                "campaign_id": manager_settings.campaign_id,
             },
             "openai": {
                 "model": manager_settings.model,
                 "api_key": manager_settings.token,
+                "service_prompt": manager_settings.service_prompt
             },
             "db": {
                 "host": self.db_settings.host,
@@ -98,7 +107,7 @@ class ManageBotsUseCase:
                 "user": self.rabbit_settings.user,
                 "password": self.rabbit_settings.password,
                 "vhost": self.rabbit_settings.vhost,
-                "queue": parser_settings.topic
+                "campaign_id": parser_settings.campaign_id,
             },
             "parser": {
                 "keywords": {
@@ -111,7 +120,7 @@ class ManageBotsUseCase:
         }
 
     async def settings_to_file(self, settings: WorkerSettings) -> Path:
-        filename = f"{settings.app_id}.{str(uuid.uuid4())}.json"
+        filename = f"{settings.id}.{str(uuid.uuid4())}.json"
         file_path = self.tmp_config_dir / filename
 
         if isinstance(settings, ManagerSettings):
@@ -139,21 +148,17 @@ class ManageBotsUseCase:
 
         # start container
         await self.container_manager.start_container(
-            worker_id=bot_settings.app_id,
+            worker_id=bot_settings.id,
             image=MANAGER_IMAGE if bot_settings.role == "manager" else PARSER_IMAGE,
             config_path=settings_file
         )
 
+        self._containers_settings_hashes[bot_settings.id] = hash(bot_settings)
+
         # update bot status
-        # await self.worker_repository.update_status(bot_settings.app_id, "running")
+        # await self.worker_repository.update_status(bot_settings.id, "running")
 
     async def cleanup(self):
-        # containers = await self.container_manager.get_running_containers()
-        # for container in containers:
-        #     await self.container_manager.stop_container(container.id)
-        #     with suppress(Exception):
-        #         container.config_path.unlink()
-
         containers = await self.container_manager.get_running_containers()
 
         logger.debug(f"Stopping containers: {containers}")

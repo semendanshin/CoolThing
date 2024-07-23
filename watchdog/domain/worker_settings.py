@@ -18,8 +18,29 @@ class ManagerSettings(WorkerSettings):
     model: str
     assistant: str
     token: str
+    service_prompt: str
     welcome_message: str
     topic: str
+
+    def __hash__(self):
+        return hash(
+            (
+                self.id,
+                self.app_id,
+                self.app_hash,
+                self.session_string,
+                self.proxy,
+                self.campaign_id,
+                self.role,
+                self.status,
+                self.model,
+                self.assistant,
+                self.token,
+                self.service_prompt,
+                self.welcome_message,
+                self.topic
+            )
+        )
 
 
 @dataclass(kw_only=True)
@@ -28,6 +49,24 @@ class ParserSettings(WorkerSettings):
     plus_keywords: list[str]
     minus_keywords: list[str]
     topic: str
+
+    def __hash__(self):
+        return hash(
+            (
+                self.id,
+                self.app_id,
+                self.app_hash,
+                self.session_string,
+                self.proxy,
+                self.campaign_id,
+                self.role,
+                self.status,
+                tuple(self.chats),
+                tuple(self.plus_keywords),
+                tuple(self.minus_keywords),
+                self.topic
+            )
+        )
 
 
 @dataclass

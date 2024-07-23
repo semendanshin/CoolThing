@@ -54,6 +54,7 @@ async def main():
     gpt_repo = GPTRepository(
         api_key=settings.openai.api_key,
         model=settings.openai.model,
+        service_prompt=settings.openai.service_prompt,
     )
 
     gpt_use_case = GPTUseCase(
@@ -76,7 +77,7 @@ async def main():
 
     listener = RabbitListener(
         url=rmq_url,
-        queue_name=settings.rabbit.queue,
+        campaign_id=settings.rabbit.campaign_id,
         callback=target_message_use_case.new_target_message,
     )
 

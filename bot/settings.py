@@ -1,26 +1,7 @@
-import os
-
 from pathlib import Path
 from typing import Type, Tuple
 
 from pydantic_settings import BaseSettings, SettingsConfigDict, PydanticBaseSettingsSource, JsonConfigSettingsSource
-
-
-class Keywords(BaseSettings):
-    positive: list[str]
-    negative: list[str]
-
-
-class ParserSettings(BaseSettings):
-    keywords: Keywords
-    chats: list[str | int]
-
-
-class AppSettings(BaseSettings):
-    id: str
-    api_id: int
-    api_hash: str
-    session_string: str
 
 
 class RabbitSettings(BaseSettings):
@@ -33,11 +14,9 @@ class RabbitSettings(BaseSettings):
 
 
 class Settings(BaseSettings):
-    app: AppSettings
+    tg_bot_token: str
+    host: str
     rabbit: RabbitSettings
-    parser: ParserSettings
-
-    debug: bool = False
 
     model_config = SettingsConfigDict(
         extra='allow',

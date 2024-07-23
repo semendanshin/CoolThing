@@ -10,6 +10,7 @@ class Bot:
     status: str
     config_path: Path
     container_id: str = None
+    settings_hash: str = None
 
 
 class ContainerManagerInterface(ABC):

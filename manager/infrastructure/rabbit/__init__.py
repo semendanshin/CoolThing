@@ -5,7 +5,7 @@ from typing import TypeVar, Callable, Coroutine, Any
 
 import aio_pika
 from aio_pika import IncomingMessage
-from aio_pika.abc import AbstractRobustConnection
+from aio_pika.abc import AbstractRobustConnection, ExchangeType
 from aio_pika.pool import Pool
 
 handler = TypeVar("handler", bound=Callable[[IncomingMessage], Coroutine[Any, Any, None]])
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class RabbitListener:
     url: str
-    queue_name: str
+    campaign_id: str
     callback: handler
 
     period: int = 5
@@ -74,9 +74,11 @@ class RabbitListener:
         async with self.channel_pool.acquire() as channel:  # type: aio_pika.Channel
             await channel.set_qos(10)
 
-            queue = await channel.declare_queue(
-                self.queue_name, durable=False, auto_delete=False,
-            )
+            exchange = await channel.declare_exchange('campaign_exchange', ExchangeType.TOPIC)
+
+            queue_name = f'{self.campaign_id}_managers'
+            queue = await channel.declare_queue(queue_name, durable=True)
+            await queue.bind(exchange, routing_key=f'{self.campaign_id}.parser')
 
             async with queue.iterator() as queue_iter:
                 async for message in queue_iter:  # type: IncomingMessage
