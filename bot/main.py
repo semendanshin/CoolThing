@@ -127,7 +127,6 @@ class GracefulKiller:
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     webapp = WebAppInfo(
         url=f"{settings.host}/dashboard",
-        api_kwargs={"headers": {"ngrok-skip-browser-warning": "true"}},
     )
     keyboard = InlineKeyboardMarkup(
         [
@@ -155,7 +154,9 @@ class RabbitHandler:
         logger.info(f"Event received: {event}")
         await self.app.bot.send_message(
             chat_id=ADMIN_CHAT_ID,
-            text=f"New target message detected:\n{event.username} in {event.chat_id}:\n{event.message}",
+            text=f"New target message detected:\n@{event.username} in <i>{event.chat_id} by {event.worker_id} "
+                 f"(campaign: {event.campaign_id})</i>\nMessage:\n{event.message}",
+            parse_mode="HTML",
         )
 
 

@@ -18,6 +18,9 @@ class GroupMessageHandler:
     positive_key_words: set[str]
     negative_key_words: set[str]
 
+    worker_id: str
+    campaign_id: str
+
     event_use_cases: EventUseCases
 
     punctuation: str = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
@@ -50,6 +53,8 @@ class GroupMessageHandler:
                     chat_id=message.chat.id,
                     username=message.from_user.username,
                     message=message.text,
+                    campaign_id=self.campaign_id,
+                    worker_id=self.worker_id,
                 )
             )
 

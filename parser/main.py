@@ -54,6 +54,8 @@ async def main():
         positive_key_words=positive_key_words,
         negative_key_words=negative_key_words,
         event_use_cases=event_use_cases,
+        worker_id=settings.app.id,
+        campaign_id=settings.rabbit.campaign_id,
     )
 
     app = Client(

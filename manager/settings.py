@@ -44,7 +44,7 @@ class Settings(BaseSettings):
     campaign_id: str
 
     model_config = SettingsConfigDict(
-        extra='allow',
+        extra='ignore',
         json_file=Path(__file__).parent / 'settings.json',
         json_file_encoding='utf-8',
     )

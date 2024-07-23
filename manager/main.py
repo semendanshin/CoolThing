@@ -13,7 +13,6 @@ from use_cases.gpt_response import GPTUseCase
 from use_cases.target_message import TargetMessageEventHandler
 
 logger = logging.getLogger(__name__)
-# Json handler to stdout
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
