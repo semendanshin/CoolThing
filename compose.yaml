@@ -20,13 +20,21 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     depends_on:
-      - db
-      - queue
-      - fluentd
+      fluentd:
+        condition: service_started
+      db:
+        condition: service_healthy
+      queue:
+        condition: service_healthy
     stop_grace_period: 2m
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: watchdog
 
 networks:
-    bridge:
-        driver: bridge
-        external: true
-        name: coolthing_bridge
+  bridge:
+    driver: bridge
+    external: true
+    name: coolthing_bridge
