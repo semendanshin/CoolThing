@@ -27,6 +27,8 @@ class Worker(BaseEntity):
     campaign_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('campaigns.id'), nullable=False)
     role: Mapped[str] = mapped_column(String, nullable=False)
     status: Mapped[str] = mapped_column(String, nullable=False)
+    username: Mapped[str] = mapped_column(String, nullable=False)
+    bio: Mapped[str] = mapped_column(String)
 
 
 class GPT(BaseEntity):
@@ -35,6 +37,7 @@ class GPT(BaseEntity):
     model: Mapped[str] = mapped_column(String, nullable=False)
     assistant: Mapped[str] = mapped_column(String, nullable=False)
     token: Mapped[str] = mapped_column(String, nullable=False)
+    service_prompt: Mapped[str] = mapped_column(String, nullable=False, default='')
 
 
 class Campaign(BaseEntity):
@@ -46,6 +49,7 @@ class Campaign(BaseEntity):
     minus_keywords: Mapped[list[str]] = mapped_column(JSONB, nullable=False)
     gpt_settings_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('gpt_settings.id'), nullable=False)
     topic: Mapped[str] = mapped_column(String, nullable=False)
+    scope: Mapped[str] = mapped_column(String, nullable=False)
 
 
 class Chat(BaseEntity):
