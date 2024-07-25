@@ -54,9 +54,36 @@ services:
       options:
         fluentd-address: localhost:24224
         tag: bot
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: cool_thing_admin
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+#      - ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080", "--root-path", "/admin"]
+    restart: unless-stopped
+    networks:
+      - bridge
+    volumes:
+      - ./admin/settings.json:/app/settings.json
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    depends_on:
+      fluentd:
+        condition: service_started
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: admin
 
 networks:
   bridge:
     driver: bridge
     external: true
     name: coolthing_bridge
+    attachable: true
