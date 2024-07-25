@@ -32,6 +32,28 @@ services:
       options:
         fluentd-address: localhost:24224
         tag: watchdog
+  bot:
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+    container_name: cool_thing_bot
+    restart: unless-stopped
+    networks:
+      - bridge
+    volumes:
+      - ./bot/settings.json:/app/settings.json
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    depends_on:
+      fluentd:
+        condition: service_started
+      queue:
+        condition: service_healthy
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: bot
 
 networks:
   bridge:
