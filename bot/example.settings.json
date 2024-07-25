@@ -1,0 +1,12 @@
+{
+    "tg_bot_token": "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+    "host": "localhost",
+    "rabbit": {
+        "host": "localhost",
+        "port": 5672,
+        "user": "guest",
+        "password": "guest",
+        "vhost": "",
+        "campaign_id": ""
+    }
+}

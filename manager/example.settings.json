@@ -1,8 +1,16 @@
 {
     "app": {
-        "api_id": 123123,
-        "api_hash": "123abc123",
-        "session_string": "wow123"
+        "id": "1238ab47-a871-4369-8329-bb170a865163",
+        "api_id": 123123123,
+        "api_hash": "123123123abcabac",
+        "session_string": "asdasdasdasdasda"
+    },
+    "db": {
+        "host": "localhost",
+        "port": 5430,
+        "user": "postgres",
+        "password": "postgres",
+        "name": "postgres"
     },
     "rabbit": {
         "host": "localhost",
@@ -10,7 +18,13 @@
         "user": "guest",
         "password": "guest",
         "vhost": "",
-        "queue": "events"
+        "campaign_id": ""
     },
-    "welcome_message": "Привет! Ты там вроде что-то хотел?"
+    "welcome_message": "Привет! Ты там вроде что-то хотел?",
+    "campaign_id": "123ed010-0152-4125-bdd1-b313d9ceeb7c",
+    "openai": {
+        "api_key": "",
+        "model": "gpt-3.5-turbo-1106",
+        "service_prompt": "Ты - менеджер"
+    }
 }

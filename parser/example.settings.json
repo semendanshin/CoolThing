@@ -1,5 +1,6 @@
 {
     "app": {
+        "id": "asd2412fa349dje",
         "api_id": 123123,
         "api_hash": "123abc123",
         "session_string": "wow123"
@@ -10,7 +11,7 @@
         "user": "guest",
         "password": "guest",
         "vhost": "",
-        "queue": "events"
+        "campaign_id": ""
     },
     "parser": {
         "keywords": {
