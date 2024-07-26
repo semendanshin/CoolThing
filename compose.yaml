@@ -21,7 +21,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
     depends_on:
       fluentd:
-        condition: service_started
+        condition: service_healthy
       db:
         condition: service_healthy
       queue:
@@ -46,7 +46,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
     depends_on:
       fluentd:
-        condition: service_started
+        condition: service_healthy
       queue:
         condition: service_healthy
     logging:
@@ -70,7 +70,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
     depends_on:
       fluentd:
-        condition: service_started
+        condition: service_healthy
       db:
         condition: service_healthy
     ports:
