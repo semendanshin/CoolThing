@@ -6,6 +6,5 @@ USER root
 RUN gem install fluent-plugin-opensearch && \
     fluent-gem install fluent-plugin-concat
 
-USER fluent
 ENTRYPOINT ["tini",  "--", "/bin/entrypoint.sh"]
 CMD ["fluentd"]
