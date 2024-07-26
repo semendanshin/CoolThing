@@ -17,7 +17,6 @@ services:
       - ./watchdog/tmp:/app/tmp
       - ./watchdog/settings.json:/app/settings.json
       - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     depends_on:
       fluentd:
