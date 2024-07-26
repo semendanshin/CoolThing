@@ -1,9 +1,9 @@
 from abc import abstractmethod, ABC
 
-from domain.statistics import StatisticsResponse
+from domain.schemas.statistics import StatisticsResponse
 
 
-class StatisticsService(ABC):
+class StatisticsUseCaseInterface(ABC):
     @abstractmethod
     async def get_statistics(self) -> StatisticsResponse:
         pass

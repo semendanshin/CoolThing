@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from dependencies.bots_service import get_bots_service
-from abstractions.AbstractBotsService import AbstractBotsService
+from dependencies.usecases.bots import get_bots_usecase
+from abstractions.usecases.BotsUseCaseInterface import BotsUseCaseInterface
 
 router = APIRouter(
     prefix='/bots',
@@ -21,7 +21,7 @@ async def get_all_bots() -> RedirectResponse:
 @router.get("/managers")
 async def get_manager_bots(
         request: Request,
-        bots: AbstractBotsService = Depends(get_bots_service),
+        bots: BotsUseCaseInterface = Depends(get_bots_usecase),
 ) -> HTMLResponse:
     bots_overview = await bots.get_manager_bots()
     return templates.TemplateResponse(
@@ -37,7 +37,7 @@ async def get_manager_bots(
 @router.get("/parsers")
 async def get_manager_bots(
         request: Request,
-        bots: AbstractBotsService = Depends(get_bots_service),
+        bots: BotsUseCaseInterface = Depends(get_bots_usecase),
 ) -> HTMLResponse:
     bots_overview = await bots.get_parser_bots()
     return templates.TemplateResponse(

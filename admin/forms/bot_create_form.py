@@ -1,6 +1,6 @@
 from fastapi import Form
 
-from domain.bots import BotCreate
+from domain.schemas.bots import BotCreate
 
 
 def bot_create_form(

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Campaign
+{% endblock %}
+
+{% block head %}
+    <link href="{{ url_for('static', path='/campaign.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Campaign</h1>
+{#    <h1>Campaign: {{ campaign.name }}</h1>#}
+    <p>Here you can edit the details about the campaign.</p>
+    <form action="/campaigns/{{ campaign.id }}" method="post">
+        <div class="row">
+            <label for="campaign_scope" class="campaign-field-label">Scope</label>
+            <textarea class="campaign-field" id="campaign_scope" name="campaign_scope">{{ campaign.scope }}</textarea>
+        </div>
+        <div class="row">
+            <label for="campaign_welcome_message" class="campaign-field-label">Welcome Message</label>
+            <textarea class="campaign-field" id="campaign_welcome_message" name="campaign_welcome_message">{{ campaign.welcome_message }}</textarea>
+        </div>
+        <div class="row">
+            <label for="campaign_chats" class="campaign-field-label">Chats</label>
+            <textarea class="campaign-field" id="campaign_chats" name="campaign_chats">{{ campaign.chats | join(", ") }}</textarea>
+        </div>
+        <div class="row">
+            <label for="campaign_plus_keywords" class="campaign-field-label">Plus Keywords</label>
+            <textarea class="campaign-field" id="campaign_plus_keywords" name="campaign_plus_keywords">{{ campaign.plus_keywords | join(", ") }}</textarea>
+        </div>
+        <div class="row">
+            <label for="campaign_minus_keywords" class="campaign-field-label">Minus Keywords</label>
+            <textarea class="campaign-field" id="campaign_minus_keywords" name="campaign_minus_keywords">{{ campaign.minus_keywords | join(", ") }}</textarea>
+        </div>
+        <div class="row">
+            <label for="campaign_gpt_settings_id" class="campaign-field-label">GPT Settings ID</label>
+            <input class="campaign-field" type="text" id="campaign_gpt_settings_id" name="campaign_gpt_settings_id" value="{{ campaign.gpt_settings_id }}">
+        </div>
+        <div class="row">
+            <input type="submit" value="Save Changes" class="submit-button">
+        </div>
+    </form>
+</div>
+{% endblock %}

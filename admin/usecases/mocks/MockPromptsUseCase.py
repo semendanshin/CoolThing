@@ -1,8 +1,8 @@
-from abstractions.AbstractPromptsService import AbstractPromptsService
-from domain.prompts import Prompt
+from abstractions.usecases.PromptsUseCaseInterface import PromptsUseCaseInterface
+from domain.schemas.prompts import Prompt
 
 
-class MockPromptsService(AbstractPromptsService):
+class MockPromptsUseCase(PromptsUseCaseInterface):
     async def get_all_prompts(self) -> list[Prompt]:
         return [
             Prompt(

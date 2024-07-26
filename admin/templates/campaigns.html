@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Campaigns{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', path='/campaigns.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="campaigns-container">
+        {% for campaign in campaigns %}
+            <a href="/campaigns/{{ campaign.id }}">
+            <div class="campaign-card">
+{#                <h3>{{ campaign. }}</h3>#}
+                <p><strong>Scope:</strong> {{ campaign.scope }}</p>
+                <p><strong>Welcome Message:</strong> {{ campaign.welcome_message }}</p>
+                <p><strong>Chats:</strong> {{ campaign.chats | join(", ") }}</p>
+                <p><strong>Plus Keywords:</strong> {{ campaign.plus_keywords | join(", ") }}</p>
+                <p><strong>Minus Keywords:</strong> {{ campaign.minus_keywords | join(", ") }}</p>
+                <p><strong>GPT Settings ID:</strong> {{ campaign.gpt_settings_id }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

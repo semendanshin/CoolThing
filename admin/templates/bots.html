@@ -17,34 +17,30 @@
     <link href="{{ url_for('static', path='/bots.css') }}" rel="stylesheet">
 {% endblock %}
 
-
 {% block content %}
-    <div class="bot-type-selector">
-{#    {% if managers %}#}
-        <p id="managers" data-url="/bots/managers">Managers</p>
-        <p id="parsers" data-url="/bots/parsers">Parsers</p>
-
+    <div class="bot-type-selector-container">
+        <div class="bot-type-selector">
+            <p id="managers" data-url="/bots/managers">Managers</p>
+            <p id="parsers" data-url="/bots/parsers">Parsers</p>
+        </div>
     </div>
-    <table>
-        <tr>
-            <th>Nickname</th>
-            <th>Scope</th>
-            {% block table_headers %} {% endblock %}
-            <th>Proxy</th>
-        </tr>
-    {% for bot in bots %}
-        <tr>
-            <td>{{ bot.nickname }}</td>
-            <td>{{ bot.scope }}</td>
-
-            {% block specific_fields %} {% endblock %}
-
-            {% if bot.proxy_status %}
-                <td class="bot-proxy-up">{{ bot.proxy }}</td>
-            {% else %}
-                <td class="bot-proxy-down">{{ bot.proxy }}</td>
-            {% endif %}
-        </tr>
-    {% endfor %}
-    </table>
+    <div class="bot-cards">
+        {% for bot in bots %}
+            <a href="/bot/{{ bot.nickname }}">
+                <div class="bot-card">
+                    <h3>{{ bot.nickname }}</h3>
+                    <p><strong>Scope:</strong> {{ bot.scope }}</p>
+                    {% block specific_fields %}
+                    {% endblock %}
+                    <p><strong>Proxy:</strong>
+                        {% if bot.proxy_status %}
+                            <span class="bot-proxy-up">{{ bot.proxy }}</span>
+                        {% else %}
+                            <span class="bot-proxy-down">{{ bot.proxy }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
 {% endblock %}

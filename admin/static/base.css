@@ -104,41 +104,6 @@ nav ul li a:hover {
     color: var(--hover-color);
 }
 
-/* Bot Type Selector Styling */
-.bot-type-selector {
-    display: flex;
-    align-items: center;
-    margin: 20px 0;
-    padding: 5px;
-    background-color: var(--secondary-color);
-    border-radius: 20px;
-    box-shadow: var(--box-shadow);
-    max-width: 200px; /* Adjust the width as needed */
-}
-
-.bot-type-selector p {
-    flex: 1;
-    text-align: center;
-    margin: 0;
-    padding: 10px 0;
-    font-weight: bold;
-    color: var(--primary-color);
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    border-radius: 20px; /* Ensure rounded corners */
-}
-
-.bot-type-selector p.selected {
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-}
-
-/* Hover Effect */
-.bot-type-selector p:hover:not(.selected) {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-
 
 /* Responsive Design for Table */
 @media (max-width: 768px) {

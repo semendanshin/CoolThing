@@ -1,37 +1,151 @@
+/* CSS Variables for Bots */
+:root {
+    --card-background: var(--secondary-color);
+    --card-padding: 20px;
+    --card-margin: 10px;
+    --card-width: 300px;
+    --card-border-radius: 10px;
+    --card-box-shadow: var(--box-shadow);
+    --card-hover-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    --card-title-color: var(--primary-color);
+    --proxy-up-color: green;
+    --proxy-down-color: red;
+    --specific-field-background: #f2f2f2;
+    --selector-padding: 5px;
+    --selector-border-radius: 20px;
+}
+
+/* Bot Cards Container */
+.bot-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--card-margin);
+    margin-top: 20px;
+}
+
+/* Bot Card Styling */
+.bot-card {
+    background-color: var(--card-background);
+    padding: var(--card-padding);
+    margin: var(--card-margin);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-box-shadow);
+    width: var(--card-width);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bot-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--card-hover-box-shadow);
+}
+
+a {
+    text-decoration: none;
+}
+
+.bot-card h3 {
+    margin-top: 0;
+    color: var(--card-title-color);
+}
+
+.bot-card p {
+    margin: 10px 0;
+    color: var(--text-color);
+}
+
+/* Proxy Status Styles */
+.bot-proxy-up {
+    color: var(--proxy-up-color);
+    font-weight: bold;
+}
+
+.bot-proxy-down {
+    color: var(--proxy-down-color);
+    font-weight: bold;
+}
+
 /* Bot Type Selector Styling */
+/* Bot Cards Container */
+.bot-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--card-margin);
+    margin-top: 20px;
+}
+
+/* Bot Card Styling */
+.bot-card {
+    background-color: var(--card-background);
+    padding: var(--card-padding);
+    margin: var(--card-margin);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-box-shadow);
+    width: var(--card-width);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bot-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--card-hover-box-shadow);
+}
+
+.bot-card h3 {
+    margin-top: 0;
+    color: var(--card-title-color);
+}
+
+.bot-card p {
+    margin: 10px 0;
+    color: var(--text-color);
+}
+
+/* Bot Type Selector Styling */
+.bot-type-selector-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100%; /* Full height to ensure vertical centering */
+    margin: 20px 0;
+}
+
 .bot-type-selector {
     display: flex;
-    justify-content: center; /* Centers the items horizontally */
-    align-items: center; /* Centers the items vertically */
-    padding: 5px;
+    align-items: center;
+    padding: var(--selector-padding);
     background-color: var(--secondary-color);
-    border-radius: 20px;
+    border-radius: var(--selector-border-radius);
     box-shadow: var(--box-shadow);
-    max-width: 300px; /* Adjust the width as needed */
-    /* Align to the left */
-    /* Center horizontally */
-    margin: 20px auto;
+    width: max-content; /* Ensures the selector is only as wide as its content */
 }
 
 .bot-type-selector p {
-    flex: 1;
+    flex: none;
     text-align: center;
-    margin: 0;
-    padding: 10px 0;
+    margin: 0 5px; /* Add some spacing between the elements */
+    padding: 10px 20px; /* Increase padding for better spacing */
     font-weight: bold;
     color: var(--primary-color);
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease;
-    border-radius: 20px; /* Ensure rounded corners */
+    border-radius: var(--selector-border-radius); /* Ensure rounded corners */
 }
 
-.bot-type-selector p:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-    color: var(--hover-color);
-}
-
-/* Active State Styling */
 .bot-type-selector p.active {
     background-color: var(--primary-color);
     color: var(--secondary-color);
+}
+
+/* Hover Effect */
+.bot-type-selector p:hover:not(.active) {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design for Bot Cards */
+@media (max-width: 768px) {
+    .bot-card {
+        width: 100%;
+        margin: 10px 0;
+    }
 }

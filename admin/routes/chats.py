@@ -1,13 +1,9 @@
-from typing import Optional
-
 from fastapi import APIRouter, Depends, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from abstractions.AbstractChatsService import AbstractChatsService
-from dependencies.bots_service import get_bots_service
-from abstractions.AbstractBotsService import AbstractBotsService
-from dependencies.chat_service import get_chats_service
+from abstractions.usecases.ChatsUseCaseInterface import ChatsUseCaseInterface
+from dependencies.usecases.chats import get_chats_service
 
 router = APIRouter(
     prefix='/chats',
@@ -19,7 +15,7 @@ templates = Jinja2Templates(directory='templates')
 @router.get("")
 async def get_all_chats(
         request: Request,
-        chats_service: AbstractChatsService = Depends(get_chats_service),
+        chats_service: ChatsUseCaseInterface = Depends(get_chats_service),
 ) -> HTMLResponse:
     chats = await chats_service.get_all_chats()
     return templates.TemplateResponse(
@@ -35,7 +31,7 @@ async def get_all_chats(
 async def get_one_chat(
         chat_id: str,
         request: Request,
-        chats_service: AbstractChatsService = Depends(get_chats_service),
+        chats_service: ChatsUseCaseInterface = Depends(get_chats_service),
 ) -> HTMLResponse:
     chats = await chats_service.get_all_chats()
     main_chat = await chats_service.get_chat(chat_id=chat_id)

@@ -5,8 +5,8 @@
     <title>{% block title %} {% endblock %}</title>
     <link href="{{ url_for('static', path='/base.css') }}" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="{{ url_for('static', path='/scripts/tg_login.js') }}"></script>
+{#    <script src="https://telegram.org/js/telegram-web-app.js"></script>#}
+{#    <script src="{{ url_for('static', path='/scripts/tg_login.js') }}"></script>#}
     {% block head %} {% endblock %}
 </head>
 <body>
@@ -14,7 +14,8 @@
     <ul>
         <li><a href="/bot/new">New bot</a></li>
         <li><a href="/bots">My bots</a></li>
-        <li><a href="/prompts">Prompts</a></li>
+        <li><a href="/campaigns">Campaigns</a></li>
+        <li><a href="/gpt">GPT settings</a></li>
         <li><a href="/chats">Chat</a></li>
     </ul>
 </nav>

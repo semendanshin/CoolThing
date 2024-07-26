@@ -1,10 +1,10 @@
 from typing import Optional
 
-from abstractions.AbstractChatsService import AbstractChatsService
-from domain.chats import Chat, ChatInfo, Message
+from abstractions.usecases.ChatsUseCaseInterface import ChatsUseCaseInterface
+from domain.schemas.chats import Chat, ChatInfo, Message
 
 
-class MockChatsService(AbstractChatsService):
+class MockChatsUseCase(ChatsUseCaseInterface):
     async def get_all_chats(self, page: int = 0, size: int = 10) -> list[Optional[ChatInfo]]:
         return [
             ChatInfo(

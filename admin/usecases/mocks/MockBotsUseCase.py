@@ -1,8 +1,8 @@
-from domain.bots import ManagerBotOverview, ParserBotOverview, ManagerBotDetails, ParserBotDetails
-from abstractions.AbstractBotsService import AbstractBotsService
+from domain.schemas.bots import ManagerBotOverview, ParserBotOverview, ManagerBotDetails, ParserBotDetails
+from abstractions.usecases import BotsUseCaseInterface
 
 
-class MockBotsService(AbstractBotsService):
+class MockBotsUseCase(BotsUseCaseInterface):
     parsers = False
 
     async def get_manager_bots(self) -> list[ManagerBotOverview]:
@@ -90,7 +90,7 @@ class MockBotsService(AbstractBotsService):
             nickname="@ManagerAlfabank",
             bio="I am a bot for money",
             scope="money",
-            chats=10,
+            chats_count=10,
             proxy="0.0.0.0",
             api_key="api_key",
             chatgpt_model="chatgpt_model",

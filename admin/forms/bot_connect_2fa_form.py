@@ -1,6 +1,6 @@
 from fastapi import Form
 
-from domain.bots import BotConnect2FA
+from domain.schemas.bots import BotConnect2FA
 
 
 def bot_connect_2fa_form(

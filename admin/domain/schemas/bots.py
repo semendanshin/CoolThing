@@ -45,7 +45,7 @@ class BaseBotDetails(BaseModel):
 
 
 class ManagerBotDetails(BaseBotDetails):
-    chats: int
+    chats_count: int
     api_key: str
     chatgpt_model: str
     chatgpt_assistant: str

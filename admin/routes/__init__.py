@@ -4,6 +4,4 @@ from .bot import router as bot_router
 from .fallback import router as fallback_router
 from .prompts import router as prompts_router
 from .chats import router as chats_router
-
-
-
+from .campaigns import router as campaigns_router

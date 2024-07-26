@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from domain.chats import Chat, ChatInfo
+from domain.schemas.chats import Chat, ChatInfo
 
 
-class AbstractChatsService(ABC):
+class ChatsUseCaseInterface(ABC):
     @abstractmethod
     async def get_all_chats(self, page: int = 0, size: int = 10) -> list[Optional[ChatInfo]]:
         ...
