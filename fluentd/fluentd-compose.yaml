@@ -5,13 +5,10 @@ services:
     volumes:
       - ./fluentd.conf:/fluentd/etc/fluent.conf
       - ./logs:/var/log/fluentd
-    healthcheck:
-      test: ["CMD", "echo", "ok"]
-      interval: 5s
-      timeout: 2s
     ports:
       - "24224:24224"
       - "24224:24224/udp"
+      - "24224:24224/tcp"
     restart: unless-stopped
     networks:
       - bridge

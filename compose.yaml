@@ -21,7 +21,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
     depends_on:
       fluentd:
-        condition: service_healthy
+        condition: service_started
       db:
         condition: service_healthy
       queue:
@@ -30,7 +30,7 @@ services:
     logging:
       driver: fluentd
       options:
-        fluentd-address: localhost:24224
+        fluentd-address: 127.0.0.1:24224
         tag: watchdog
   bot:
     build:
@@ -46,13 +46,13 @@ services:
       - /etc/timezone:/etc/timezone:ro
     depends_on:
       fluentd:
-        condition: service_healthy
+        condition: service_started
       queue:
         condition: service_healthy
     logging:
       driver: fluentd
       options:
-        fluentd-address: localhost:24224
+        fluentd-address: 127.0.0.1:24224
         tag: bot
   admin:
     build:
@@ -70,7 +70,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
     depends_on:
       fluentd:
-        condition: service_healthy
+        condition: service_started
       db:
         condition: service_healthy
     ports:
@@ -78,7 +78,7 @@ services:
     logging:
       driver: fluentd
       options:
-        fluentd-address: localhost:24224
+        fluentd-address: 127.0.0.1:24224
         tag: admin
 
 networks:
