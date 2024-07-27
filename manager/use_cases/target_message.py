@@ -30,6 +30,11 @@ class TargetMessageEventHandler:
         event = NewTargetMessage(**json.loads(message.body.decode()))
         logger.info(f"New target message received: {event}")
 
+        chat = await self.chats_repo.get_by_telegram_chat_id(event.chat_id)
+        if chat:
+            logger.info(f"Chat already exists: {chat}")
+            return
+
         await asyncio.sleep(15)
 
         sent_message = await self.app.send_message(chat_id=event.username, text=self.welcome_message)

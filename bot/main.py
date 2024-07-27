@@ -176,7 +176,7 @@ async def main():
                f"{settings.rabbit.host}:{settings.rabbit.port}/{settings.rabbit.vhost}")
     rabbit_listener = RabbitListener(
         url=rmq_url,
-        campaign_id='ce604c0e-e27e-415b-b6f0-2f678ae59a16',
+        campaign_id=settings.rabbit.campaign_id,
         callback=rabbit_handler.callback,
     )
 

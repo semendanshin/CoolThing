@@ -19,8 +19,9 @@ class AbstractSQLAlchemyRepository[Entity, Model, CreateDTO, UpdateDTO](
                 session.add(self.model_to_entity(obj))
 
     async def get(self, obj_id: str) -> Model:
+        actual_type = self.__orig_bases__[0].__args__[0]
         async with self.session_maker() as session:
-            return self.entity_to_model(await session.get(Entity, obj_id))
+            return self.entity_to_model(await session.get(actual_type, obj_id))
 
     async def update(self, obj: UpdateDTO) -> None:
         async with self.session_maker() as session:
@@ -28,14 +29,16 @@ class AbstractSQLAlchemyRepository[Entity, Model, CreateDTO, UpdateDTO](
                 await session.merge(self.model_to_entity(obj))
 
     async def delete(self, obj_id: str) -> None:
+        actual_type = self.__orig_bases__[0].__args__[0]
         async with self.session_maker() as session:
             async with session.begin():
-                await session.delete(await session.get(Entity, obj_id))
+                await session.delete(await session.get(actual_type, obj_id))
 
     async def get_all(self, limit: int = 100, offset: int = 0) -> list[Model]:
+        actual_type = self.__orig_bases__[0].__args__[0]
         async with self.session_maker() as session:
             return [self.entity_to_model(entity) for entity in
-                    await session.execute(select(Entity).limit(limit).offset(offset))]
+                    await session.execute(select(actual_type).limit(limit).offset(offset))]
 
     @abstractmethod
     def entity_to_model(self, entity: Entity) -> Model:

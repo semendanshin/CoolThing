@@ -26,6 +26,10 @@ class IncomingMessageHandler:
 
         chat = await self.gpt_use_case.chats_repo.get_by_telegram_chat_id(message.chat.id)
 
+        if not chat:
+            logger.info(f"Chat not found: {message.chat.id}")
+            return
+
         await self.gpt_use_case.messages_repo.create(
             MessageCreateDTO(
                 id=str(uuid.uuid4()),
