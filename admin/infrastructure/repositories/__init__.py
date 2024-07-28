@@ -36,9 +36,11 @@ class AbstractSQLAlchemyRepository[Entity, Model, CreateDTO, UpdateDTO](
                 await session.delete(await session.get(Entity, obj_id))
 
     async def get_all(self, limit: int = 100, offset: int = 0) -> list[Model]:
+        entity = self.__orig_bases__[0].__args__[0]
         async with self.session_maker() as session:
+            result = await session.execute(select(entity).limit(limit).offset(offset))
             return [self.entity_to_model(entity) for entity in
-                    await session.execute(select(Entity).limit(limit).offset(offset))]
+                    result.scalars().all()]
 
     @abstractmethod
     def entity_to_model(self, entity: Entity) -> Model:

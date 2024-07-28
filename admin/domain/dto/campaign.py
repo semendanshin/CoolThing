@@ -14,6 +14,7 @@ class CampaignCreateDTO:
 
 @dataclass(kw_only=True)
 class CampaignUpdateDTO:
+    id: str
     welcome_message: Optional[str] = None
     chats: Optional[list[str]] = None
     plus_keywords: Optional[list[str]] = None

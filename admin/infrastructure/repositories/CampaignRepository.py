@@ -13,24 +13,24 @@ class CampaignRepository(
 ):
     def entity_to_model(self, entity: Campaign) -> CampaignModel:
         return CampaignModel(
-            id=entity.id,
+            id=str(entity.id),
             welcome_message=entity.welcome_message,
             chats=entity.chats,
             plus_keywords=entity.plus_keywords,
             minus_keywords=entity.minus_keywords,
             gpt_settings_id=entity.gpt_settings_id,
-            topic=entity.topic,
+            # topic=entity.topic,
             scope=entity.scope,
         )
 
     def model_to_entity(self, model: CampaignModel) -> Campaign:
-        return CampaignModel(
+        return Campaign(
             id=model.id,
             welcome_message=model.welcome_message,
             chats=model.chats,
             plus_keywords=model.plus_keywords,
             minus_keywords=model.minus_keywords,
             gpt_settings_id=model.gpt_settings_id,
-            topic=model.topic,
+            # topic=model.topic,
             scope=model.scope,
         )

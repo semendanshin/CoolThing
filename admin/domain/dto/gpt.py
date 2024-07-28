@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass(kw_only=True)
@@ -11,7 +12,8 @@ class GPTCreateDTO:
 
 @dataclass(kw_only=True)
 class GPTUpdateDTO:
-    model: str
-    assistant: str
-    token: str
-    service_prompt: str
+    id: str
+    model: Optional[str]
+    assistant: Optional[str]
+    token: Optional[str]
+    service_prompt: Optional[str]

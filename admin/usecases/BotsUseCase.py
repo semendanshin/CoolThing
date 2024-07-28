@@ -62,8 +62,8 @@ class BotsUseCase(
         return ManagerBotOverview(
             nickname=worker.username,
             scope=campaign.scope,
-            proxy=worker.proxy,
-            proxy_status=worker.status,
+            proxy=worker.proxy if worker.proxy else 'No proxy',
+            proxy_status=worker.status == 'active',
             unread_messages=0,
             messages_count=0,
             chats_ratio='0/0',
@@ -87,7 +87,7 @@ class BotsUseCase(
             nickname=worker.username,
             bio=worker.bio,
             scope=campaign.scope,
-            proxy=worker.proxy,
+            proxy=worker.proxy if worker.proxy else 'No proxy',
             chats_count=len(chats),
             api_key=gpt.token,
             chatgpt_model=gpt.model,
@@ -105,8 +105,8 @@ class BotsUseCase(
         return ParserBotOverview(
             nickname=worker.username,
             scope=campaign.scope,
-            proxy=worker.proxy,
-            proxy_status=worker.status,
+            proxy=worker.proxy if worker.proxy else 'No proxy',
+            proxy_status=worker.status == 'active',
             positive_keywords=campaign.plus_keywords,
             negative_keywords=campaign.minus_keywords,
             chats=campaign.chats,
@@ -121,10 +121,11 @@ class BotsUseCase(
 
     async def _worker_to_parser_details(self, worker: WorkerModel, campaign: CampaignModel) -> ParserBotDetails:
         return ParserBotDetails(
+            avatar='',
             nickname=worker.username,
             bio=worker.bio,
             scope=campaign.scope,
-            proxy=worker.proxy,
+            proxy=worker.proxy if worker.proxy else 'No proxy',
             positive_keywords=campaign.plus_keywords,
             negative_keywords=campaign.minus_keywords,
             chats=campaign.chats,

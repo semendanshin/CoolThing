@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}GPT Settings{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', path='/gpt_settings.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="gpt-settings-container">
+    {% for gpt_setting in gpt_settings %}
+    <a href="/gpt/{{ gpt_setting.id }}">
+        <div class="gpt-setting-card">
+            <h3>{{ gpt_setting.id }}</h3>
+            <p><strong>Model:</strong> {{ gpt_setting.model }}</p>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

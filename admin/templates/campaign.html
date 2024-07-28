@@ -35,8 +35,14 @@ Campaign
             <textarea class="campaign-field" id="campaign_minus_keywords" name="campaign_minus_keywords">{{ campaign.minus_keywords | join(", ") }}</textarea>
         </div>
         <div class="row">
-            <label for="campaign_gpt_settings_id" class="campaign-field-label">GPT Settings ID</label>
-            <input class="campaign-field" type="text" id="campaign_gpt_settings_id" name="campaign_gpt_settings_id" value="{{ campaign.gpt_settings_id }}">
+            <label for="campaign_gpt_settings_id" class="campaign-field-label">GPT Settings</label>
+            <select class="campaign-field" id="campaign_gpt_settings_id" name="campaign_gpt_settings_id">
+                {% for gpt_setting in gpt_settings %}
+                    <option value="{{ gpt_setting.id }}" {% if gpt_setting.id == campaign.gpt_settings_id %}selected{% endif %}>
+                        {{ gpt_setting.id }}
+                    </option>
+                {% endfor %}
+            </select>
         </div>
         <div class="row">
             <input type="submit" value="Save Changes" class="submit-button">

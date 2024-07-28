@@ -25,8 +25,8 @@ class GPTRepository(
     def model_to_entity(self, model: GPTModel) -> GPT:
         return GPT(
             id=model.id,
-            created_at=model.created_at,
-            updated_at=model.updated_at,
+            # created_at=model.created_at,
+            # updated_at=model.updated_at,
             model=model.model,
             assistant=model.assistant,
             token=model.token,

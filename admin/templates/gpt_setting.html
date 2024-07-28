@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}GPT Setting{% endblock %}
+
+{% block head %}
+    <link href="{{ url_for('static', path='/campaign.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>GPT Setting</h1>
+{#    <h1>Id: {{ campaign.id }}</h1>#}
+    <p>Here you can edit the details about the GPT Setting.</p>
+    <form action="/gpt/{{ gpt_setting.id }}" method="post">
+        <div class="row">
+            <label for="model" class="gpt-field-label">Scope</label>
+            <input class="gpt-field" id="model" name="model" value="{{ gpt_setting.model }}">
+        </div>
+        <div class="row">
+            <label for="assistant" class="gpt-field-label">Assistant</label>
+            <input class="gpt-field" id="assistant" name="assistant" value="{{ gpt_setting.assistant }}">
+        </div>
+        <div class="row">
+            <label for="token" class="gpt-field-label">Token</label>
+            <input class="gpt-field" id="token" name="token" value="{{ gpt_setting.token }}">
+        </div>
+        <div class="row">
+            <label for="service_prompt" class="gpt-field-label">Service Prompt</label>
+            <input class="gpt-field" id="service_prompt" name="service_prompt" value="{{ gpt_setting.service_prompt }}">
+        </div>
+        <div class="row">
+            <input type="submit" value="Save Changes" class="submit-button">
+        </div>
+    </form>
+</div>
+{% endblock %}
