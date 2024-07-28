@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Type, Tuple
+from typing import Type, Tuple, Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict, PydanticBaseSettingsSource, JsonConfigSettingsSource
 
@@ -31,7 +31,8 @@ class RabbitSettings(BaseSettings):
 class OpenAISettings(BaseSettings):
     api_key: str
     model: str
-    service_prompt: str
+    assistant: Optional[str] = None
+    service_prompt: Optional[str] = None
 
 
 class Settings(BaseSettings):

@@ -5,7 +5,7 @@ from pyrogram import Client, idle
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
 from infrastructure.handlers.incoming import IncomingMessageHandler
-from infrastructure.openai import GPTRepository
+from infrastructure.openai import GPTRepository, AssistantRepository
 from infrastructure.rabbit import RabbitListener
 from infrastructure.sqlalchemy import SQLAlchemyMessagesRepository, SQLAlchemyChatsRepository
 from settings import settings
@@ -50,11 +50,18 @@ async def main():
         session_maker=session_maker,
     )
 
-    gpt_repo = GPTRepository(
-        api_key=settings.openai.api_key,
-        model=settings.openai.model,
-        service_prompt=settings.openai.service_prompt,
-    )
+    if settings.openai.assistant:
+        gpt_repo = AssistantRepository(
+            api_key=settings.openai.api_key,
+            model=settings.openai.model,
+            assistant_id=settings.openai.assistant,
+        )
+    else:
+        gpt_repo = GPTRepository(
+            api_key=settings.openai.api_key,
+            model=settings.openai.model,
+            service_prompt=settings.openai.service_prompt,
+        )
 
     gpt_use_case = GPTUseCase(
         messages_repo=messages_repo,

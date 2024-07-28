@@ -38,3 +38,41 @@ class GPTRepository(GPTRepositoryInterface):
             ] + self.prepare_messages(messages),
             stream=False,
         ).choices[0].message.content
+
+
+@dataclass
+class AssistantRepository(GPTRepositoryInterface):
+    api_key: str
+    model: str
+
+    assistant_id: str
+
+    def __post_init__(self):
+        self.openai = OpenAI(
+            api_key=self.api_key,
+        )
+
+    @staticmethod
+    def prepare_messages(messages: list[Message]) -> list[dict[str, str]]:
+        return [
+            {"role": "assistant" if message.is_outgoing else "user", "content": message.text}
+            for message in messages
+        ]
+
+    async def generate_response(self, messages: list[Message]) -> str:
+        assistant = self.openai.beta.assistants.retrieve(self.assistant_id)
+        thread = self.openai.beta.threads.create(
+            messages=self.prepare_messages(messages),
+        )
+        run = self.openai.beta.threads.runs.create_and_poll(
+            assistant_id=assistant.id,
+            thread_id=thread.id,
+        )
+        thread_messages = self.openai.beta.threads.messages.list(
+            thread_id=thread.id,
+            run_id=run.id,
+            limit=1
+        )
+        message = thread_messages.__iter__().__next__()
+        return message.content[0].text.value
+
