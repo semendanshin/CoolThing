@@ -74,5 +74,6 @@ class AssistantRepository(GPTRepositoryInterface):
             limit=1
         )
         message = thread_messages.__iter__().__next__()
+        self.openai.beta.threads.delete(thread.id)
         return message.content[0].text.value
 
