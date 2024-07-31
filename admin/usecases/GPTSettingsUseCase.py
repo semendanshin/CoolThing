@@ -12,11 +12,11 @@ class GPTSettingsUseCase(
 ):
     repository: GptSettingsRepositoryInterface
 
-    async def get(self, campaign_id: str) -> GPT:
-        return await self.repository.get(campaign_id)
+    async def get(self, obj_id: str) -> GPT:
+        return await self.repository.get(obj_id)
 
-    async def update(self, campaign_id: str, schema: GPTUpdateDTO) -> None:
-        await self.repository.update(schema)
+    async def update(self, obj_id: str, schema: GPTUpdateDTO) -> None:
+        await self.repository.update(obj_id, schema)
 
     async def create(self, schema: GPTCreateDTO) -> None:
         await self.repository.create(schema)

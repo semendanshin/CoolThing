@@ -18,7 +18,7 @@ class CampaignRepository(
             chats=entity.chats,
             plus_keywords=entity.plus_keywords,
             minus_keywords=entity.minus_keywords,
-            gpt_settings_id=entity.gpt_settings_id,
+            gpt_settings_id=str(entity.gpt_settings_id),
             scope=entity.scope,
         )
 

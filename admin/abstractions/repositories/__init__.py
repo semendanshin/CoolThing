@@ -11,7 +11,7 @@ class CRUDRepositoryInterface[Model, CreateDTO, UpdateDTO](ABC):
         pass
 
     @abstractmethod
-    async def update(self, obj: UpdateDTO) -> None:
+    async def update(self, obj_id: str, obj: UpdateDTO) -> None:
         pass
 
     @abstractmethod

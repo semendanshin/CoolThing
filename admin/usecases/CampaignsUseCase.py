@@ -19,7 +19,7 @@ class CampaignsUseCase(
         return await self.repository.get_all()
 
     async def update(self, campaign_id: str, schema: CampaignUpdateDTO) -> list[CampaignModel]:
-        await self.repository.update(schema)
+        await self.repository.update(campaign_id, schema)
         return await self.repository.get_all()
 
     async def create(self, schema: CampaignCreateDTO) -> None:

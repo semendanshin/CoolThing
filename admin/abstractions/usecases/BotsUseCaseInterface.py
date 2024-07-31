@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 from abstractions.repositories.CampaignRepositoryInterface import CampaignRepositoryInterface
 from abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
+from domain.dto.worker import WorkerUpdateDTO
 from domain.models import Worker
 from domain.schemas.bots import ManagerBotOverview, ParserBotOverview, ManagerBotDetails, ParserBotDetails
 
@@ -27,4 +28,8 @@ class BotsUseCaseInterface(ABC):
 
     @abstractmethod
     async def connect_bot_by_password(self, password: str) -> bool:
+        ...
+
+    @abstractmethod
+    async def update(self, bot_id: str, schema: WorkerUpdateDTO) -> None:
         ...

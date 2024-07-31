@@ -43,12 +43,12 @@ class SQLAlchemyWorkerRepository(
 
     def entity_to_model(self, entity: Worker) -> WorkerModel:
         return WorkerModel(
-            id=entity.id,
+            id=str(entity.id),
             app_id=entity.app_id,
             app_hash=entity.app_hash,
             session_string=entity.session_string,
             proxy=entity.proxy,
-            campaign_id=entity.campaign_id,
+            campaign_id=str(entity.campaign_id),
             role=entity.role,
             status=entity.status,
             username=entity.username,

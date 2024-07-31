@@ -13,7 +13,7 @@ class GPTRepository(
 ):
     def entity_to_model(self, entity: GPT) -> GPTModel:
         return GPTModel(
-            id=entity.id,
+            id=str(entity.id),
             created_at=entity.created_at,
             updated_at=entity.updated_at,
             model=entity.model,

@@ -5,6 +5,7 @@ from abstractions.repositories.WorkersRepositoryInterface import WorkersReposito
 from abstractions.repositories.GptSettingsRepositoryInterface import GptSettingsRepositoryInterface
 from abstractions.repositories.ChatsRepositoryInterface import ChatsRepositoryInterface
 from abstractions.usecases import BotsUseCaseInterface
+from domain.dto.worker import WorkerUpdateDTO
 from domain.models import Worker as WorkerModel, Worker
 from domain.models import Campaign as CampaignModel
 from domain.models import Chat as ChatModel
@@ -16,6 +17,7 @@ from domain.schemas.bots import ManagerBotDetails, ParserBotDetails, ManagerBotO
 class BotsUseCase(
     BotsUseCaseInterface,
 ):
+
     workers_repo: WorkersRepositoryInterface
 
     async def get_bot(self, bot_id: str) -> Worker:
@@ -32,3 +34,6 @@ class BotsUseCase(
 
     async def connect_bot_by_password(self, password: str) -> bool:
         pass
+
+    async def update(self, bot_id: str, schema: WorkerUpdateDTO) -> None:
+        await self.workers_repo.update(bot_id, schema)

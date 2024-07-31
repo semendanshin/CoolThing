@@ -14,6 +14,7 @@ class GPTCreateDTO:
 
 @dataclass(kw_only=True)
 class GPTUpdateDTO:
+    id: str = None
     model: Optional[str]
     assistant: Optional[str]
     token: Optional[str]

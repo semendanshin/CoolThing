@@ -16,6 +16,9 @@ class WorkerCreateDTO:
 
 @dataclass(kw_only=True)
 class WorkerUpdateDTO:
+    id: str = None
+    bio: Optional[str] = None
+    username: Optional[str] = None
     app_id: Optional[str] = None
     app_hash: Optional[str] = None
     session_string: Optional[str] = None

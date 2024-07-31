@@ -4,12 +4,14 @@ from fastapi.templating import Jinja2Templates
 
 from abstractions.usecases.CampaingsUseCaseInterface import CampaignsUseCaseInterface
 from dependencies.usecases.campaign import get_campaigns_usecase
+from domain.dto.worker import WorkerUpdateDTO
 from forms.bot_connect_2fa_form import bot_connect_2fa_form
 from forms.bot_connect_form import bot_connect_form
 from forms.bot_create_form import bot_create_form
 from dependencies.usecases.bots import get_bots_usecase
 from domain.schemas.bots import BotCreate, BotConnect, BotConnect2FA, ParserBotDetails, ManagerBotDetails
 from abstractions.usecases.BotsUseCaseInterface import BotsUseCaseInterface
+from forms.bot_update import update_worker_form
 
 router = APIRouter(
     prefix='/bot',
@@ -104,3 +106,13 @@ async def get_bot(
             'campaigns': campaigns_list,
         }
     )
+
+
+@router.post("/{bot_id}")
+async def update_bot_backend(
+        bot_id: str,
+        update_schema: WorkerUpdateDTO = Depends(update_worker_form),
+        bots: BotsUseCaseInterface = Depends(get_bots_usecase),
+) -> RedirectResponse:
+    await bots.update(bot_id, update_schema)
+    return RedirectResponse(url=f'/bot/{bot_id}', status_code=303)

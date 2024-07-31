@@ -25,10 +25,12 @@ class AbstractSQLAlchemyRepository[Entity, Model, CreateDTO, UpdateDTO](
             # noinspection PyUnresolvedReferences
             return self.entity_to_model(await session.get(self.__orig_bases__[0].__args__[0], obj_id))
 
-    async def update(self, obj: UpdateDTO) -> None:
+    async def update(self, obj_id: str, obj: UpdateDTO) -> None:
         async with self.session_maker() as session:
             async with session.begin():
-                await session.merge(self.model_to_entity(obj))
+                entity = await session.get(self.__orig_bases__[0].__args__[0], obj_id)
+                for key, value in obj.__dict__.items():
+                    setattr(entity, key, value)
 
     async def delete(self, obj_id: str) -> None:
         async with self.session_maker() as session:
