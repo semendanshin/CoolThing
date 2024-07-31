@@ -43,6 +43,12 @@ Chats
             <div class="main-chat message {{ message.type }}">{{ message.text }}</div>
             {% endfor %}
         </div>
+        <div class="input-area">
+            <label>
+                <input type="text" placeholder="Напишите сообщение...">
+            </label>
+            <button>Отправить</button>
+        </div>
         {% else %}
         <div class="no-chat">Выберите чат для просмотра</div>
         {% endif %}

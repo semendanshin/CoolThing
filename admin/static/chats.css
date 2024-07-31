@@ -174,11 +174,16 @@
 /* Input Area Styling */
 .input-area {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     margin-top: 10px;
     padding: 10px;
     background-color: var(--item-background);
     border-radius: var(--border-radius);
+}
+
+.input-area label {
+    display: flex;
+    flex: 1;
 }
 
 .input-area input {
@@ -233,7 +238,7 @@
     box-shadow: 0 4px 10px var(--shadow-color);
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .chat-list {
         width: 100%;
         display: none;
