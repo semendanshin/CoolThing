@@ -214,9 +214,12 @@
 
 /* No Chat Message */
 .no-chat {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
     color: var(--text-color);
-    margin-top: 20px;
     font-size: 1.2em;
 }
 

@@ -30,7 +30,7 @@
 body {
     font-family: var(--font-family);
     background-color: var(--background-color);
-    height: 100vh;
+    height: 100dvh;
     color: var(--text-color);
     margin: 0;
     padding: var(--padding);
@@ -43,7 +43,7 @@ body {
 
 .content{
     flex: 1;
-    max-width: min(100%, 1800px);
+    width: min(100%, 1800px);
     max-height: 100%;
 }
 
