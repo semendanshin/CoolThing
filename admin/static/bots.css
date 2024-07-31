@@ -93,15 +93,15 @@ a {
     align-items: center;
     padding: var(--selector-padding);
     background-color: var(--secondary-color);
-    border-radius: var(--selector-border-radius);
+    border-radius: calc(var(--selector-border-radius) + var(--selector-padding));
     box-shadow: var(--box-shadow);
     width: max-content; /* Ensures the selector is only as wide as its content */
 }
 
 .bot-type-selector p {
     flex: none;
+    width: 15ch;
     text-align: center;
-    margin: 0 5px; /* Add some spacing between the elements */
     padding: 10px 20px; /* Increase padding for better spacing */
     font-weight: bold;
     color: var(--primary-color);
