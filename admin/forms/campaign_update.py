@@ -12,7 +12,7 @@ def update_campaign_form(
     plus_keywords: str = Form(alias="campaign_plus_keywords"),
     minus_keywords: str = Form(alias="campaign_minus_keywords"),
     gpt_settings_id: str = Form(alias="campaign_gpt_settings_id"),
-    scope: str = Form(default=""),
+    scope: str = Form(alias="campaign_scope"),
 ) -> CampaignUpdateDTO:
     return CampaignUpdateDTO(
         id=id,

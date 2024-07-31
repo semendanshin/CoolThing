@@ -4,7 +4,7 @@ from domain.models import Campaign as CampaignModel
 
 
 class MockCampaignsUseCase(CampaignsUseCaseInterface):
-    async def update_campaign(self, campaign_id: str, schema: CampaignUpdateDTO) -> list[CampaignModel]:
+    async def update(self, campaign_id: str, schema: CampaignUpdateDTO) -> list[CampaignModel]:
         print(f"Updating campaign {campaign_id} with schema {schema.asdict()}")
 
     async def get_campaign(self, campaign_id: str) -> CampaignModel:

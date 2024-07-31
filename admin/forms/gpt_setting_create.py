@@ -1,15 +1,15 @@
 from fastapi import Form
 
-from domain.dto.gpt import GPTUpdateDTO
+from domain.dto.gpt import GPTCreateDTO
 
 
-def update_gpt_setting_form(
-    model: str = Form(default=""),
+def create_gpt_setting_form(
+    model: str = Form(...),
+    token: str = Form(...),
     assistant: str = Form(default=""),
-    token: str = Form(default=""),
     service_prompt: str = Form(default=""),
-) -> GPTUpdateDTO:
-    return GPTUpdateDTO(
+) -> GPTCreateDTO:
+    return GPTCreateDTO(
         model=model,
         assistant=assistant,
         token=token,

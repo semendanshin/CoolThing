@@ -48,7 +48,6 @@ class Campaign(BaseEntity):
     plus_keywords: Mapped[list[str]] = mapped_column(JSONB, nullable=False)
     minus_keywords: Mapped[list[str]] = mapped_column(JSONB, nullable=False)
     gpt_settings_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('gpt_settings.id'), nullable=False)
-    topic: Mapped[str] = mapped_column(String, nullable=False)
     scope: Mapped[str] = mapped_column(String, nullable=False)
 
 

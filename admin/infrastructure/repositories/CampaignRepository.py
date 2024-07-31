@@ -19,7 +19,6 @@ class CampaignRepository(
             plus_keywords=entity.plus_keywords,
             minus_keywords=entity.minus_keywords,
             gpt_settings_id=entity.gpt_settings_id,
-            # topic=entity.topic,
             scope=entity.scope,
         )
 
@@ -31,6 +30,5 @@ class CampaignRepository(
             plus_keywords=model.plus_keywords,
             minus_keywords=model.minus_keywords,
             gpt_settings_id=model.gpt_settings_id,
-            # topic=model.topic,
             scope=model.scope,
         )

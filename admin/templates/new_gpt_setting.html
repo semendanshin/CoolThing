@@ -9,23 +9,23 @@
 {% block content %}
 <div class="container">
     <h1>GPT Setting</h1>
-    <p>Here you can edit the details about the GPT Setting.</p>
-    <form action="/gpt/{{ gpt_setting.id }}" method="post">
+    <p>Here you can create a new GPT Setting.</p>
+    <form action="/gpt" method="post">
         <div class="row">
             <label for="model" class="field-label">Model</label>
-            <input class="input-field" id="model" name="model" value="{{ gpt_setting.model }}">
+            <input class="input-field" id="model" name="model">
         </div>
         <div class="row">
             <label for="token" class="field-label">Token</label>
-            <input class="input-field" id="token" name="token" value="{{ gpt_setting.token }}">
+            <input class="input-field" id="token" name="token" required="required">
         </div>
         <div class="row">
             <label for="assistant" class="field-label">Assistant ID</label>
-            <input class="input-field" id="assistant" name="assistant" value="{{ gpt_setting.assistant }}">
+            <input class="input-field" id="assistant" name="assistant">
         </div>
         <div class="row">
             <label for="service_prompt" class="field-label">Service Prompt</label>
-            <textarea class="input-field" id="service_prompt" name="service_prompt">{{ gpt_setting.service_prompt }}</textarea>
+            <textarea class="input-field" id="service_prompt" name="service_prompt"></textarea>
         </div>
         <div class="row">
             <input type="submit" value="Save Changes" class="submit-button">

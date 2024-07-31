@@ -10,6 +10,14 @@
     --background-color: #f5f5f5;
     --font-family: 'Roboto', sans-serif;
     --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --field-background: #f2f2f2;
+    --field-border-radius: 5px;
+    --field-padding: 10px;
+    --field-margin: 10px 0;
+    --label-font-weight: bold;
+    --submit-button-background: #392c4e;
+    --submit-button-color: #fff;
+    --submit-button-hover-background: #8cb4a3;
 }
 
 /* Global Styles */

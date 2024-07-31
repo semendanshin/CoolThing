@@ -1,13 +1,6 @@
-import base64
-
-import binascii
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from starlette.authentication import AuthenticationBackend, AuthenticationError, AuthCredentials, SimpleUser
-from starlette.middleware import Middleware
-from starlette.middleware.authentication import AuthenticationMiddleware
-from starlette.requests import Request
 
 from routes import (dashboard_router, bots_router, bot_router, fallback_router, chats_router,
                     campaigns_router, gpt_settings_router)

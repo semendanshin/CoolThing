@@ -1,15 +1,17 @@
-from dataclasses import dataclass
+import uuid
+from dataclasses import dataclass, field
 from typing import Optional
 
 
 @dataclass(kw_only=True)
 class CampaignCreateDTO:
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))
     welcome_message: str
     chats: list[str]
     plus_keywords: list[str]
     minus_keywords: list[str]
     gpt_settings_id: str
-    topic: str
+    scope: str
 
 
 @dataclass(kw_only=True)
@@ -20,5 +22,4 @@ class CampaignUpdateDTO:
     plus_keywords: Optional[list[str]] = None
     minus_keywords: Optional[list[str]] = None
     gpt_settings_id: Optional[str] = None
-    topic: Optional[str] = None
     scope: Optional[str] = None

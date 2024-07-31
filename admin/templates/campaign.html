@@ -5,13 +5,13 @@ Campaign
 {% endblock %}
 
 {% block head %}
-    <link href="{{ url_for('static', path='/campaign.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', path='/campaign.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
 <div class="container">
     <h1>Campaign</h1>
-{#    <h1>Campaign: {{ campaign.name }}</h1>#}
+    {# <h1>Campaign: {{ campaign.name }}</h1>#}
     <p>Here you can edit the details about the campaign.</p>
     <form action="/campaigns/{{ campaign.id }}" method="post">
         <div class="row">
@@ -24,7 +24,8 @@ Campaign
         </div>
         <div class="row">
             <label for="campaign_chats" class="campaign-field-label">Chats</label>
-            <textarea class="campaign-field" id="campaign_chats" name="campaign_chats">{{ campaign.chats | join(", ") }}</textarea>
+            <textarea class="campaign-field" id="campaign_chats"
+                      name="campaign_chats">{{ campaign.chats | join(", ") }}</textarea>
         </div>
         <div class="row">
             <label for="campaign_plus_keywords" class="campaign-field-label">Plus Keywords</label>
@@ -36,11 +37,12 @@ Campaign
         </div>
         <div class="row">
             <label for="campaign_gpt_settings_id" class="campaign-field-label">GPT Settings</label>
-            <select class="campaign-field" id="campaign_gpt_settings_id" name="campaign_gpt_settings_id">
+            <select class="campaign-select" id="campaign_gpt_settings_id" name="campaign_gpt_settings_id">
                 {% for gpt_setting in gpt_settings %}
-                    <option value="{{ gpt_setting.id }}" {% if gpt_setting.id == campaign.gpt_settings_id %}selected{% endif %}>
-                        {{ gpt_setting.id }}
-                    </option>
+                <option value="{{ gpt_setting.id }}" {% if gpt_setting.id== campaign.gpt_settings_id %}selected{% endif
+                        %}>
+                    {{ gpt_setting.id }}
+                </option>
                 {% endfor %}
             </select>
         </div>

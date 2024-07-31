@@ -8,8 +8,9 @@ from abstractions.usecases.GPTSettingsUseCaseInterface import GPTSettingsUseCase
 from dependencies.usecases.campaign import get_campaigns_usecase
 from dependencies.usecases.gpt_settings import get_gpt_settings_usecase
 from domain.dto.campaign import CampaignUpdateDTO
-from domain.dto.gpt import GPTUpdateDTO
+from domain.dto.gpt import GPTUpdateDTO, GPTCreateDTO
 from forms.campaign_update import update_campaign_form
+from forms.gpt_setting_create import create_gpt_setting_form
 from forms.gpt_setting_update import update_gpt_setting_form
 
 router = APIRouter(
@@ -35,6 +36,16 @@ async def get_campaigns(
     )
 
 
+@router.get("/new")
+async def get_new_campaign(
+        request: Request,
+) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request=request,
+        name="new_gpt_setting.html",
+    )
+
+
 @router.get("/{gpt_id}")
 async def get_campaign(
         gpt_id: str,
@@ -51,8 +62,17 @@ async def get_campaign(
     )
 
 
+@router.post("")
+async def create_campaign_backend(
+        create_schema: GPTCreateDTO = Depends(create_gpt_setting_form),
+        gpt_settings: GPTSettingsUseCaseInterface = Depends(get_gpt_settings_usecase),
+) -> RedirectResponse:
+    await gpt_settings.create(create_schema)
+    return RedirectResponse(url='/gpt', status_code=303)
+
+
 @router.post("/{gpt_id}")
-async def update_campaign(
+async def update_campaign_backend(
         gpt_id: str,
         update_schema: GPTUpdateDTO = Depends(update_gpt_setting_form),
         gpt_settings: GPTSettingsUseCaseInterface = Depends(get_gpt_settings_usecase),

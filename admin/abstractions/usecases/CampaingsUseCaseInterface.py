@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 from dataclasses import dataclass
 
-from domain.dto.campaign import CampaignUpdateDTO
+from domain.dto.campaign import CampaignUpdateDTO, CampaignCreateDTO
 from domain.models import Campaign as CampaignModel
 
 
@@ -16,5 +16,9 @@ class CampaignsUseCaseInterface(ABC):
         ...
 
     @abstractmethod
-    async def update_campaign(self, campaign_id: str, schema: CampaignUpdateDTO) -> list[CampaignModel]:
+    async def update(self, campaign_id: str, schema: CampaignUpdateDTO) -> CampaignModel:
+        ...
+
+    @abstractmethod
+    async def create(self, schema: CampaignCreateDTO) -> None:
         ...
