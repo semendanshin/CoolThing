@@ -106,7 +106,7 @@ a {
     display: flex;
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
-    height: 100%; /* Full height to ensure vertical centering */
+    height: fit-content;
     margin: 20px 0;
 }
 
