@@ -12,6 +12,7 @@ router = APIRouter(
 
 templates = Jinja2Templates(directory='templates')
 
+
 @router.get("")
 async def get_all_chats(
         request: Request,
@@ -26,6 +27,7 @@ async def get_all_chats(
             'chat': None,
         }
     )
+
 
 @router.get("/{chat_id}")
 async def get_one_chat(

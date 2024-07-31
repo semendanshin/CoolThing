@@ -1,50 +1,52 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Chats
+Chats
 {% endblock %}
 
 {% block head %}
-    <link href="{{ url_for('static', path='/chats.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', path='/chats.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+<div class="container {% if chat is none %}no-active-chat{% endif %}" style="gap: 10px">
+
+    <div class="chat-list">
+        {% for item in chat_items %}
+        <a href="/chats/{{ item.id }}" style="text-decoration: none">
+            <div class="chat-item">
+                <div class="chat-item-content">
+                    <div class="chat-item-info">
+                        <span class="bot-name">{{ item.bot_nickname }}</span>
+                        <span class="user-name">{{ item.user_nickname }}</span>
+                    </div>
+                    <div class="chat-item-message">
+                        <span class="last-message">{{ item.last_message }}</span>
+                    </div>
+                </div>
+                <div class="status {{ item.status }}"></div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    <div class="container" style="flex-direction: column; padding: 0">
+        <button class="back-button" onclick="window.location.href = '/chats'">Назад</button>
         <div class="chat-content">
             {% if chat is not none %}
-                <div class="chat-header">
-                    <span class="main-chat bot-name">{{ chat.bot_nickname }}</span>
-                    <span class="main-chat user-name">{{ chat.user_nickname }}</span>
-                    <div class="main-chat status {{ chat.status }}"></div>
-                </div>
-                <div class="main-chat messages">
-                    {% for message in chat.messages %}
-                        <div class="main-chat message {{ message.type }}">{{ message.text }}</div>
-                    {% endfor %}
-                </div>
-                <div class="input-area">
-                    <input type="text" placeholder="Напишите сообщение...">
-                    <button>Отправить</button>
-                </div>
+            <div class="chat-header">
+                <span class="main-chat bot-name">{{ chat.bot_nickname }}</span>
+                <span class="main-chat user-name">{{ chat.user_nickname }}</span>
+                <div class="main-chat status {{ chat.status }}"></div>
+            </div>
+            <div class="main-chat messages">
+                {% for message in chat.messages %}
+                <div class="main-chat message {{ message.type }}">{{ message.text }}</div>
+                {% endfor %}
+            </div>
             {% else %}
-                <div class="no-chat">Выберите чат для просмотра</div>
+            <div class="no-chat">Выберите чат для просмотра</div>
             {% endif %}
         </div>
-        <div class="chat-list">
-            {% for item in chat_items %}
-                <div class="chat-item">
-                    <div class="chat-item-content">
-                        <div class="chat-item-info">
-                            <span class="bot-name">{{ item.bot_nickname }}</span>
-                            <span class="user-name">{{ item.user_nickname }}</span>
-                        </div>
-                        <div class="chat-item-message">
-                            <span class="last-message">{{ item.last_message }}</span>
-                        </div>
-                    </div>
-                    <div class="status {{ item.status }}"></div>
-                </div>
-            {% endfor %}
-        </div>
     </div>
+</div>
 {% endblock %}

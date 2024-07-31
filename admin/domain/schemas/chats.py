@@ -11,7 +11,7 @@ class Message(BaseModel):
 
 
 class ChatInfo(BaseModel):
-    chat_id: str
+    id: str
     bot_nickname: str
     user_nickname: str
     user_id: Optional[str] = None

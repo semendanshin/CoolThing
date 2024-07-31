@@ -6,7 +6,7 @@ from domain.schemas.chats import Chat, ChatInfo
 
 class ChatsUseCaseInterface(ABC):
     @abstractmethod
-    async def get_all_chats(self, page: int = 0, size: int = 10) -> list[Optional[ChatInfo]]:
+    async def get_all_chats(self, offset: int = 0, limit: int = 10) -> list[ChatInfo]:
         ...
 
     @abstractmethod

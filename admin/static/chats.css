@@ -17,10 +17,12 @@
 
 /* Chat Container Styling */
 .container {
+    max-width: 1800px;
+    height: -webkit-fill-available;
     display: flex;
-    flex-direction: row-reverse;
-    justify-content: space-between;
-    height: calc(100vh - 50px);
+    flex-direction: row;
+    justify-content: start;
+    gap: var(--padding);
     padding: var(--padding);
     background-color: var(--background-color);
     color: var(--text-color);
@@ -28,7 +30,7 @@
 
 /* Chat List Styling */
 .chat-list {
-    width: 25%;
+    width: 100%;
     background-color: var(--list-background);
     border-radius: var(--border-radius);
     padding: 10px;
@@ -40,7 +42,7 @@
 
 .chat-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     background-color: var(--item-background);
     padding: 10px;
@@ -57,7 +59,7 @@
 .chat-item-content {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: calc(100% - 25px);
 }
 
 .chat-item-info {
@@ -80,10 +82,11 @@
 }
 
 .chat-item .last-message {
-    white-space: nowrap;
+    display: inline-block;
     overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
-    flex-grow: 1;
+    max-width: 100%;
 }
 
 .chat-item .status {
@@ -103,7 +106,7 @@
 
 /* Chat Content Styling */
 .chat-content {
-    width: 70%;
+    height: 100%;
     background-color: var(--item-hover-background);
     border-radius: var(--border-radius);
     padding: var(--padding);
@@ -205,4 +208,48 @@
     color: var(--text-color);
     margin-top: 20px;
     font-size: 1.2em;
+}
+
+/* Добавьте стили для кнопки "Назад" */
+.back-button {
+    display: none;
+    top: 10px;
+    left: 10px;
+    padding: 10px 20px;
+    background-color: var(--button-background);
+    color: var(--text-color);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: var(--button-hover-background);
+    box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+@media (max-width: 768px) {
+    .chat-list {
+        width: 100%;
+        display: none;
+    }
+
+    /* Show chat list if no active chat */
+    .container.no-active-chat .chat-list {
+        display: block;
+    }
+
+    /* Hide chat content if no active chat */
+    .container.no-active-chat .chat-content {
+        display: none;
+    }
+
+    .back-button {
+        display: block;
+    }
+
+    .container.no-active-chat .back-button {
+        display: none;
+    }
 }

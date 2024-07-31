@@ -1,6 +1,6 @@
 from abstractions.repositories.ChatsRepositoryInterface import ChatsRepositoryInterface
-from . import get_session_maker
 from infrastructure.repositories.ChatsRepository import ChatsRepository
+from . import get_session_maker
 
 
 def get_chats_repository() -> ChatsRepositoryInterface:
