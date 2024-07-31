@@ -24,17 +24,19 @@
     --submit-button-background: #392c4e;
     --submit-button-color: #fff;
     --submit-button-hover-background: #8cb4a3;
+    --nav-bar-height: 45px;
+    --padding: 20px;
 }
 
 /* Global Styles */
 body {
-    font-family: var(--font-family);
+    font-family: var(--font-family), serif;
     background-color: var(--background-color);
     height: 100dvh;
     color: var(--text-color);
     margin: 0;
     padding: var(--padding);
-    padding-top: 60px; /* Adjust padding to account for the fixed navigation bar */
+    padding-top: calc(var(--nav-bar-height) + var(--padding));
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -93,10 +95,15 @@ tr:nth-child(even) {
     overflow: hidden;
     width: 100%;
     min-height: fit-content;
+    height: var(--nav-bar-height);
     position: fixed; /* Fix the navigation bar at the top */
     top: 0;
     left: 0;
     z-index: 1000; /* Ensure it is above other elements */
+    display: flex;
+    justify-content: start;
+    flex: 1;
+    align-items: center;
 }
 
 .topnav a {
@@ -104,7 +111,7 @@ tr:nth-child(even) {
     display: block;
     color: var(--secondary-color);
     text-align: center;
-    padding: 14px 16px;
+    padding: 10px 16px;
     text-decoration: none;
     font-size: 17px;
 }
