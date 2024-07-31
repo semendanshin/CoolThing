@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
+from abstractions.usecases.CampaingsUseCaseInterface import CampaignsUseCaseInterface
+from dependencies.usecases.campaign import get_campaigns_usecase
 from forms.bot_connect_2fa_form import bot_connect_2fa_form
 from forms.bot_connect_form import bot_connect_form
 from forms.bot_create_form import bot_create_form
@@ -84,29 +86,21 @@ async def connect_2fa_bot(
     return RedirectResponse(url='/bots', status_code=303)
 
 
-@router.get("/{bot_username}")
+@router.get("/{bot_id}")
 async def get_bot(
-        bot_username: str,
+        bot_id: str,
         request: Request,
         bots: BotsUseCaseInterface = Depends(get_bots_usecase),
+        campaigns: CampaignsUseCaseInterface = Depends(get_campaigns_usecase),
 ) -> HTMLResponse:
-    # TODO: dev code
-    if bot_username == 'parser':
-        bots.parsers = True
-    else:
-        bots.parsers = False
-    # end dev code
-
-    bot = await bots.get_bot(bot_username)
-    switcher = {
-        ManagerBotDetails: 'manager_bot.html',
-        ParserBotDetails: 'parser_bot.html',
-    }
+    bot = await bots.get_bot(bot_id)
+    campaigns_list = await campaigns.get_campaigns()
 
     return templates.TemplateResponse(
         request=request,
-        name=switcher[type(bot)],
+        name='bot.html',
         context={
             'bot': bot,
+            'campaigns': campaigns_list,
         }
     )

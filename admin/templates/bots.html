@@ -1,23 +1,26 @@
 {% extends 'base.html' %}
 
 {% block head %}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const selectors = document.querySelectorAll('.bot-type-selector p');
-            selectors.forEach(selector => {
-                selector.addEventListener('click', function() {
-                    selectors.forEach(s => s.classList.remove('active')); // Remove active class from all
-                    this.classList.add('active'); // Add active class to clicked element
-                    window.location.href = this.getAttribute('data-url');
-                });
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectors = document.querySelectorAll('.bot-type-selector p');
+        selectors.forEach(selector => {
+            selector.addEventListener('click', function () {
+                selectors.forEach(s => s.classList.remove('active')); // Remove active class from all
+                this.classList.add('active'); // Add active class to clicked element
+                window.location.href = this.getAttribute('data-url');
             });
-            document.querySelector('#{{ active }}').classList.add('active');
         });
-    </script>
-    <link href="{{ url_for('static', path='/bots.css') }}" rel="stylesheet">
+        document.querySelector('#{{ active }}').classList.add('active');
+    });
+</script>
+<link href="{{ url_for('static', path='/bots.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', path='/common.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
+<div class="vertical-container">
+
     <div class="bot-type-selector-container">
         <div class="bot-type-selector">
             <p id="managers" data-url="/bots/managers">Managers</p>
@@ -26,21 +29,22 @@
     </div>
     <div class="bot-cards">
         {% for bot in bots %}
-            <a href="/bot/{{ bot.nickname }}">
-                <div class="bot-card">
-                    <h3>{{ bot.nickname }}</h3>
-                    <p><strong>Scope:</strong> {{ bot.scope }}</p>
-                    {% block specific_fields %}
-                    {% endblock %}
-                    <p><strong>Proxy:</strong>
-                        {% if bot.proxy_status %}
-                            <span class="bot-proxy-up">{{ bot.proxy }}</span>
-                        {% else %}
-                            <span class="bot-proxy-down">{{ bot.proxy }}</span>
-                        {% endif %}
-                    </p>
-                </div>
-            </a>
+        <a href="/bot/{{ bot.id }}">
+            <div class="bot-card">
+                <h3>{{ bot.username }}</h3>
+                <p><strong>App ID:</strong> {{ bot.app_id }}</p>
+                <p><strong>Campaign:</strong> {{ bot.campaign_id }}</p>
+                <p><strong>Role:</strong> {{ bot.role|capitalize }}</p>
+                <p><strong>Status:</strong>
+                    {% if bot.status == 'active' %}
+                    <span class="status-up">{{ bot.status|capitalize }}</span>
+                    {% else %}
+                    <span class="status-down">{{ bot.status|capitalize }}</span>
+                    {% endif %}
+                </p>
+            </div>
+        </a>
         {% endfor %}
     </div>
+</div>
 {% endblock %}

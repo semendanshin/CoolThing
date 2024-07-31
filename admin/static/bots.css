@@ -21,18 +21,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--card-margin);
-    margin-top: 20px;
-}
-
-/* Bot Card Styling */
-.bot-card {
-    background-color: var(--card-background);
     padding: var(--card-padding);
-    margin: var(--card-margin);
-    border-radius: var(--card-border-radius);
-    box-shadow: var(--card-box-shadow);
-    width: var(--card-width);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .bot-card:hover {
@@ -55,31 +44,21 @@ a {
 }
 
 /* Proxy Status Styles */
-.bot-proxy-up {
+.status-up {
     color: var(--proxy-up-color);
     font-weight: bold;
 }
 
-.bot-proxy-down {
+.status-down {
     color: var(--proxy-down-color);
     font-weight: bold;
 }
 
-/* Bot Type Selector Styling */
-/* Bot Cards Container */
-.bot-cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--card-margin);
-    margin-top: 20px;
-}
 
 /* Bot Card Styling */
 .bot-card {
     background-color: var(--card-background);
     padding: var(--card-padding);
-    margin: var(--card-margin);
     border-radius: var(--card-border-radius);
     box-shadow: var(--card-box-shadow);
     width: var(--card-width);
@@ -107,7 +86,6 @@ a {
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
     height: fit-content;
-    margin: 20px 0;
 }
 
 .bot-type-selector {
@@ -146,6 +124,5 @@ a {
 @media (max-width: 768px) {
     .bot-card {
         width: 100%;
-        margin: 10px 0;
     }
 }

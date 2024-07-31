@@ -3,21 +3,22 @@ from dataclasses import dataclass
 
 from abstractions.repositories.CampaignRepositoryInterface import CampaignRepositoryInterface
 from abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
+from domain.models import Worker
 from domain.schemas.bots import ManagerBotOverview, ParserBotOverview, ManagerBotDetails, ParserBotDetails
 
 
 @dataclass
 class BotsUseCaseInterface(ABC):
     @abstractmethod
-    async def get_bot(self, bot_username: str) -> ManagerBotDetails | ParserBotDetails:
+    async def get_bot(self, bot_id: str) -> Worker:
         ...
 
     @abstractmethod
-    async def get_manager_bots(self) -> list[ManagerBotOverview]:
+    async def get_manager_bots(self) -> list[Worker]:
         ...
 
     @abstractmethod
-    async def get_parser_bots(self) -> list[ParserBotOverview]:
+    async def get_parser_bots(self) -> list[Worker]:
         ...
 
     @abstractmethod

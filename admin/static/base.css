@@ -87,17 +87,6 @@ tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-/* Proxy Status Styles */
-.bot-proxy-up {
-    color: green;
-    font-weight: bold;
-}
-
-.bot-proxy-down {
-    color: red;
-    font-weight: bold;
-}
-
 /* Navigation Bar Styles */
 .topnav {
     background-color: var(--primary-color);

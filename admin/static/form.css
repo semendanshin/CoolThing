@@ -8,6 +8,12 @@
     box-shadow: var(--box-shadow);
 }
 
+.container p {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+}
+
 /* Heading Styles */
 h1 {
     color: var(--primary-color);
@@ -45,6 +51,7 @@ h1 {
     border: none;
     border-radius: var(--field-border-radius);
     padding: var(--field-padding);
+    height: 2rem;
     width: 100%;
     box-sizing: border-box;
     text-align: center;
@@ -84,7 +91,11 @@ textarea.input-field {
         font-size: 24px;
     }
 
-    .input-field, .select-field {
+    .input-field {
+        font-size: 14px;
+    }
+
+    .select-field {
         font-size: 14px;
     }
 }

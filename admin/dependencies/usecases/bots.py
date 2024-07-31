@@ -10,8 +10,4 @@ from usecases.mocks.MockBotsUseCase import MockBotsUseCase
 def get_bots_usecase() -> BotsUseCaseInterface:
     return BotsUseCase(
         workers_repo=get_workers_repository(),
-        campaign_repo=get_campaign_repository(),
-        gpt_repo=get_gpt_repository(),
-        chats_repo=get_chats_repository(),
     )
-    # return MockBotsUseCase()
