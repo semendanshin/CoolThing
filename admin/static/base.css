@@ -101,6 +101,8 @@ tr:nth-child(even) {
     left: 0;
     z-index: 1000; /* Ensure it is above other elements */
     padding: 3px;
+    /* add strong shadow to the navigation bar */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .topnav a {

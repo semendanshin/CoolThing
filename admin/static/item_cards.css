@@ -16,6 +16,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--campaign-card-margin);
+    padding: var(--campaign-card-padding);
 }
 
 .cards-container a {

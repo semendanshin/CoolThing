@@ -4,7 +4,6 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    padding: 10px;
 }
 
 .vertical-container {
@@ -13,7 +12,6 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    padding: 10px;
 }
 
 /* Button Styles */
@@ -29,4 +27,8 @@
     width: 100%;
     box-sizing: border-box;
     margin: 0;
+}
+
+.button:hover {
+    background-color: var(--hover-color);
 }
