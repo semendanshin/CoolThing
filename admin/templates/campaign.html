@@ -5,7 +5,7 @@ Campaign
 {% endblock %}
 
 {% block head %}
-<link href="{{ url_for('static', path='/campaign.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', path='/form.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -15,29 +15,29 @@ Campaign
     <p>Here you can edit the details about the campaign.</p>
     <form action="/campaigns/{{ campaign.id }}" method="post">
         <div class="row">
-            <label for="campaign_scope" class="campaign-field-label">Scope</label>
-            <textarea class="campaign-field" id="campaign_scope" name="campaign_scope">{{ campaign.scope }}</textarea>
+            <label for="campaign_scope" class="field-label">Scope</label>
+            <textarea class="input-field" id="campaign_scope" name="campaign_scope">{{ campaign.scope }}</textarea>
         </div>
         <div class="row">
-            <label for="campaign_welcome_message" class="campaign-field-label">Welcome Message</label>
-            <textarea class="campaign-field" id="campaign_welcome_message" name="campaign_welcome_message">{{ campaign.welcome_message }}</textarea>
+            <label for="campaign_welcome_message" class="field-label">Welcome Message</label>
+            <textarea class="input-field" id="campaign_welcome_message" name="campaign_welcome_message">{{ campaign.welcome_message }}</textarea>
         </div>
         <div class="row">
-            <label for="campaign_chats" class="campaign-field-label">Chats</label>
-            <textarea class="campaign-field" id="campaign_chats"
+            <label for="campaign_chats" class="field-label">Chats</label>
+            <textarea class="input-field" id="campaign_chats"
                       name="campaign_chats">{{ campaign.chats | join(", ") }}</textarea>
         </div>
         <div class="row">
-            <label for="campaign_plus_keywords" class="campaign-field-label">Plus Keywords</label>
-            <textarea class="campaign-field" id="campaign_plus_keywords" name="campaign_plus_keywords">{{ campaign.plus_keywords | join(", ") }}</textarea>
+            <label for="campaign_plus_keywords" class="field-label">Plus Keywords</label>
+            <textarea class="input-field" id="campaign_plus_keywords" name="campaign_plus_keywords">{{ campaign.plus_keywords | join(", ") }}</textarea>
         </div>
         <div class="row">
-            <label for="campaign_minus_keywords" class="campaign-field-label">Minus Keywords</label>
-            <textarea class="campaign-field" id="campaign_minus_keywords" name="campaign_minus_keywords">{{ campaign.minus_keywords | join(", ") }}</textarea>
+            <label for="campaign_minus_keywords" class="field-label">Minus Keywords</label>
+            <textarea class="input-field" id="campaign_minus_keywords" name="campaign_minus_keywords">{{ campaign.minus_keywords | join(", ") }}</textarea>
         </div>
         <div class="row">
-            <label for="campaign_gpt_settings_id" class="campaign-field-label">GPT Settings</label>
-            <select class="campaign-select" id="campaign_gpt_settings_id" name="campaign_gpt_settings_id">
+            <label for="campaign_gpt_settings_id" class="field-label">GPT Settings</label>
+            <select class="select-field" id="campaign_gpt_settings_id" name="campaign_gpt_settings_id">
                 {% for gpt_setting in gpt_settings %}
                 <option value="{{ gpt_setting.id }}" {% if gpt_setting.id== campaign.gpt_settings_id %}selected{% endif
                         %}>
