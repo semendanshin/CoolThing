@@ -1,97 +1,57 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Chats
+    Chats
 {% endblock %}
 
 {% block head %}
-<link href="/static/chats.css" rel="stylesheet">
-<link href="/static/slider.css" rel="stylesheet">
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-
-
+    <link href="/static/chats.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-<div class="container {% if chat is none %}no-active-chat{% endif %}"
-     style="gap: 10px;padding-left: 0; padding-right: 0">
+    <div class="container {% if chat is none %}no-active-chat{% endif %}"
+         style="gap: 10px;padding-left: 0; padding-right: 0">
 
-    <div class="chat-list">
-        {% for item in chat_items %}
-        <a href="/chats/{{ item.id }}" style="text-decoration: none">
-            <div class="chat-item">
-                <div class="chat-item-content">
-                    <div class="chat-item-info">
-                        <span class="bot-name"><b>{{ item.bot_nickname }}</b></span>
-                        <span class="user-name"><b>{{ item.user_nickname }}</b></span>
+        <div class="chat-list">
+            {% for item in chat_items %}
+                <a href="/chats/{{ item.id }}" style="text-decoration: none">
+                    <div class="chat-item">
+                        <div class="chat-item-content">
+                            <div class="chat-item-info">
+                                <span class="bot-name"><b>{{ item.bot_nickname }}</b></span>
+                                <span class="user-name"><b>{{ item.user_nickname }}</b></span>
+                            </div>
+                            <div class="chat-item-message">
+                                <span class="last-message">{{ item.last_message }}</span>
+                            </div>
+                        </div>
+                        <div class="status {{ item.status }}"></div>
                     </div>
-                    <div class="chat-item-message">
-                        <span class="last-message">{{ item.last_message }}</span>
-                    </div>
-                </div>
-                <div class="status {{ item.status }}"></div>
-            </div>
-        </a>
-        {% endfor %}
-    </div>
-    <div class="chat-content">
-        {% if chat is not none %}
-        <div class="chat-header">
-            <a href="/chats" class="back-button">
-                <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
-            </a>
-            <span class="main-chat header-text header-hide"><b>User: </b>{{ chat.info.user_nickname }}</span>
-            <span class="main-chat header-text header-hide"><b>Bot: </b>{{ chat.info.bot_nickname }}</span>
-            <form action="/chats/{{ chat.info.id }}/auto_reply" method="post" class="auto-reply-form">
-                <label for="auto_reply" class="header-text"><b>Auto reply: </b></label>
-                <label class="small-switch">
-                    <input type="checkbox" id="auto_reply" name="auto_reply" {% if chat.info.auto_reply== true
-                           %}checked{% endif %}>
-                    <span class="small-slider round"></span>
-                </label>
-                <script>
-                    document.getElementById('auto_reply').addEventListener('change', function () {
-                        this.form.submit();
-                    });
-                </script>
-            </form>
-        </div>
-        <div class="main-chat messages">
-            {% for message in chat.messages|reverse %}
-            <div class="main-chat message {{ message.type }}">{{ message.text }}</div>
+                </a>
             {% endfor %}
         </div>
-<!--        <div class="input-area">-->
-        <form action="/chats/{{ chat.info.id }}/send" method="post" class="input-area">
-            <label>
-                <input type="text" name="message" placeholder="Напишите сообщение..." id="messageInput">
-            </label>
-            <button {% if chat.info.auto_reply==true %}disabled{% endif %}>Отправить</button>
-<!--            <button {% if chat.info.auto_reply==true %}disabled{% endif %} type="button" onclick="sendMessage()">Отправить</button>-->
-        </form>
-<!--        </div>-->
-<!--        <script>-->
-<!--            function sendMessage() {-->
-<!--                let message = document.getElementById('messageInput').value;-->
-<!--                if (message) {-->
-<!--                    fetch('/chats/{{ chat.info.id }}/send', {-->
-<!--                        method: 'POST',-->
-<!--                        headers: {-->
-<!--                            'Content-Type': 'application/json',-->
-<!--                        },-->
-<!--                        body: JSON.stringify({message: message}),-->
-<!--                    }).then(response => {-->
-<!--                        if (response.ok) {-->
-<!--                            document.getElementById('messageInput').value = '';-->
-<!--                            location.reload();-->
-<!--                        }-->
-<!--                    });-->
-<!--                }-->
-<!--            }-->
-<!--        </script>-->
-        {% else %}
-        <div class="no-chat">Выберите чат для просмотра</div>
-        {% endif %}
+        <div class="chat-content">
+            <button class="back-button" onclick="window.location.href = '/chats'">Назад</button>
+            {% if chat is not none %}
+                <div class="chat-header">
+                    <!--                <span class="main-chat bot-name">{{ chat.info.bot_nickname }}</span>-->
+                    <!--                <span class="main-chat user-name">{{ chat.info.user_nickname }}</span>-->
+                    <div class="main-chat status {{ chat.status }}"></div>
+                </div>
+                <div class="main-chat messages">
+                    {% for message in chat.messages|reverse %}
+                        <div class="main-chat message {{ message.type }}">{{ message.text }}</div>
+                    {% endfor %}
+                </div>
+                <div class="input-area">
+                    <label>
+                        <input type="text" placeholder="Напишите сообщение...">
+                    </label>
+                    <button>Отправить</button>
+                </div>
+            {% else %}
+                <div class="no-chat">Выберите чат для просмотра</div>
+            {% endif %}
+        </div>
     </div>
-</div>
 {% endblock %}
