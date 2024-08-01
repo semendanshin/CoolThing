@@ -17,8 +17,15 @@ class DBSettings(BaseSettings):
         return f"postgresql+asyncpg://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/{self.name}"
 
 
+class AuthSettings(BaseSettings):
+    code: SecretStr
+    secret_key: SecretStr
+    access_token_lifetime_seconds: int = 60 * 60
+
+
 class Settings(BaseSettings):
     db: DBSettings
+    auth: AuthSettings
 
     debug: bool = True
 
