@@ -41,7 +41,7 @@ async def create_new_bot_backend(
     await bots.send_code(bot.app_id, bot.app_hash, bot.phone)
     return RedirectResponse(
         url=f'/bot/connect?app_id={bot.app_id}&phone={bot.phone}&'
-            f'app_hash={bot.app_hash}&proxy={bot.proxy}',
+            f'app_hash={bot.app_hash}',
         status_code=303)
 
 
@@ -50,7 +50,6 @@ async def get_connect_bot(
         app_id: int,
         app_hash: str,
         phone: str,
-        proxy: str,
         request: Request,
 ) -> HTMLResponse:
     return templates.TemplateResponse(
@@ -60,7 +59,6 @@ async def get_connect_bot(
             'app_id': app_id,
             'app_hash': app_hash,
             'phone': phone,
-            'proxy': proxy,
         },
     )
 
@@ -71,11 +69,15 @@ async def connect_bot_backend(
         bots: BotsUseCaseInterface = Depends(get_bots_usecase),
 ) -> RedirectResponse:
     if session_string := await bots.authorize(connection.app_id, connection.auth_code):
-        print(session_string)
-        return RedirectResponse(url='/bots', status_code=303)
+        return RedirectResponse(
+            url=f'/bot/new/finalize?app_id={connection.app_id}&phone={connection.phone}&'
+                f'app_hash={connection.app_hash}&'
+                f'session_string={session_string}',
+            status_code=303
+        )
     return RedirectResponse(
         url=f'/bot/connect/2fa?app_id={connection.app_id}&phone={connection.phone}&'
-            f'app_hash={connection.app_hash}&proxy={connection.proxy}',
+            f'app_hash={connection.app_hash}',
         status_code=303
     )
 
@@ -85,7 +87,6 @@ async def get_2fa_bot(
         app_id: int,
         app_hash: str,
         phone: str,
-        proxy: str,
         request: Request,
 ) -> HTMLResponse:
     return templates.TemplateResponse(
@@ -95,7 +96,6 @@ async def get_2fa_bot(
             'app_id': app_id,
             'app_hash': app_hash,
             'phone': phone,
-            'proxy': proxy,
         },
     )
 
@@ -109,7 +109,7 @@ async def connect_2fa_bot(
         return RedirectResponse(url='/fallback', status_code=303)
     return RedirectResponse(
         url=f'/bot/new/finalize?app_id={bot_connection.app_id}&phone={bot_connection.phone}&'
-            f'app_hash={bot_connection.app_hash}&proxy={bot_connection.proxy}&'
+            f'app_hash={bot_connection.app_hash}&'
             f'session_string={session_string}',
         status_code=303
     )
@@ -120,7 +120,6 @@ async def get_finalize_bot(
         app_id: int,
         app_hash: str,
         phone: str,
-        proxy: str,
         session_string: str,
         request: Request,
         campaigns: CampaignsUseCaseInterface = Depends(get_campaigns_usecase),
@@ -133,7 +132,6 @@ async def get_finalize_bot(
                 'app_id': app_id,
                 'app_hash': app_hash,
                 'phone': phone,
-                'proxy': proxy,
                 'session_string': session_string,
             },
             'campaigns': await campaigns.get_campaigns(),

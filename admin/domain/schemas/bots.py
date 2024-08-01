@@ -7,7 +7,6 @@ class BotCreateBase(BaseModel):
     app_id: int
     app_hash: str
     phone: str
-    proxy: str
 
 
 class BotConnect(BotCreateBase):
