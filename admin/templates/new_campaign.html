@@ -35,7 +35,7 @@ Campaign
         </div>
         <div class="row">
             <label for="gpt_settings_id" class="campaign-field-label">GPT Settings</label>
-            <select class="campaign-select" id="gpt_settings_id" name="gpt_settings_id">
+            <select class="select-field" id="gpt_settings_id" name="gpt_settings_id">
                 {% for gpt_setting in gpt_settings %}
                     <option value="{{ gpt_setting.id }}">
                         {{ gpt_setting.id }}
