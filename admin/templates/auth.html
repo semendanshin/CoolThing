@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Authentication
+{% endblock %}
+
+{% block head %}
+    <link href="/static/auth.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="auth-container">
+        <h1>Welcome to the Chat System</h1>
+        <form action="/auth" method="post">
+            <div class="form-group">
+                <label for="auth-code">Enter Authentication Code</label>
+                <input type="text" id="auth-code" name="auth_code" required>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}

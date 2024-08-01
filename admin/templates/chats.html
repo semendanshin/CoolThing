@@ -1,57 +1,57 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Chats
+    Chats
 {% endblock %}
 
 {% block head %}
-<link href="/static/chats.css" rel="stylesheet">
+    <link href="/static/chats.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-<div class="container {% if chat is none %}no-active-chat{% endif %}"
-     style="gap: 10px;padding-left: 0; padding-right: 0">
+    <div class="container {% if chat is none %}no-active-chat{% endif %}"
+         style="gap: 10px;padding-left: 0; padding-right: 0">
 
-    <div class="chat-list">
-        {% for item in chat_items %}
-        <a href="/chats/{{ item.id }}" style="text-decoration: none">
-            <div class="chat-item">
-                <div class="chat-item-content">
-                    <div class="chat-item-info">
-                        <span class="bot-name"><b>{{ item.bot_nickname }}</b></span>
-                        <span class="user-name"><b>{{ item.user_nickname }}</b></span>
+        <div class="chat-list">
+            {% for item in chat_items %}
+                <a href="/chats/{{ item.id }}" style="text-decoration: none">
+                    <div class="chat-item">
+                        <div class="chat-item-content">
+                            <div class="chat-item-info">
+                                <span class="bot-name"><b>{{ item.bot_nickname }}</b></span>
+                                <span class="user-name"><b>{{ item.user_nickname }}</b></span>
+                            </div>
+                            <div class="chat-item-message">
+                                <span class="last-message">{{ item.last_message }}</span>
+                            </div>
+                        </div>
+                        <div class="status {{ item.status }}"></div>
                     </div>
-                    <div class="chat-item-message">
-                        <span class="last-message">{{ item.last_message }}</span>
-                    </div>
-                </div>
-                <div class="status {{ item.status }}"></div>
-            </div>
-        </a>
-        {% endfor %}
-    </div>
-    <div class="chat-content">
-        <button class="back-button" onclick="window.location.href = '/chats'">Назад</button>
-        {% if chat is not none %}
-        <div class="chat-header">
-            <!--                <span class="main-chat bot-name">{{ chat.info.bot_nickname }}</span>-->
-            <!--                <span class="main-chat user-name">{{ chat.info.user_nickname }}</span>-->
-            <div class="main-chat status {{ chat.status }}"></div>
-        </div>
-        <div class="main-chat messages">
-            {% for message in chat.messages|reverse %}
-            <div class="main-chat message {{ message.type }}">{{ message.text }}</div>
+                </a>
             {% endfor %}
         </div>
-        <div class="input-area">
-            <label>
-                <input type="text" placeholder="Напишите сообщение...">
-            </label>
-            <button>Отправить</button>
+        <div class="chat-content">
+            <button class="back-button" onclick="window.location.href = '/chats'">Назад</button>
+            {% if chat is not none %}
+                <div class="chat-header">
+                    <!--                <span class="main-chat bot-name">{{ chat.info.bot_nickname }}</span>-->
+                    <!--                <span class="main-chat user-name">{{ chat.info.user_nickname }}</span>-->
+                    <div class="main-chat status {{ chat.status }}"></div>
+                </div>
+                <div class="main-chat messages">
+                    {% for message in chat.messages|reverse %}
+                        <div class="main-chat message {{ message.type }}">{{ message.text }}</div>
+                    {% endfor %}
+                </div>
+                <div class="input-area">
+                    <label>
+                        <input type="text" placeholder="Напишите сообщение...">
+                    </label>
+                    <button>Отправить</button>
+                </div>
+            {% else %}
+                <div class="no-chat">Выберите чат для просмотра</div>
+            {% endif %}
         </div>
-        {% else %}
-        <div class="no-chat">Выберите чат для просмотра</div>
-        {% endif %}
     </div>
-</div>
 {% endblock %}
