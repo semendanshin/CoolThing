@@ -9,12 +9,33 @@
 {% endblock %}
 
 {% block content %}
-<h1>2FA</h1>
-<form action="/bots/connect/2fa" method="post">
-    <div class="form-group">
-        <label for="password">2FA password</label>
-        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your 2FA password">
-    </div>
-    <button type="submit">Connect</button>
-</form>
+<div class="container">
+    <h1>2FA</h1>
+    <p>Enter the 2FA password to connect the bot.</p>
+    <form action="/bot/connect/2fa" method="post">
+        <div class="" hidden="hidden">
+            <label for="app_id" class="field-label"></label>
+            <input class="input-field" id="app_id" name="app_id" value="{{ app_id }}" hidden="hidden">
+        </div>
+        <div class="">
+            <label for="phone" class="field-label"></label>
+            <input class="input-field" id="phone" name="phone" value="{{ phone }}" hidden="hidden">
+        </div>
+        <div class="">
+            <label for="app_hash" class="field-label"></label>
+            <input class="input-field" id="app_hash" name="app_hash" value="{{ app_hash }}" hidden="hidden">
+        </div>
+        <div class="">
+            <label for="proxy" class="field-label"></label>
+            <input class="input-field" id="proxy" name="proxy" value="{{ proxy }}" hidden="hidden">
+        </div>
+        <div class="row">
+            <label for="password" class="field-label">2FA password</label>
+            <input type="password" class="input-field" id="password" name="password" placeholder="************" required>
+        </div>
+        <div class="row">
+            <input type="submit" value="Connect" class="submit-button">
+        </div>
+    </form>
+</div>
 {% endblock %}

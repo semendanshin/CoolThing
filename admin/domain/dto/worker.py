@@ -1,15 +1,18 @@
-from dataclasses import dataclass
+import uuid
+from dataclasses import dataclass, field
 from typing import Optional
 
 
 @dataclass(kw_only=True)
 class WorkerCreateDTO:
-    id: str
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    bio: Optional[str] = None
+    username: str
     app_id: str
     app_hash: str
     session_string: str
     proxy: str
-    campaign_id: str
+    campaign_id: Optional[str] = None
     role: str
     status: str
 

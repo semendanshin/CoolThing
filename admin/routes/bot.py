@@ -2,15 +2,16 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
+from abstractions.usecases.BotsUseCaseInterface import BotsUseCaseInterface
 from abstractions.usecases.CampaingsUseCaseInterface import CampaignsUseCaseInterface
+from dependencies.usecases.bots import get_bots_usecase
 from dependencies.usecases.campaign import get_campaigns_usecase
-from domain.dto.worker import WorkerUpdateDTO
+from domain.dto.worker import WorkerUpdateDTO, WorkerCreateDTO
+from domain.schemas.bots import BotConnect, BotConnect2FA, BotCreateBase
 from forms.bot_connect_2fa_form import bot_connect_2fa_form
 from forms.bot_connect_form import bot_connect_form
 from forms.bot_create_form import bot_create_form
-from dependencies.usecases.bots import get_bots_usecase
-from domain.schemas.bots import BotCreate, BotConnect, BotConnect2FA, ParserBotDetails, ManagerBotDetails
-from abstractions.usecases.BotsUseCaseInterface import BotsUseCaseInterface
+from forms.bot_create_full_form import bot_create_full_form
 from forms.bot_update import update_worker_form
 
 router = APIRouter(
@@ -33,47 +34,69 @@ async def get_new_bot(
 
 
 @router.post("")
-async def create_new_bot(
-        bot: BotCreate = Depends(bot_create_form),
+async def create_new_bot_backend(
+        bot: BotCreateBase = Depends(bot_create_form),
         bots: BotsUseCaseInterface = Depends(get_bots_usecase),
 ) -> RedirectResponse:
-    print(bot.model_dump())
-    await bots.create(bot)
-    return RedirectResponse(url='/bots', status_code=303)
-    # return RedirectResponse(url='/bots/connect', status_code=303)
+    await bots.send_code(bot.app_id, bot.app_hash, bot.phone)
+    return RedirectResponse(
+        url=f'/bot/connect?app_id={bot.app_id}&phone={bot.phone}&'
+            f'app_hash={bot.app_hash}&proxy={bot.proxy}',
+        status_code=303)
 
 
 @router.get("/connect")
 async def get_connect_bot(
+        app_id: int,
+        app_hash: str,
+        phone: str,
+        proxy: str,
         request: Request,
 ) -> HTMLResponse:
     return templates.TemplateResponse(
         request=request,
         name='connect_bot.html',
-        context={},
+        context={
+            'app_id': app_id,
+            'app_hash': app_hash,
+            'phone': phone,
+            'proxy': proxy,
+        },
     )
 
 
 @router.post("/connect")
-async def connect_bot(
+async def connect_bot_backend(
         connection: BotConnect = Depends(bot_connect_form),
         bots: BotsUseCaseInterface = Depends(get_bots_usecase),
 ) -> RedirectResponse:
-    print(connection.model_dump())
-    if await bots.connect_bot_by_code(connection.auth_code):
+    if session_string := await bots.authorize(connection.app_id, connection.auth_code):
+        print(session_string)
         return RedirectResponse(url='/bots', status_code=303)
-
-    return RedirectResponse(url='/bots/connect/2fa', status_code=303)
+    return RedirectResponse(
+        url=f'/bot/connect/2fa?app_id={connection.app_id}&phone={connection.phone}&'
+            f'app_hash={connection.app_hash}&proxy={connection.proxy}',
+        status_code=303
+    )
 
 
 @router.get("/connect/2fa")
 async def get_2fa_bot(
+        app_id: int,
+        app_hash: str,
+        phone: str,
+        proxy: str,
         request: Request,
 ) -> HTMLResponse:
     return templates.TemplateResponse(
         request=request,
         name='2fa_bot.html',
-        context={},
+        context={
+            'app_id': app_id,
+            'app_hash': app_hash,
+            'phone': phone,
+            'proxy': proxy,
+        },
     )
 
 
@@ -82,9 +105,48 @@ async def connect_2fa_bot(
         bot_connection: BotConnect2FA = Depends(bot_connect_2fa_form),
         bots: BotsUseCaseInterface = Depends(get_bots_usecase),
 ) -> RedirectResponse:
-    if not await bots.connect_bot_by_password(bot_connection.password):
+    if not (session_string := await bots.authorize_2fa(bot_connection.app_id, bot_connection.password)):
         return RedirectResponse(url='/fallback', status_code=303)
+    return RedirectResponse(
+        url=f'/bot/new/finalize?app_id={bot_connection.app_id}&phone={bot_connection.phone}&'
+            f'app_hash={bot_connection.app_hash}&proxy={bot_connection.proxy}&'
+            f'session_string={session_string}',
+        status_code=303
+    )
 
+
+@router.get("/new/finalize")
+async def get_finalize_bot(
+        app_id: int,
+        app_hash: str,
+        phone: str,
+        proxy: str,
+        session_string: str,
+        request: Request,
+        campaigns: CampaignsUseCaseInterface = Depends(get_campaigns_usecase),
+) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request=request,
+        name='finalize_bot.html',
+        context={
+            'bot': {
+                'app_id': app_id,
+                'app_hash': app_hash,
+                'phone': phone,
+                'proxy': proxy,
+                'session_string': session_string,
+            },
+            'campaigns': await campaigns.get_campaigns(),
+        },
+    )
+
+
+@router.post("/new/finalize")
+async def finalize_bot_backend(
+        bot: WorkerCreateDTO = Depends(bot_create_full_form),
+        bots: BotsUseCaseInterface = Depends(get_bots_usecase),
+) -> RedirectResponse:
+    await bots.create(bot)
     return RedirectResponse(url='/bots', status_code=303)
 
 

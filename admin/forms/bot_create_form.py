@@ -1,15 +1,17 @@
 from fastapi import Form
 
-from domain.schemas.bots import BotCreate
+from domain.schemas.bots import BotCreateBase
 
 
 def bot_create_form(
-        api_hash: str = Form(...),
-        api_id: int = Form(...),
+        app_hash: str = Form(...),
+        app_id: int = Form(...),
         proxy: str = Form(...),
-) -> BotCreate:
-    return BotCreate(
-        api_hash=api_hash,
-        api_id=api_id,
+        phone: str = Form(...),
+) -> BotCreateBase:
+    return BotCreateBase(
+        app_hash=app_hash,
+        app_id=app_id,
         proxy=proxy,
+        phone=phone,
     )

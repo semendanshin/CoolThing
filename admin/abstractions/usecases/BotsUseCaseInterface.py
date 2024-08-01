@@ -1,11 +1,8 @@
 from abc import abstractmethod, ABC
 from dataclasses import dataclass
 
-from abstractions.repositories.CampaignRepositoryInterface import CampaignRepositoryInterface
-from abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
-from domain.dto.worker import WorkerUpdateDTO
+from domain.dto.worker import WorkerUpdateDTO, WorkerCreateDTO
 from domain.models import Worker
-from domain.schemas.bots import ManagerBotOverview, ParserBotOverview, ManagerBotDetails, ParserBotDetails
 
 
 @dataclass
@@ -23,13 +20,21 @@ class BotsUseCaseInterface(ABC):
         ...
 
     @abstractmethod
-    async def connect_bot_by_code(self, code: str) -> bool:
-        ...
-
-    @abstractmethod
-    async def connect_bot_by_password(self, password: str) -> bool:
-        ...
-
-    @abstractmethod
     async def update(self, bot_id: str, schema: WorkerUpdateDTO) -> None:
+        ...
+
+    @abstractmethod
+    async def send_code(self, app_id: int, app_hash: str, phone: str) -> None:
+        ...
+
+    @abstractmethod
+    async def authorize(self, app_id: int, code: str) -> str:
+        ...
+
+    @abstractmethod
+    async def authorize_2fa(self, app_id: int, password: str) -> str:
+        ...
+
+    @abstractmethod
+    async def create(self, schema: WorkerCreateDTO) -> None:
         ...

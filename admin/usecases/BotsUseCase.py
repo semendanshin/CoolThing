@@ -1,22 +1,30 @@
+from contextlib import suppress
 from dataclasses import dataclass
 
-from abstractions.repositories.CampaignRepositoryInterface import CampaignRepositoryInterface
+from abstractions.repositories.TelegramSessionRepositoryInterface import TelegramSessionRepositoryInterface, \
+    TwoFARequiredException
 from abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
-from abstractions.repositories.GptSettingsRepositoryInterface import GptSettingsRepositoryInterface
-from abstractions.repositories.ChatsRepositoryInterface import ChatsRepositoryInterface
 from abstractions.usecases import BotsUseCaseInterface
-from domain.dto.worker import WorkerUpdateDTO
-from domain.models import Worker as WorkerModel, Worker
-from domain.models import Campaign as CampaignModel
-from domain.models import Chat as ChatModel
-from domain.models import GPT as GPTModel
-from domain.schemas.bots import ManagerBotDetails, ParserBotDetails, ManagerBotOverview, ParserBotOverview
+from domain.dto.worker import WorkerUpdateDTO, WorkerCreateDTO
+from domain.models import Worker
 
 
 @dataclass
 class BotsUseCase(
     BotsUseCaseInterface,
 ):
+    session_repo: TelegramSessionRepositoryInterface
+
+    async def send_code(self, app_id: int, app_hash: str, phone: str) -> None:
+        await self.session_repo.send_code(app_id, app_hash, phone)
+
+    async def authorize(self, app_id: int, code: str) -> str:
+        with suppress(TwoFARequiredException):
+            return await self.session_repo.authorize(app_id, code)
+        return ''
+
+    async def authorize_2fa(self, app_id: int, password: str) -> str:
+        return await self.session_repo.authorize_2fa(app_id, password)
 
     workers_repo: WorkersRepositoryInterface
 
@@ -29,11 +37,9 @@ class BotsUseCase(
     async def get_parser_bots(self) -> list[Worker]:
         return await self.workers_repo.get_by_role('parser')
 
-    async def connect_bot_by_code(self, code: str) -> bool:
-        pass
-
-    async def connect_bot_by_password(self, password: str) -> bool:
-        pass
-
     async def update(self, bot_id: str, schema: WorkerUpdateDTO) -> None:
         await self.workers_repo.update(bot_id, schema)
+
+    async def create(self, schema: WorkerCreateDTO) -> None:
+        await self.workers_repo.create(schema)
+

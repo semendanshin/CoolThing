@@ -13,8 +13,8 @@ Bot overview
 {% block content %}
 <div class="container">
     <h1>Bot details</h1>
-    <p>Here you can see detail about the bot.</p>
-    <form action="/bot/{{ bot.id }}" method="post">
+    <p>Now you can finalize the bot.</p>
+    <form action="/bot/new/finalize" method="post">
         <div class="row">
             <label for="status" class="field-label">Status</label>
             <label class="switch">
@@ -35,18 +35,18 @@ Bot overview
 
         <div class="row">
             <label for="app_id" class="field-label">App ID</label>
-            <input class="input-field" type="text" id="app_id" name="app_id" value="{{ bot.app_id }}">
+            <input class="input-field" type="text" id="app_id" name="app_id" value="{{ bot.app_id }}" required readonly>
         </div>
 
         <div class="row">
             <label for="app_hash" class="field-label">App hash</label>
-            <input class="input-field" type="text" id="app_hash" name="app_hash" value="{{ bot.app_hash }}">
+            <input class="input-field" type="text" id="app_hash" name="app_hash" value="{{ bot.app_hash }}" required readonly>
         </div>
 
         <div class="row">
             <label for="session_string" class="field-label">Session string</label>
             <input class="input-field" type="text" id="session_string" name="session_string"
-                   value="{{ bot.session_string }}">
+                   value="{{ bot.session_string }}" required readonly>
         </div>
 
         <div class="row">
