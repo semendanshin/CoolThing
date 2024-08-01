@@ -15,11 +15,11 @@
     <form action="/bot" method="post">
         <div class="row">
             <label for="phone" class="field-label">Phone Number</label>
-            <input class="input-field" id="phone" name="phone" placeholder="+79528120000" pattern="^\+[0-9]{11,12}$" required>
+            <input class="input-field" id="phone" name="phone" placeholder="+79528120000" pattern="^\+[0-9]{11,12}$" required inputmode="tel">
         </div>
         <div class="row">
             <label for="app_id" class="field-label">APP ID</label>
-            <input class="input-field" id="app_id" name="app_id" placeholder="1234567" required>
+            <input class="input-field" id="app_id" name="app_id" placeholder="1234567" required inputmode="numeric">
         </div>
         <div class="row">
             <label for="app_hash" class="field-label">APP Hash</label>
