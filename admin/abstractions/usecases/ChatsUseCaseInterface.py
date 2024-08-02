@@ -12,3 +12,11 @@ class ChatsUseCaseInterface(ABC):
     @abstractmethod
     async def get_chat(self, chat_id: str) -> Optional[Chat]:
         ...
+
+    @abstractmethod
+    async def send_message(self, chat_id: str, message: str) -> None:
+        ...
+
+    @abstractmethod
+    async def set_auto_reply(self, chat_id: str, auto_reply: bool) -> None:
+        ...

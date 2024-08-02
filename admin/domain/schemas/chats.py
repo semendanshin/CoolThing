@@ -16,6 +16,7 @@ class ChatInfo(BaseModel):
     user_nickname: str
     user_id: Optional[str] = None
     last_message: str
+    auto_reply: bool
     status: Literal["online", "offline"]
 
 
