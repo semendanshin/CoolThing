@@ -24,20 +24,16 @@ class IncomingMessageHandler:
     async def response_to_user(self, client: Client, message: Message) -> None:
         logger.info(f"Received message: {message.text}")
 
-        chat = await self.gpt_use_case.chats_repo.get_by_telegram_chat_id(message.chat.id)
+        chat = await self.gpt_use_case.get_chat_by_telegram_chat_id(message.chat.id)
 
         if not chat:
             logger.info(f"Chat not found: {message.chat.id}")
             return
 
-        await self.gpt_use_case.messages_repo.create(
-            MessageCreateDTO(
-                id=str(uuid.uuid4()),
-                chat_id=chat.id,
-                text=message.text,
-                is_outgoing=False,
-            )
-        )
+        await self.gpt_use_case.save_message(chat.id, message.text, is_outgoing=False)
+
+        if not chat.auto_reply:
+            return
 
         if self.waiting_for_response.get(message.chat.id):
             return
@@ -47,21 +43,9 @@ class IncomingMessageHandler:
         await asyncio.sleep(randint(7, 10))
         await client.send_chat_action(message.chat.id, ChatAction.TYPING)
 
-        # response = await self.gpt_use_case.generate_response(
-        #     chat_id=message.chat.id,
-        #     text=message.text,
-        # )
+        response = await self.gpt_use_case.generate_response(chat.id)
 
-        messages = await self.gpt_use_case.messages_repo.get_by_chat_id(chat.id)
-        response = await self.gpt_use_case.gpt_repo.generate_response(messages)
-        await self.gpt_use_case.messages_repo.create(
-            MessageCreateDTO(
-                id=str(uuid.uuid4()),
-                chat_id=chat.id,
-                text=response,
-                is_outgoing=True,
-            )
-        )
+        await self.gpt_use_case.save_message(chat.id, response, is_outgoing=True)
 
         self.waiting_for_response[message.chat.id] = False
 

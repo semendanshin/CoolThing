@@ -1,5 +1,6 @@
+import uuid
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 from abstractions.repositories import CRUDRepositoryInterface
@@ -8,7 +9,7 @@ from domain.models import Message
 
 @dataclass(kw_only=True)
 class MessageCreateDTO:
-    id: str = None
+    id: str = field(default_factory=lambda : str(uuid.uuid4()))
     chat_id: str
     text: str
     is_outgoing: bool

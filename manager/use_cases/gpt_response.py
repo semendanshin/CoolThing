@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from abstractions.repositories.chat import ChatRepositoryInterface
 from abstractions.repositories.gpt import GPTRepositoryInterface
 from abstractions.repositories.message import MessageRepositoryInterface, MessageCreateDTO
+from domain.models import Chat
 
 
 @dataclass
@@ -12,24 +13,19 @@ class GPTUseCase:
     messages_repo: MessageRepositoryInterface
     chats_repo: ChatRepositoryInterface
 
-    async def generate_response(self, chat_id: int, text: str) -> str:
-        chat = await self.chats_repo.get_by_telegram_chat_id(chat_id)
+    async def get_chat_by_telegram_chat_id(self, telegram_chat_id: int) -> Chat:
+        return await self.chats_repo.get_by_telegram_chat_id(telegram_chat_id)
+
+    async def save_message(self, chat_id: str, text: str, is_outgoing: bool) -> None:
         await self.messages_repo.create(
             MessageCreateDTO(
-                id=str(uuid.uuid4()),
-                chat_id=chat.id,
+                chat_id=chat_id,
                 text=text,
-                is_outgoing=False,
+                is_outgoing=is_outgoing,
             )
         )
-        messages = await self.messages_repo.get_by_chat_id(chat.id)
+
+    async def generate_response(self, chat_id: str) -> str:
+        messages = await self.messages_repo.get_by_chat_id(chat_id)
         response = await self.gpt_repo.generate_response(messages)
-        await self.messages_repo.create(
-            MessageCreateDTO(
-                id=str(uuid.uuid4()),
-                chat_id=chat.id,
-                text=response,
-                is_outgoing=True,
-            )
-        )
         return response
