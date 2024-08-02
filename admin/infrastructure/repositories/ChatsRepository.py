@@ -58,9 +58,14 @@ class ChatsRepository(
                 m.text as last_message,
                 c.auto_reply as auto_reply
             FROM chats c
-            JOIN (select chat_id, text from messages order by created_at desc limit 1) m on m.chat_id = c.id
+            JOIN (
+                SELECT distinct on (chat_id) chat_id, text, created_at
+                FROM messages
+                ORDER BY chat_id, created_at DESC
+            ) m on m.chat_id = c.id  
             JOIN public.workers w on w.id = c.worker_id
             JOIN public.campaigns c2 on c2.id = c.campaign_id
+            ORDER BY m.created_at DESC
             LIMIT :limit OFFSET :offset
             """
         ).bindparams(limit=limit, offset=offset)
@@ -94,9 +99,15 @@ class ChatsRepository(
                 m.text as last_message,
                 c.auto_reply as auto_reply
             FROM chats c
-            JOIN (select chat_id, text from messages order by created_at desc limit 1) m on m.chat_id = c.id
+            JOIN (
+                SELECT distinct on (chat_id) chat_id, text, created_at
+                FROM messages
+                ORDER BY chat_id, created_at DESC
+            ) m on m.chat_id = c.id  
             JOIN public.workers w on w.id = c.worker_id
+            JOIN public.campaigns c2 on c2.id = c.campaign_id
             WHERE c.id = :id
+            ORDER BY m.created_at DESC
             """
         ).bindparams(id=uuid_obj_id)
 
