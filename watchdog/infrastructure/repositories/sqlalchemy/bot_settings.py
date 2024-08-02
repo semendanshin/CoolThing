@@ -26,7 +26,6 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
             g.token,
             g.service_prompt,
             c.welcome_message,
-            c.topic,
             c.chats,
             c.plus_keywords,
             c.minus_keywords
@@ -65,7 +64,6 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
                                 token=row.token,
                                 service_prompt=row.service_prompt,
                                 welcome_message=row.welcome_message,
-                                topic=row.topic,
                             )
                         case "parser":
                             worker = ParserSettings(
@@ -73,7 +71,6 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
                                 chats=row.chats,
                                 plus_keywords=row.plus_keywords,
                                 minus_keywords=row.minus_keywords,
-                                topic=row.topic,
                             )
                         case _:
                             worker = base
