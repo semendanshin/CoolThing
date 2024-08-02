@@ -21,3 +21,13 @@ class ChatUpdateDTO:
     status: str
     lead_message: str
     lead_chat_id: str
+
+
+@dataclass(kw_only=True)
+class UpdateAutoReplyDTO:
+    auto_reply: bool
+
+
+@dataclass(kw_only=True)
+class SendMessageDTO:
+    message: str

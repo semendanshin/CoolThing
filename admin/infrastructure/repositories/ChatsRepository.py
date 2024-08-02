@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import select, text
+from sqlalchemy import select, text, update
 
 from abstractions.repositories.ChatsRepositoryInterface import ChatsRepositoryInterface
 from domain.dto.chat import ChatCreateDTO, ChatUpdateDTO
@@ -16,7 +16,6 @@ class ChatsRepository(
     ],
     ChatsRepositoryInterface,
 ):
-
     def entity_to_model(self, entity: Chat) -> ChatModel:
         return ChatModel(
             id=entity.id,
@@ -56,7 +55,8 @@ class ChatsRepository(
                 w.username as bot_nickname,
                 c.username as user_nickname,
                 c.lead_chat_id as user_id,
-                m.text as last_message
+                m.text as last_message,
+                c.auto_reply as auto_reply
             FROM chats c
             JOIN (select chat_id, text from messages order by created_at desc limit 1) m on m.chat_id = c.id
             JOIN public.workers w on w.id = c.worker_id
@@ -76,32 +76,12 @@ class ChatsRepository(
                 user_id=row.user_id,
                 last_message=row.last_message,
                 status="online",
+                auto_reply=row.auto_reply,
             )
             for row in rows
         ]
 
-    async def get(self, obj_id: str) -> ChatDTO:
-        """
-        class Message(BaseModel):
-            text: str
-            sent_at: datetime
-            type: Literal["outcome", "income"]
-
-
-        class ChatInfo(BaseModel):
-            id: str
-            bot_nickname: str
-            user_nickname: str
-            user_id: Optional[str] = None
-            last_message: str
-            status: Literal["online", "offline"]
-
-
-        class Chat(BaseModel):
-            info: ChatInfo
-            messages: list[Message]
-        """
-
+    async def get_dto(self, obj_id: str) -> ChatDTO:
         uuid_obj_id = uuid.UUID(obj_id)
 
         chat_statement = text(
@@ -111,7 +91,8 @@ class ChatsRepository(
                 w.username as bot_nickname,
                 c.username as user_nickname,
                 c.lead_chat_id as user_id,
-                m.text as last_message
+                m.text as last_message,
+                c.auto_reply as auto_reply
             FROM chats c
             JOIN (select chat_id, text from messages order by created_at desc limit 1) m on m.chat_id = c.id
             JOIN public.workers w on w.id = c.worker_id
@@ -154,8 +135,17 @@ class ChatsRepository(
                 user_id=chat_row.user_id,
                 last_message=chat_row.last_message,
                 status="online",
+                auto_reply=chat_row.auto_reply,
             ),
             messages=messages,
         )
 
         return chat_info
+
+    async def set_auto_reply(self, chat_id: str, auto_reply: bool) -> None:
+        uuid_chat_id = uuid.UUID(chat_id)
+        statement = update(Chat).where(Chat.id == uuid_chat_id).values(auto_reply=auto_reply)
+        async with self.session_maker() as session:
+            async with session.begin():
+                await session.execute(statement)
+        return None

@@ -114,7 +114,7 @@
     flex: 3;
     background-color: var(--item-hover-background);
     border-radius: var(--border-radius);
-    padding: var(--padding);
+    padding: calc(var(--padding) / 2);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -122,9 +122,13 @@
 
 .chat-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-    margin-bottom: 20px;
+    padding: 0 0 10px 0;
+}
+
+.header-text {
+    font-size: 1.2em;
 }
 
 .main-chat .bot-name,
@@ -207,9 +211,16 @@
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.input-area button:hover {
+/* Button Hover Effect If Button Is Not Disabled */
+.input-area button:hover:not(:disabled) {
     background-color: var(--button-hover-background);
     box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+.input-area button:disabled,
+button[disabled] {
+    background-color: grey;
+    cursor: not-allowed;
 }
 
 /* No Chat Message */
@@ -225,11 +236,12 @@
 
 /* Добавьте стили для кнопки "Назад" */
 .back-button {
+    text-decoration: none;
     display: none;
-    top: 10px;
-    left: 10px;
-    padding: 10px 20px;
-    background-color: var(--button-background);
+    align-items: center;
+    padding: 5px 25px;
+    justify-content: center;
+    background-color: var(--primary-color);
     color: var(--text-color);
     border: none;
     border-radius: var(--border-radius);
@@ -237,10 +249,24 @@
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.back-button i {
+    font-size: 1.2em;
+}
+
+
 .back-button:hover {
     background-color: var(--button-hover-background);
     box-shadow: 0 4px 10px var(--shadow-color);
 }
+
+.auto-reply-form {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    text-align: center;
+}
+
 
 @media screen and (max-width: 768px) {
     .chat-list {
@@ -259,10 +285,14 @@
     }
 
     .back-button {
-        display: block;
+        display: flex;
     }
 
     .container.no-active-chat .back-button {
+        display: none;
+    }
+
+    .header-hide {
         display: none;
     }
 }
