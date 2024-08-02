@@ -20,7 +20,6 @@ class ManagerSettings(WorkerSettings):
     token: str
     service_prompt: str
     welcome_message: str
-    topic: str
 
     def __hash__(self):
         return hash(
@@ -38,7 +37,6 @@ class ManagerSettings(WorkerSettings):
                 self.token,
                 self.service_prompt,
                 self.welcome_message,
-                self.topic
             )
         )
 
@@ -48,7 +46,6 @@ class ParserSettings(WorkerSettings):
     chats: list[str]
     plus_keywords: list[str]
     minus_keywords: list[str]
-    topic: str
 
     def __hash__(self):
         return hash(
@@ -64,7 +61,6 @@ class ParserSettings(WorkerSettings):
                 tuple(self.chats),
                 tuple(self.plus_keywords),
                 tuple(self.minus_keywords),
-                self.topic
             )
         )
 
