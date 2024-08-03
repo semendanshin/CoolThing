@@ -1,22 +1,44 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Authentication
+Authentication
 {% endblock %}
 
 {% block head %}
-    <link href="/static/auth.css" rel="stylesheet">
+<link href="/static/auth.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-    <div class="auth-container">
-        <h1>Welcome to the Chat System</h1>
-        <form action="/auth" method="post">
-            <div class="form-group">
-                <label for="auth-code">Enter Authentication Code</label>
-                <input type="password" id="auth-code" name="auth_code" required placeholder="Enter authentication code">
-            </div>
-            <button type="submit">Submit</button>
-        </form>
+<div class="auth-container">
+    <h1>Welcome to the Chat System</h1>
+    <div class="form-group">
+        <label for="auth-code">Enter Authentication Code</label>
+        <input type="password" id="auth-code" name="auth_code" required placeholder="Enter authentication code">
+        <p class="error-message"></p>
     </div>
+    <button type="button" onclick="validateAndRedirect()">Submit</button>
+    <script>
+        function validateAndRedirect() {
+            const url = '/auth';
+            const authCode = document.getElementById('auth-code').value;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({auth_code: authCode})
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        window.location.href = '{{ destination }}';
+                    } else {
+                        document.querySelector('.error-message').textContent = data.message;
+                        document.getElementById('auth-code').value = '';
+                    }
+                });
+        }
+    </script>
+</div>
 {% endblock %}
