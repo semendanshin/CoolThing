@@ -29,8 +29,9 @@ class Worker(Model):
 @dataclass(kw_only=True)
 class GPT(Model):
     model: str
-    assistant: str
     token: str
+    proxy: str
+    assistant: str
     service_prompt: str
 
 

@@ -28,6 +28,10 @@
             <textarea class="input-field" id="service_prompt" name="service_prompt">{{ gpt_setting.service_prompt }}</textarea>
         </div>
         <div class="row">
+            <label for="proxy" class="field-label">Proxy</label>
+            <input class="input-field" id="proxy" name="proxy" value="{{ gpt_setting.proxy }}">
+        </div>
+        <div class="row">
             <input type="submit" value="Save Changes" class="submit-button">
         </div>
     </form>

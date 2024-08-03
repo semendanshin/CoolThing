@@ -20,6 +20,7 @@ class GPTRepository(
             assistant=entity.assistant,
             token=entity.token,
             service_prompt=entity.service_prompt,
+            proxy=entity.proxy,
         )
 
     def model_to_entity(self, model: GPTModel) -> GPT:
@@ -31,4 +32,5 @@ class GPTRepository(
             assistant=model.assistant,
             token=model.token,
             service_prompt=model.service_prompt,
+            proxy=model.proxy,
         )

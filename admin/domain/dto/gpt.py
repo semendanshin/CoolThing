@@ -7,9 +7,10 @@ from typing import Optional
 class GPTCreateDTO:
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     model: str
-    assistant: str
     token: str
-    service_prompt: str
+    assistant: Optional[str] = ""
+    service_prompt: Optional[str] = ""
+    proxy: Optional[str] = ""
 
 
 @dataclass(kw_only=True)
@@ -19,3 +20,4 @@ class GPTUpdateDTO:
     assistant: Optional[str]
     token: Optional[str]
     service_prompt: Optional[str]
+    proxy: Optional[str]
