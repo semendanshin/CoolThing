@@ -72,22 +72,23 @@ class RabbitListener:
         if not self._is_running:
             raise Exception("Consumer is not running.")
 
-        async with self.channel_pool.acquire() as channel:  # type: aio_pika.Channel
-            await channel.set_qos(10)
+        while self._is_running:
+            try:
+                async with self.channel_pool.acquire() as channel:  # type: aio_pika.Channel
+                    await channel.set_qos(10)
 
-            exchange = await channel.declare_exchange('campaign_exchange', ExchangeType.TOPIC)
+                    exchange = await channel.declare_exchange('campaign_exchange', ExchangeType.TOPIC)
 
-            queue_name = f'{self.campaign_id}_managers'
-            queue = await channel.declare_queue(queue_name, durable=True)
-            await queue.bind(exchange, routing_key=f'{self.campaign_id}.parser')
+                    queue_name = f'{self.campaign_id}_managers'
+                    queue = await channel.declare_queue(queue_name, durable=True)
+                    await queue.bind(exchange, routing_key=f'{self.campaign_id}.parser')
 
-            async with queue.iterator() as queue_iter:
-                async for message in queue_iter:  # type: IncomingMessage
-                    async with message.process():
-                        logger.info(f"Message received: {message.body.decode()}")
-                        try:
-                            await self.callback(message)
-                        except Exception as e:
-                            logger.error(f"Error occurred: {e}")
-                            logger.debug("Skipping message")
-                            raise e
+                    async with queue.iterator() as queue_iter:
+                        async for message in queue_iter:  # type: IncomingMessage
+                            async with message.process():
+                                logger.info(f"Message received: {message.body.decode()}")
+                                await self.callback(message)
+            except Exception as e:
+                logger.error(f"Error consuming message: {e}\n{traceback.format_exc()}")
+                await asyncio.sleep(self.period)
+                continue
