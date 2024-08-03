@@ -30,23 +30,23 @@ class TargetMessageEventHandler:
         event = NewTargetMessage(**json.loads(message.body.decode()))
         logger.info(f"New target message received: {event}")
 
-        chat = await self.chats_repo.get_by_telegram_chat_id(event.chat_id)
+        try:
+            telegram_chat_id = (await self.app.get_chat(event.username)).id
+        except Exception as e:
+            logger.error(f"Error getting chat: {e}")
+            return
+
+        chat = await self.chats_repo.get_by_telegram_chat_id(telegram_chat_id)
         if chat:
             logger.info(f"Chat already exists: {chat}")
             return
-
-        await asyncio.sleep(15)
-
-        sent_message = await self.app.send_message(chat_id=event.username, text=self.welcome_message)
-
-        logger.debug(f"Welcome message sent: {sent_message}")
 
         chat_id = str(uuid.uuid4())
         await self.chats_repo.create(
             ChatCreateDTO(
                 id=chat_id,
                 campaign_id=self.campaign_id,
-                telegram_chat_id=sent_message.chat.id,
+                telegram_chat_id=telegram_chat_id,
                 worker_id=self.worker_id,
                 username=event.username,
                 status="active",
@@ -57,9 +57,14 @@ class TargetMessageEventHandler:
 
         logger.debug("Chat created")
 
+        await asyncio.sleep(15)
+
+        sent_message = await self.app.send_message(chat_id=event.username, text=self.welcome_message)
+
+        logger.debug(f"Welcome message sent: {sent_message}")
+
         await self.messages_repo.create(
             MessageCreateDTO(
-                id=str(uuid.uuid4()),
                 chat_id=chat_id,
                 text=self.welcome_message,
                 is_outgoing=True,

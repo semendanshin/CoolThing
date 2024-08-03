@@ -94,17 +94,17 @@ async def main():
 
     incoming_message_handler.register_handlers(app)
 
-    await listener.start()
-
     await app.start()
     logger.info("Bot started")
 
+    await listener.start()
+
     await idle()
+
+    await listener.stop()
 
     logger.info("Bot stopped")
     await app.stop()
-
-    await listener.stop()
 
 
 if __name__ == "__main__":
