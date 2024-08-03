@@ -18,6 +18,12 @@ Authentication
     </div>
     <button type="button" onclick="validateAndRedirect()">Submit</button>
     <script>
+        document.getElementById('auth-code').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                validateAndRedirect();
+            }
+        });
+
         function validateAndRedirect() {
             const url = '/auth';
             const authCode = document.getElementById('auth-code').value;
