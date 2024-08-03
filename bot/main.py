@@ -36,7 +36,6 @@ logging.getLogger("httpcore").setLevel(logging.WARNING)
 @dataclass
 class RabbitListener:
     url: str
-    campaign_id: str
     callback: handler
 
     period: int = 5
@@ -96,9 +95,9 @@ class RabbitListener:
 
             exchange = await channel.declare_exchange('campaign_exchange', ExchangeType.TOPIC)
 
-            queue_name = f'{self.campaign_id}_observers'
+            queue_name = f'notifications'
             queue = await channel.declare_queue(queue_name, durable=True)
-            await queue.bind(exchange, routing_key=f'{self.campaign_id}.parser')
+            await queue.bind(exchange, routing_key=f'*.parser')
 
             async with queue.iterator() as queue_iter:
                 async for message in queue_iter:  # type: IncomingMessage
@@ -176,7 +175,6 @@ async def main():
                f"{settings.rabbit.host}:{settings.rabbit.port}/{settings.rabbit.vhost}")
     rabbit_listener = RabbitListener(
         url=rmq_url,
-        campaign_id=settings.rabbit.campaign_id,
         callback=rabbit_handler.callback,
     )
 
