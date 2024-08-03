@@ -55,6 +55,7 @@ async def main():
             api_key=settings.openai.api_key,
             model=settings.openai.model,
             assistant_id=settings.openai.assistant,
+            proxy=settings.openai.proxy,
         )
     else:
         gpt_repo = GPTRepository(
