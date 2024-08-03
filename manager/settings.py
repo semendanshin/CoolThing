@@ -25,7 +25,6 @@ class RabbitSettings(BaseSettings):
     user: str
     password: str
     vhost: str
-    campaign_id: str
 
 
 class OpenAISettings(BaseSettings):

@@ -75,7 +75,6 @@ class ManageBotsUseCase:
                 "user": self.rabbit_settings.user,
                 "password": self.rabbit_settings.password,
                 "vhost": self.rabbit_settings.vhost,
-                "campaign_id": manager_settings.campaign_id,
             },
             "openai": {
                 "model": manager_settings.model,

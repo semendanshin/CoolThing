@@ -83,7 +83,7 @@ async def main():
 
     listener = RabbitListener(
         url=rmq_url,
-        campaign_id=settings.rabbit.campaign_id,
+        campaign_id=settings.campaign_id,
         callback=target_message_use_case.new_target_message,
     )
 
