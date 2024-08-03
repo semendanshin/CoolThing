@@ -81,6 +81,7 @@ class ManageBotsUseCase:
                 "api_key": manager_settings.token,
                 "service_prompt": manager_settings.service_prompt,
                 "assistant": manager_settings.assistant,
+                "proxy": manager_settings.openai_proxy,
             },
             "db": {
                 "host": self.db_settings.host,

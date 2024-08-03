@@ -62,6 +62,7 @@ async def main():
             api_key=settings.openai.api_key,
             model=settings.openai.model,
             service_prompt=settings.openai.service_prompt,
+            proxy=settings.openai.proxy,
         )
 
     gpt_use_case = GPTUseCase(
