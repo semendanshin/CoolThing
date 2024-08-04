@@ -4,6 +4,7 @@ import signal
 from logging import getLogger
 from pathlib import Path
 
+import aiodocker
 import docker
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
@@ -11,7 +12,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from domain.worker_settings import RabbitMQSettings
 from infrastructure.repositories.sqlalchemy import SQLAlchemyWorkerRepository
 from infrastructure.repositories.sqlalchemy.bot_settings import SQLAlchemyBotSettingsRepository
-from infrastructure.repositories.docker.containers import DockerAPIRepository
+from infrastructure.repositories.docker.containers import DockerAPIRepository, AsyncDockerAPIRepository
 from settings import settings
 from usecases.container_manager import ManageBotsUseCase
 
@@ -46,9 +47,16 @@ class GracefulKiller:
 async def main():
     scheduler = AsyncIOScheduler()
 
-    client = docker.from_env()
+    # client = docker.from_env()
+    #
+    # container_manager = DockerAPIRepository(
+    #     client=client,
+    #     root_config_path=settings.watchdog.root_config_path,
+    # )
 
-    container_manager = DockerAPIRepository(
+    client = aiodocker.Docker()
+
+    container_manager = AsyncDockerAPIRepository(
         client=client,
         root_config_path=settings.watchdog.root_config_path,
     )

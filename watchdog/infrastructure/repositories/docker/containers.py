@@ -2,8 +2,9 @@ from dataclasses import dataclass, field
 from logging import getLogger
 from pathlib import Path
 
+from aiodocker import Docker
 from docker import DockerClient
-from docker.types import Mount, LogConfig, NetworkingConfig, EndpointConfig
+from docker.types import Mount, LogConfig
 
 from abstractions.repositories.container_manager import ContainerManagerInterface, Bot
 
@@ -86,3 +87,76 @@ class DockerAPIRepository(ContainerManagerInterface):
 
         container = self.client.containers.get(bot.container_id)
         return container.status == "running"
+
+
+@dataclass
+class AsyncDockerAPIRepository(ContainerManagerInterface):
+    client: Docker
+
+    root_config_path: Path
+
+    network_name: str = "coolthing_bridge"
+    config_file_destination: Path = Path("/app/settings.json")
+    fluentd_address: str = "localhost:24224"
+
+    _containers: dict[str, Bot] = field(default_factory=dict)
+
+    async def start_container(self, worker_id: str, image: str, config_path: Path) -> None:
+        logger.info(f"Starting container with image {image} and config {config_path}")
+
+        container_name = f"{image}-{worker_id}"
+        container = await self.client.containers.create_or_replace(
+            name=container_name,
+            config={
+                "Image": image,
+                "HostConfig": {
+                    "AutoRemove": True,
+                    "Binds": [
+                        f"{self.root_config_path / config_path.name}:{self.config_file_destination}:ro"
+                    ],
+                    "LogConfig": {
+                        "Type": "fluentd",
+                        "Config": {
+                            "fluentd-address": self.fluentd_address,
+                            "tag": "{0}.{1}".format(image, worker_id)
+                        },
+                    },
+                    "NetworkMode": self.network_name,
+                },
+                "Mounts": [
+                    {
+                        "Type": "bind",
+                        "Source": str(self.root_config_path / config_path.name),
+                        "Destination": str(self.config_file_destination),
+                        "Mode": "ro"
+                    }
+                ],
+            },
+        )
+        await container.start()
+
+        bot = Bot(
+            id=worker_id,
+            name=container_name,
+            status="running",
+            config_path=config_path,
+            container_id=container.id
+        )
+
+        self._containers[worker_id] = bot
+
+        return container.id
+
+    async def stop_container(self, worker_id: str) -> None:
+        logger.info(f"Stopping container {worker_id}")
+        bot = self._containers.pop(worker_id, None)
+        if not bot:
+            return
+        container = await self.client.containers.get(
+            container_id=bot.container_id
+        )
+        await container.stop()
+        await container.delete()
+
+    async def get_running_containers(self) -> list[Bot]:
+        return list(self._containers.values())
