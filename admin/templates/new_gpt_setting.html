@@ -3,7 +3,7 @@
 {% block title %}GPT Setting{% endblock %}
 
 {% block head %}
-    <link href="/static/form.css" rel="stylesheet">
+<link href="/static/form.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -12,31 +12,36 @@
     <p>Here you can create a new GPT Setting.</p>
     <form action="/gpt" method="post">
         <div class="row">
-            <label for="model" class="field-label">Model</label>
-            <input class="input-field" id="model" name="model" required>
+            <label for="model" class="field-label required">Model</label>
+            <input class="input-field" id="model" name="model"
+                   placeholder="gpt-3.5-turbo" required>
         </div>
         <div class="row">
-            <label for="token" class="field-label">Token</label>
-            <input class="input-field" id="token" name="token" required>
+            <label for="token" class="field-label required">Token</label>
+            <input class="input-field" id="token" name="token"
+                   placeholder="sk_0A9p3q4r5s6t3dH2Gd" required>
         </div>
         <div class="row">
             <label for="assistant" class="field-label">Assistant ID</label>
-            <input class="input-field" id="assistant" name="assistant">
+            <input class="input-field" id="assistant" name="assistant"
+                   placeholder="asst_0A9p3q4r5s6t3dH2Gd">
         </div>
         <div class="row">
             <label for="service_prompt" class="field-label">Service Prompt</label>
-            <textarea class="input-field" id="service_prompt" name="service_prompt"></textarea>
+            <textarea class="input-field" id="service_prompt" name="service_prompt"
+            placeholder="You are a helpful assistant..."></textarea>
         </div>
         <div class="row">
             <label for="proxy" class="field-label">Proxy</label>
-            <input class="input-field" id="proxy" name="proxy">
+            <input class="input-field" id="proxy" name="proxy"
+                   placeholder="socks5://username:password@host:port">
         </div>
         <div class="row">
             <input type="submit" value="Save Changes" class="submit-button">
         </div>
     </form>
     <script>
-        document.querySelector('form').addEventListener('submit', function(event) {
+        document.querySelector('form').addEventListener('submit', function (event) {
             const servicePrompt = document.querySelector('#service_prompt').value;
             const assistant = document.querySelector('#assistant').value;
             if (!servicePrompt && !assistant) {

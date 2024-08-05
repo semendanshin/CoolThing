@@ -3,7 +3,7 @@
 {% block title %}GPT Setting{% endblock %}
 
 {% block head %}
-    <link href="/static/form.css" rel="stylesheet">
+<link href="/static/form.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -21,15 +21,18 @@
         </div>
         <div class="row">
             <label for="assistant" class="field-label">Assistant ID</label>
-            <input class="input-field" id="assistant" name="assistant" value="{{ gpt_setting.assistant }}">
+            <input class="input-field" id="assistant" name="assistant" value="{{ gpt_setting.assistant }}"
+            placeholder="asst_0A9p3q4r5s6t3dH2Gd">
         </div>
         <div class="row">
             <label for="service_prompt" class="field-label">Service Prompt</label>
-            <textarea class="input-field" id="service_prompt" name="service_prompt">{{ gpt_setting.service_prompt }}</textarea>
+            <textarea class="input-field" id="service_prompt"
+                      name="service_prompt">{{ gpt_setting.service_prompt }}</textarea>
         </div>
         <div class="row">
             <label for="proxy" class="field-label">Proxy</label>
-            <input class="input-field" id="proxy" name="proxy" value="{{ gpt_setting.proxy }}">
+            <input class="input-field" id="proxy" name="proxy" value="{{ gpt_setting.proxy }}"
+                   placeholder="socks5://username:password@host:port">
         </div>
         <div class="row">
             <input type="submit" value="Save Changes" class="submit-button">
