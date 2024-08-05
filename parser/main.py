@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import re
 
 from nltk import SnowballStemmer
 from pyrogram import Client
@@ -58,11 +59,29 @@ async def main():
         campaign_id=settings.rabbit.campaign_id,
     )
 
+    if settings.app.proxy:
+        scheme, username, password, host, port = re.match(
+            r"^(?P<scheme>http|socks5|socks4)://(?:(?P<username>[^:]+):(?P<password>[^@]+)@)?(?P<host>[^:]+):(?P<port>\d+)$",
+            settings.app.proxy
+        ).groups()
+        proxy = {
+            "scheme": scheme,
+            "hostname": host,
+            "port": int(port),
+        }
+        if username:
+            proxy["username"] = username
+            proxy["password"] = password
+        logger.debug(f"Using proxy: {proxy}")
+    else:
+        proxy = None
+
     app = Client(
         name="my_account",
         api_id=settings.app.api_id,
         api_hash=settings.app.api_hash,
         session_string=settings.app.session_string,
+        proxy=proxy,
     )
 
     main_handler.register_handlers(app)

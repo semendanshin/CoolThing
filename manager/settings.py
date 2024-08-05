@@ -12,6 +12,24 @@ class AppSettings(BaseSettings):
     api_id: int
     api_hash: str
     session_string: str
+    proxy: Optional[str] = None
+
+    @field_validator('proxy')
+    @classmethod
+    def validate_proxy(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+
+        protocol_regex = r'^(http|socks4|socks5)://'
+        body_regex = r'\w+://(\w+:\w+@)?[\w.-]+:\d+'
+
+        if re.match(body_regex, value):
+            if re.match(protocol_regex, value):
+                return value
+            else:
+                raise ValueError('Available protocols: http, socks4, socks5')
+        else:
+            raise ValueError('Invalid proxy format')
 
 
 class DBSettings(BaseSettings):
