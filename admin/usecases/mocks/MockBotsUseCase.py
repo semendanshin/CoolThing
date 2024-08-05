@@ -1,99 +1,54 @@
-from domain.schemas.bots import ManagerBotOverview, ParserBotOverview, ManagerBotDetails, ParserBotDetails
+from domain.dto.worker import WorkerCreateDTO, WorkerUpdateDTO
+from domain.models import Worker
+# from domain.schemas.bots import ManagerBotOverview, ParserBotOverview, ManagerBotDetails, ParserBotDetails
 from abstractions.usecases import BotsUseCaseInterface
 
 
 class MockBotsUseCase(BotsUseCaseInterface):
+    async def get_bot(self, bot_id: str) -> Worker:
+        pass
+
+    async def update(self, bot_id: str, schema: WorkerUpdateDTO) -> None:
+        pass
+
+    async def send_code(self, app_id: int, app_hash: str, phone: str) -> None:
+        pass
+
+    async def authorize(self, app_id: int, code: str) -> str:
+        pass
+
+    async def authorize_2fa(self, app_id: int, password: str) -> str:
+        pass
+
+    async def create(self, schema: WorkerCreateDTO) -> None:
+        pass
+
     parsers = False
 
-    async def get_manager_bots(self) -> list[ManagerBotOverview]:
+    async def get_all_bots(self) -> list[Worker]:
         return [
-            ManagerBotOverview(
-                nickname="@nedvigadlyacseh",
-                scope="estate",
-                messages_count=150,
-                chats_ratio="15/30",
+            Worker(
+                id="id",
+                app_id="app_id",
+                app_hash="app_hash",
+                session_string="session_string",
                 proxy="0.0.0.0",
-                proxy_status=True,
-                unread_messages=10,
+                campaign_id='1',
+                role='Manager',
+                status='active',
+                username='@adsforyou',
+                bio='basic bio',
             ),
-            ManagerBotOverview(
-                nickname="@adsforyou",
-                scope="advertisement",
-                messages_count=150,
-                chats_ratio="15/30",
+            Worker(
+                id='id',
+                app_id='app_id',
+                app_hash='app_hash',
+                session_string="session_string",
                 proxy="0.0.0.0",
-                proxy_status=False,
-                unread_messages=10,
-            ),
-            ManagerBotOverview(
-                nickname="@ManagerAlfabank",
-                scope="money",
-                messages_count=150,
-                chats_ratio="15/30",
-                proxy="0.0.0.0",
-                proxy_status=True,
-                unread_messages=10,
+                campaign_id='2',
+                role='Parser',
+                status='active',
+                username='@newnickname',
+                bio='basic bio',
             ),
         ]
-
-    async def get_parser_bots(self) -> list[ParserBotOverview]:
-        return [
-            ParserBotOverview(
-                nickname="@nedvigadlyacseh",
-                scope="estate",
-                positive_keywords=["positive", "good"],
-                negative_keywords=["negative", "bad"],
-                chats=["chat1", "chat2"],
-                proxy="0.0.0.0",
-                proxy_status=True,
-            ),
-            ParserBotOverview(
-                nickname="@adsforyou",
-                scope="advertisement",
-                positive_keywords=["positive", "good"],
-                negative_keywords=["negative", "bad"],
-                chats=["chat1", "chat2"],
-                proxy="0.0.0.0",
-                proxy_status=False,
-            ),
-            ParserBotOverview(
-                nickname="@ManagerAlfabank",
-                scope="money",
-                positive_keywords=["positive", "good"],
-                negative_keywords=["negative", "bad"],
-                chats=["chat1", "chat2"],
-                proxy="0.0.0.0",
-                proxy_status=True,
-            ),
-        ]
-
-    async def connect_bot_by_code(self, code: str) -> bool:
-        return False
-
-    async def connect_bot_by_password(self, password: str) -> bool:
-        return False
-
-    async def get_bot(self, bot_username: str) -> ManagerBotDetails | ParserBotDetails:
-        if self.parsers:
-            return ParserBotDetails(
-                nickname="@adsforyou",
-                bio="I am a bot for ads",
-                scope="advertisement",
-                positive_keywords=["positive", "good"],
-                negative_keywords=["negative", "bad"],
-                chats=["chat1", "chat2"],
-                proxy="0.0.0.0",
-                avatar="https://example.com/avatar.jpg",
-            )
-
-        return ManagerBotDetails(
-            nickname="@ManagerAlfabank",
-            bio="I am a bot for money",
-            scope="money",
-            chats_count=10,
-            proxy="0.0.0.0",
-            api_key="api_key",
-            chatgpt_model="chatgpt_model",
-            chatgpt_assistant="chatgpt_assistant",
-            avatar="https://example.com/avatar.jpg",
-        )

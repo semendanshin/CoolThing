@@ -3,8 +3,12 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
 
+from abstractions.usecases import BotsUseCaseInterface
+from abstractions.usecases.CampaingsUseCaseInterface import CampaignsUseCaseInterface
 from abstractions.usecases.ChatsUseCaseInterface import ChatsUseCaseInterface
 from abstractions.usecases.MessagesUseCaseInterface import MessagesUseCaseInterface
+from dependencies.usecases.bots import get_bots_usecase
+from dependencies.usecases.campaign import get_campaigns_usecase
 from dependencies.usecases.chats import get_chats_service
 from dependencies.usecases.messages import get_messages_service
 from domain.dto.chat import UpdateAutoReplyDTO, SendMessageDTO
@@ -23,14 +27,21 @@ templates = Jinja2Templates(directory='templates')
 async def get_all_chats(
         request: Request,
         chats_service: ChatsUseCaseInterface = Depends(get_chats_service),
+        bots_service: BotsUseCaseInterface = Depends(get_bots_usecase),
+        campaigns_usecase: CampaignsUseCaseInterface = Depends(get_campaigns_usecase),
 ) -> HTMLResponse:
     chats = await chats_service.get_all_chats()
+    bots = [await bots_service.get_by_username(chat.bot_nickname) for chat in chats]
+    campaigns = await campaigns_usecase.get_campaigns()
+    print(chats)
     return templates.TemplateResponse(
         request=request,
         name='chats.html',
         context={
             'chat_items': chats,
             'chat': None,
+            'bots': bots,
+            'campaigns': campaigns,
         }
     )
 

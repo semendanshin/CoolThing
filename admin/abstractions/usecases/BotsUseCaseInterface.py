@@ -12,11 +12,7 @@ class BotsUseCaseInterface(ABC):
         ...
 
     @abstractmethod
-    async def get_manager_bots(self) -> list[Worker]:
-        ...
-
-    @abstractmethod
-    async def get_parser_bots(self) -> list[Worker]:
+    async def get_all_bots(self) -> list[Worker]:
         ...
 
     @abstractmethod
@@ -37,4 +33,8 @@ class BotsUseCaseInterface(ABC):
 
     @abstractmethod
     async def create(self, schema: WorkerCreateDTO) -> None:
+        ...
+
+    @abstractmethod
+    async def get_by_username(self, username: str) -> Worker:
         ...
