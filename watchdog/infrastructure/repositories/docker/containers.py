@@ -81,7 +81,7 @@ class AsyncDockerAPIRepository(ContainerManagerInterface):
         container = await self.client.containers.get(
             container_id=bot.container_id
         )
-        await container.delete()
+        await container.delete(force=True)
 
     async def get_running_containers(self) -> list[WorkerContainer]:
         return list(self._containers.values())
