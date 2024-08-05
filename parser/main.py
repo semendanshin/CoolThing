@@ -72,7 +72,7 @@ async def main():
         if username:
             proxy["username"] = username
             proxy["password"] = password
-        logger.debug(f"Using proxy: {proxy}")
+        logger.info(f"Using proxy: {proxy}")
     else:
         proxy = None
 

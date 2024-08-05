@@ -67,7 +67,8 @@ class ManageBotsUseCase:
                 "id": manager_settings.id,
                 "api_id": manager_settings.app_id,
                 "api_hash": manager_settings.app_hash,
-                "session_string": manager_settings.session_string
+                "session_string": manager_settings.session_string,
+                "proxy": manager_settings.proxy,
             },
             "rabbit": {
                 "host": self.rabbit_settings.host,
@@ -100,7 +101,8 @@ class ManageBotsUseCase:
                 "id": parser_settings.id,
                 "api_id": parser_settings.app_id,
                 "api_hash": parser_settings.app_hash,
-                "session_string": parser_settings.session_string
+                "session_string": parser_settings.session_string,
+                "proxy": parser_settings.proxy,
             },
             "rabbit": {
                 "host": self.rabbit_settings.host,
