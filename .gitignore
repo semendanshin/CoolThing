@@ -162,3 +162,4 @@ cython_debug/
 .idea/
 **/*settings.json
 !**/example.settings.json
+**/.DS_Store
