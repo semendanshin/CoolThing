@@ -135,12 +135,13 @@
                         <p><strong>App ID:</strong> {{ bot.app_id }}</p>
                         <p><strong>Campaign:</strong> {{ bot.campaign_id }}</p>
                         <p><strong>Role:</strong> {{ bot.role|capitalize }}</p>
+                        <p><strong>Proxy:</strong> {% if bot.proxy != None %}{{ bot.proxy }}{% else %}No proxy{% endif %}</p>
                         <p><strong>Status:</strong>
-                            {% if bot.status %}
-                                <span class="status-up">Active</span>
-                            {% else %}
-                                <span class="status-down">Stopped</span>
-                            {% endif %}
+                        {% if bot.status == 'active' %}
+                            <span class="status-up">{{ bot.status|capitalize }}</span>
+                        {% else %}
+                            <span class="status-down">{{ bot.status|capitalize }}</span>
+                        {% endif %}
                         </p>
                     </div>
                 </a>

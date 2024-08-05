@@ -7,7 +7,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100dvh;
 }
 
 /* Authentication Container */
@@ -36,11 +36,16 @@ body {
     font-weight: bold;
 }
 
-.form-group input[type="text"] {
+.form-group input {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.error-message {
+    color: red;
 }
 
 button {

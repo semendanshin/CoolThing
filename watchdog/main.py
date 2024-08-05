@@ -4,6 +4,7 @@ import signal
 from logging import getLogger
 from pathlib import Path
 
+import aiodocker
 import docker
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
@@ -11,7 +12,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from domain.worker_settings import RabbitMQSettings
 from infrastructure.repositories.sqlalchemy import SQLAlchemyWorkerRepository
 from infrastructure.repositories.sqlalchemy.bot_settings import SQLAlchemyBotSettingsRepository
-from infrastructure.repositories.docker.containers import DockerAPIRepository
+from infrastructure.repositories.docker.containers import AsyncDockerAPIRepository
 from settings import settings
 from usecases.container_manager import ManageBotsUseCase
 
@@ -46,9 +47,9 @@ class GracefulKiller:
 async def main():
     scheduler = AsyncIOScheduler()
 
-    client = docker.from_env()
+    client = aiodocker.Docker()
 
-    container_manager = DockerAPIRepository(
+    container_manager = AsyncDockerAPIRepository(
         client=client,
         root_config_path=settings.watchdog.root_config_path,
     )
@@ -71,7 +72,7 @@ async def main():
 
     manage_bot_use_case = ManageBotsUseCase(
         container_manager=container_manager,
-        bot_repository=bot_repository,
+        worker_settings_repository=bot_repository,
         worker_repository=worker_repository,
         rabbit_settings=RabbitMQSettings(
             host=settings.rabbit.host,
@@ -88,6 +89,7 @@ async def main():
         manage_bot_use_case.execute,
         trigger="interval",
         seconds=settings.watchdog.interval_seconds,
+        max_instances=1,
     )
 
     scheduler.start()

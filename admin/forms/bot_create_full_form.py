@@ -8,7 +8,7 @@ def bot_create_full_form(
         app_id: str = Form(...),
         app_hash: str = Form(...),
         session_string: str = Form(...),
-        proxy: str = Form(...),
+        proxy: str = Form(default=None),
         role: str = Form(...),
         status: str = Form(default=""),
         campaign_id: str = Form(None),

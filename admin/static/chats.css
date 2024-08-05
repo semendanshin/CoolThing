@@ -276,7 +276,7 @@ button[disabled] {
 
     /* Show chat list if no active chat */
     .container.no-active-chat .chat-list {
-        display: block;
+        display: flex;
     }
 
     /* Hide chat content if no active chat */

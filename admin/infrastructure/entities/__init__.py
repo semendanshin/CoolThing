@@ -38,6 +38,7 @@ class GPT(BaseEntity):
     assistant: Mapped[str] = mapped_column(String, nullable=True)
     token: Mapped[str] = mapped_column(String, nullable=False)
     service_prompt: Mapped[str] = mapped_column(String, nullable=True)
+    proxy: Mapped[str] = mapped_column(String, nullable=True)
 
 
 class Campaign(BaseEntity):
@@ -49,6 +50,8 @@ class Campaign(BaseEntity):
     minus_keywords: Mapped[list[str]] = mapped_column(JSONB, nullable=False)
     gpt_settings_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('gpt_settings.id'), nullable=False)
     scope: Mapped[str] = mapped_column(String, nullable=False)
+    new_lead_wait_interval_seconds: Mapped[str] = mapped_column(String, nullable=False, server_default='180-300')
+    chat_answer_wait_interval_seconds: Mapped[str] = mapped_column(String, nullable=False, server_default='15-30')
 
 
 class Chat(BaseEntity):

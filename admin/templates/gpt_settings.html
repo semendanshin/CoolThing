@@ -20,7 +20,12 @@
             <div class="item-card">
                 <h3>{{ gpt_setting.id }}</h3>
                 <p><strong>Model:</strong> {{ gpt_setting.model }}</p>
+                {% if gpt_setting.assistant %}
                 <p><strong>Assistant:</strong> {{ gpt_setting.assistant }}</p>
+                {% else %}
+                <p><strong>Service Prompt:</strong> {{ gpt_setting.service_prompt }}</p>
+                {% endif %}
+                <p><strong>Proxy:</strong> {{ gpt_setting.proxy }}</p>
             </div>
         </a>
         {% endfor %}

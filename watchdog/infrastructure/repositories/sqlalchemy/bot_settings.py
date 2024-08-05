@@ -22,8 +22,9 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
             w.role,
             w.status,
             g.model,
-            g.assistant,
             g.token,
+            g.proxy AS openai_proxy,
+            g.assistant,
             g.service_prompt,
             c.welcome_message,
             c.chats,
@@ -60,8 +61,9 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
                             worker = ManagerSettings(
                                 **base.__dict__,
                                 model=row.model,
-                                assistant=row.assistant,
                                 token=row.token,
+                                openai_proxy=row.openai_proxy,
+                                assistant=row.assistant,
                                 service_prompt=row.service_prompt,
                                 welcome_message=row.welcome_message,
                             )

@@ -1,7 +1,7 @@
 import asyncio
 import json
+import traceback
 import uuid
-from contextlib import suppress
 from dataclasses import dataclass, field
 from logging import getLogger
 from pathlib import Path
@@ -20,7 +20,7 @@ PARSER_IMAGE = "tg-groups-parser"
 @dataclass
 class ManageBotsUseCase:
     container_manager: ContainerManagerInterface
-    bot_repository: BotSettingsRepositoryInterface
+    worker_settings_repository: BotSettingsRepositoryInterface
     worker_repository: WorkerRepositoryInterface
 
     rabbit_settings: RabbitMQSettings
@@ -31,35 +31,33 @@ class ManageBotsUseCase:
     _containers_settings_hashes: dict[str, int] = field(default_factory=dict, init=False)
 
     async def execute(self):
-        bots_settings = await self.bot_repository.get_active_bot_settings()
+        workers_settings, running_containers = await asyncio.gather(
+            self.worker_settings_repository.get_active_bot_settings(),
+            self.container_manager.get_running_containers()
+        )
 
-        actual_bot_ids = [bot.id for bot in bots_settings]
+        worker_ids = {worker.id for worker in workers_settings}
+        running_container_ids = {container.id for container in running_containers}
 
-        running_containers = await self.container_manager.get_running_containers()
-        running_containers_ids = [container.id for container in running_containers]
+        async def process_worker_settings(worker_settings: WorkerSettings):
+            if worker_settings.id not in self._containers_settings_hashes:
+                await self.start_bot(worker_settings)
+            else:
+                if hash(worker_settings) != self._containers_settings_hashes[worker_settings.id]:
+                    logger.info(f"Settings for {worker_settings.id} have changed, restarting container")
+                    await self.stop_container(worker_settings.id)
+                    await self.start_bot(worker_settings)
+                if not await self.container_manager.check_health(worker_settings.id):
+                    logger.warning(f"Container {worker_settings.id} is unhealthy. Restarting...")
+                    if not await self.container_manager.repair_container(worker_settings.id):
+                        logger.error(f"Failed to repair container {worker_settings.id}. Stopping...")
+                        await self.stop_container(worker_settings.id)
+                        await self.worker_repository.update_status(worker_settings.id, "stopped")
 
-        bots_to_start = [bot for bot in bots_settings if bot.id not in running_containers_ids]
-        for bot in bots_to_start:
-            logger.info(f"Starting bot: {bot.id}")
-            await self.start_bot(bot)
+        await asyncio.gather(*[process_worker_settings(worker_settings) for worker_settings in workers_settings])
 
-        containers_to_stop = [container for container in running_containers if container.id not in actual_bot_ids]
-        for container in containers_to_stop:
-            logger.info(f"Stopping bot: {container.id}")
-            await self.container_manager.stop_container(container.id)
-
-        # Compare settings hash of running containers and actual settings
-        containers_to_update = [container for container in bots_settings if
-                                self._containers_settings_hashes.get(container.id) != hash(container)]
-        for container in containers_to_update:
-            logger.info(f"Updating bot: {container.id}")
-            await self.container_manager.stop_container(container.id)
-            await self.start_bot(container)
-
-        # check health of running containers
-        # for container in running_containers:
-        #     if not await self.container_manager.check_health(container.id):
-        #         await self.container_manager.stop_container(container.id)
+        for container_id in running_container_ids - worker_ids:
+            await self.stop_container(container_id)
 
     async def _structure_manager_settings(self, manager_settings: ManagerSettings) -> dict:
         return {
@@ -67,7 +65,8 @@ class ManageBotsUseCase:
                 "id": manager_settings.id,
                 "api_id": manager_settings.app_id,
                 "api_hash": manager_settings.app_hash,
-                "session_string": manager_settings.session_string
+                "session_string": manager_settings.session_string,
+                "proxy": manager_settings.proxy,
             },
             "rabbit": {
                 "host": self.rabbit_settings.host,
@@ -75,13 +74,13 @@ class ManageBotsUseCase:
                 "user": self.rabbit_settings.user,
                 "password": self.rabbit_settings.password,
                 "vhost": self.rabbit_settings.vhost,
-                "campaign_id": manager_settings.campaign_id,
             },
             "openai": {
                 "model": manager_settings.model,
                 "api_key": manager_settings.token,
                 "service_prompt": manager_settings.service_prompt,
                 "assistant": manager_settings.assistant,
+                "proxy": manager_settings.openai_proxy,
             },
             "db": {
                 "host": self.db_settings.host,
@@ -100,7 +99,8 @@ class ManageBotsUseCase:
                 "id": parser_settings.id,
                 "api_id": parser_settings.app_id,
                 "api_hash": parser_settings.app_hash,
-                "session_string": parser_settings.session_string
+                "session_string": parser_settings.session_string,
+                "proxy": parser_settings.proxy,
             },
             "rabbit": {
                 "host": self.rabbit_settings.host,
@@ -144,10 +144,8 @@ class ManageBotsUseCase:
         if bot_settings.role not in ["manager", "parser"]:
             raise ValueError("Unknown bot role")
 
-        # create settings file from bot settings and rabbit settings
         settings_file = await self.settings_to_file(bot_settings)
 
-        # start container
         await self.container_manager.start_container(
             worker_id=bot_settings.id,
             image=MANAGER_IMAGE if bot_settings.role == "manager" else PARSER_IMAGE,
@@ -156,22 +154,21 @@ class ManageBotsUseCase:
 
         self._containers_settings_hashes[bot_settings.id] = hash(bot_settings)
 
-        # update bot status
-        # await self.worker_repository.update_status(bot_settings.id, "running")
+    async def stop_container(self, worker_id: str):
+        worker_container = await self.container_manager.get_container(worker_id)
+        try:
+            await self.container_manager.stop_container(worker_id)
+        except Exception as e:
+            logger.error(f"Error while stopping container {worker_id}: {e}\n{traceback.format_exc()}")
+        try:
+            worker_container.config_path.unlink()
+        except Exception as e:
+            logger.error(f"Error while removing config file {worker_container.config_path}: {e}\n{traceback.format_exc()}")
+        del self._containers_settings_hashes[worker_id]
 
     async def cleanup(self):
         containers = await self.container_manager.get_running_containers()
 
         logger.debug(f"Stopping containers: {containers}")
 
-        future = asyncio.gather(
-            *[self.container_manager.stop_container(container.id)
-              for container in containers],
-            return_exceptions=True
-        )
-
-        for container in containers:
-            with suppress(Exception):
-                container.config_path.unlink()
-
-        await future
+        await asyncio.gather(*[self.stop_container(container.id) for container in containers], return_exceptions=True)

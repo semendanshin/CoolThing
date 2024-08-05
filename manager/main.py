@@ -30,11 +30,29 @@ logging.getLogger("openai").setLevel(logging.WARNING)
 
 async def main():
 
+    if settings.app.proxy:
+        scheme, username, password, host, port = re.match(
+            r"^(?P<scheme>http|socks5|socks4)://(?:(?P<username>[^:]+):(?P<password>[^@]+)@)?(?P<host>[^:]+):(?P<port>\d+)$",
+            settings.app.proxy
+        ).groups()
+        proxy = {
+            "scheme": scheme,
+            "hostname": host,
+            "port": int(port),
+        }
+        if username:
+            proxy["username"] = username
+            proxy["password"] = password
+        logger.info(f"Using proxy: {proxy}")
+    else:
+        proxy = None
+
     app = Client(
         name="my_account",
         api_id=settings.app.api_id,
         api_hash=settings.app.api_hash,
         session_string=settings.app.session_string,
+        proxy=proxy,
     )
 
     db_url = (f"postgresql+asyncpg://{settings.db.user}:{settings.db.password}"
@@ -55,12 +73,14 @@ async def main():
             api_key=settings.openai.api_key,
             model=settings.openai.model,
             assistant_id=settings.openai.assistant,
+            proxy=settings.openai.proxy,
         )
     else:
         gpt_repo = GPTRepository(
             api_key=settings.openai.api_key,
             model=settings.openai.model,
             service_prompt=settings.openai.service_prompt,
+            proxy=settings.openai.proxy,
         )
 
     gpt_use_case = GPTUseCase(
@@ -83,7 +103,7 @@ async def main():
 
     listener = RabbitListener(
         url=rmq_url,
-        campaign_id=settings.rabbit.campaign_id,
+        campaign_id=settings.campaign_id,
         callback=target_message_use_case.new_target_message,
     )
 
@@ -94,17 +114,17 @@ async def main():
 
     incoming_message_handler.register_handlers(app)
 
-    await listener.start()
-
     await app.start()
     logger.info("Bot started")
 
+    await listener.start()
+
     await idle()
+
+    await listener.stop()
 
     logger.info("Bot stopped")
     await app.stop()
-
-    await listener.stop()
 
 
 if __name__ == "__main__":

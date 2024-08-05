@@ -34,6 +34,13 @@ h1 {
     margin-bottom: 5px;
 }
 
+
+.required::after {
+    content: "*";
+    color: red;
+}
+
+
 /* Field Styles */
 .input-field {
     background-color: var(--field-background);

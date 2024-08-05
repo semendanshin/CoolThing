@@ -4,8 +4,6 @@ from domain.schemas.auth import Credentials
 
 
 def auth_code_form(
-        auth_code: str = Form(...),
+        credentials: Credentials
 ) -> Credentials:
-    return Credentials(
-        auth_code=auth_code,
-    )
+    return credentials

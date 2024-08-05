@@ -1,7 +1,10 @@
 from pathlib import Path
 from typing import Type, Tuple, Optional
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict, PydanticBaseSettingsSource, JsonConfigSettingsSource
+
+import re
 
 
 class AppSettings(BaseSettings):
@@ -9,6 +12,24 @@ class AppSettings(BaseSettings):
     api_id: int
     api_hash: str
     session_string: str
+    proxy: Optional[str] = None
+
+    @field_validator('proxy')
+    @classmethod
+    def validate_proxy(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+
+        protocol_regex = r'^(http|socks4|socks5)://'
+        body_regex = r'\w+://(\w+:\w+@)?[\w.-]+:\d+'
+
+        if re.match(body_regex, value):
+            if re.match(protocol_regex, value):
+                return value
+            else:
+                raise ValueError('Available protocols: http, socks4, socks5')
+        else:
+            raise ValueError('Invalid proxy format')
 
 
 class DBSettings(BaseSettings):
@@ -25,14 +46,33 @@ class RabbitSettings(BaseSettings):
     user: str
     password: str
     vhost: str
-    campaign_id: str
 
 
 class OpenAISettings(BaseSettings):
     api_key: str
     model: str
+    proxy: Optional[str] = None
     assistant: Optional[str] = None
     service_prompt: Optional[str] = None
+
+    @field_validator('proxy')
+    @classmethod
+    def validate_proxy(cls, value: Optional[str]) -> Optional[str]:
+        if value:
+            # proxy is protocol://host:port or protocol://user:password@host:port
+            protocol_regex = r'^(http|https|socks5)://'
+            body_regex = r'\w+://(\w+:\w+@)?[\w.-]+:\d+'
+
+            # check body first to avoid unnecessary regex matching
+            if re.match(body_regex, value):
+                if re.match(protocol_regex, value):
+                    return value
+                else:
+                    raise ValueError('Available protocols: http, https, socks5')
+            else:
+                raise ValueError('Invalid proxy format')
+
+        return None
 
 
 class Settings(BaseSettings):

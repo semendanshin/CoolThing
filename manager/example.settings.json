@@ -17,8 +17,7 @@
         "port": 5672,
         "user": "guest",
         "password": "guest",
-        "vhost": "",
-        "campaign_id": ""
+        "vhost": ""
     },
     "welcome_message": "Привет! Ты там вроде что-то хотел?",
     "campaign_id": "123ed010-0152-4125-bdd1-b313d9ceeb7c",

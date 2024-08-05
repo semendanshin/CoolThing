@@ -15,11 +15,12 @@ class WorkerSettings:
 
 @dataclass(kw_only=True)
 class ManagerSettings(WorkerSettings):
-    model: str
-    assistant: str
-    token: str
-    service_prompt: str
     welcome_message: str
+    model: str
+    token: str
+    openai_proxy: str
+    assistant: str
+    service_prompt: str
 
     def __hash__(self):
         return hash(
@@ -34,6 +35,7 @@ class ManagerSettings(WorkerSettings):
                 self.status,
                 self.model,
                 self.assistant,
+                self.openai_proxy,
                 self.token,
                 self.service_prompt,
                 self.welcome_message,
