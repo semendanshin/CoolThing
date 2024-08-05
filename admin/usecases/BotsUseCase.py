@@ -13,6 +13,9 @@ from domain.models import Worker
 class BotsUseCase(
     BotsUseCaseInterface,
 ):
+    async def get_by_username(self, username: str) -> Worker:
+        return await self.workers_repo.get_by_username(username)
+
     session_repo: TelegramSessionRepositoryInterface
 
     async def send_code(self, app_id: int, app_hash: str, phone: str) -> None:
@@ -31,11 +34,8 @@ class BotsUseCase(
     async def get_bot(self, bot_id: str) -> Worker:
         return await self.workers_repo.get(bot_id)
 
-    async def get_manager_bots(self) -> list[Worker]:
-        return await self.workers_repo.get_by_role('manager')
-
-    async def get_parser_bots(self) -> list[Worker]:
-        return await self.workers_repo.get_by_role('parser')
+    async def get_all_bots(self) -> list[Worker]:
+        return await self.workers_repo.get_all()
 
     async def update(self, bot_id: str, schema: WorkerUpdateDTO) -> None:
         await self.workers_repo.update(bot_id, schema)

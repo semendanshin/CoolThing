@@ -58,7 +58,7 @@ class ChatsRepository(
                 m.text as last_message,
                 c.auto_reply as auto_reply
             FROM chats c
-            JOIN (
+            LEFT JOIN (
                 SELECT distinct on (chat_id) chat_id, text, created_at
                 FROM messages
                 ORDER BY chat_id, created_at DESC
@@ -73,13 +73,14 @@ class ChatsRepository(
         async with self.session_maker() as session:
             result = await session.execute(statement)
             rows = result.fetchall()
+        print(rows)
         return [
             ChatInfo(
                 id=str(row.id),
                 bot_nickname=row.bot_nickname,
                 user_nickname=row.user_nickname,
                 user_id=row.user_id,
-                last_message=row.last_message,
+                last_message=row.last_message if row.last_message else "",
                 status="online",
                 auto_reply=row.auto_reply,
             )
