@@ -5,10 +5,12 @@ import re
 from pyrogram import Client, idle
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
+from helpers.message import SendingMessageHelper
 from infrastructure.handlers.incoming import IncomingMessageHandler
 from infrastructure.openai import GPTRepository, AssistantRepository
 from infrastructure.rabbit import RabbitListener
 from infrastructure.sqlalchemy import SQLAlchemyMessagesRepository, SQLAlchemyChatsRepository
+from infrastructure.sqlalchemy.abstract import AbstractSQLAlchemyUOW
 from settings import settings
 from use_cases.gpt_response import GPTUseCase
 from use_cases.target_message import TargetMessageEventHandler
@@ -88,6 +90,17 @@ async def main():
         messages_repo=messages_repo,
         gpt_repo=gpt_repo,
         chats_repo=chats_repo,
+        message_helper=SendingMessageHelper(
+            app=app,
+        ),
+        uow=AbstractSQLAlchemyUOW(
+            session_maker=session_maker,
+        ),
+        typing_sleep_from=settings.batch.typing_sleep_from,
+        typing_sleep_to=settings.batch.typing_sleep_to,
+        sending_sleep_from=settings.batch.sending_sleep_from,
+        sending_sleep_to=settings.batch.sending_sleep_to,
+        batching_sleep=settings.batch.batching_sleep,
     )
 
     target_message_use_case = TargetMessageEventHandler(
