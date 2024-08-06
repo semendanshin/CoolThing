@@ -104,9 +104,10 @@ class AbstractSQLAlchemyUOW(
     @asynccontextmanager
     async def begin(self, *repositories: AbstractSQLAlchemyRepository) -> 'AbstractSQLAlchemyUOW':
         async with self.session_maker() as session:
-            async with session.begin():
-                session_maker = self.create_fake_session_maker(session)
-                for repository in repositories:
-                    repository.session_maker = session_maker
+            async with session:
+                async with session.begin():
+                    session_maker = self.create_fake_session_maker(session)
+                    for repository in repositories:
+                        repository.session_maker = session_maker
 
-                yield self
+                    yield self
