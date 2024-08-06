@@ -21,13 +21,15 @@ class SQLAlchemyChatsRepository(
 ):
     async def get_by_telegram_chat_id(self, telegram_chat_id: int) -> Optional[Chat]:
         async with self.session_maker() as session:
-            result = await session.execute(select(Chat).filter(Chat.telegram_chat_id == telegram_chat_id))
-            return result.scalar_one_or_none()
+            async with session.begin():
+                result = await session.execute(select(Chat).filter(Chat.telegram_chat_id == telegram_chat_id))
+                return result.scalar_one_or_none()
 
     async def get_by_worker_id(self, worker_id: str) -> list[Chat]:
         async with self.session_maker() as session:
-            result = await session.execute(select(Chat).filter(Chat.worker_id == worker_id))
-            return result.scalars().all()
+            async with session.begin():
+                result = await session.execute(select(Chat).filter(Chat.worker_id == worker_id))
+                return [x for x in result.scalars().all()]
 
     def entity_to_model(self, entity: Chat) -> ChatModel:
         return ChatModel(

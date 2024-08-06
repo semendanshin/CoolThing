@@ -96,10 +96,8 @@ async def main():
         uow=AbstractSQLAlchemyUOW(
             session_maker=session_maker,
         ),
-        typing_sleep_from=settings.batch.typing_sleep_from,
-        typing_sleep_to=settings.batch.typing_sleep_to,
-        sending_sleep_from=settings.batch.sending_sleep_from,
-        sending_sleep_to=settings.batch.sending_sleep_to,
+        typing_and_sending_sleep_from=settings.batch.typing_and_sending_sleep_from,
+        typing_and_sending_sleep_to=settings.batch.typing_and_sending_sleep_to,
         batching_sleep=settings.batch.batching_sleep,
     )
 
@@ -110,6 +108,11 @@ async def main():
         welcome_message=settings.welcome_message,
         campaign_id=settings.campaign_id,
         worker_id=settings.app.id,
+        welcome_sleep_from=settings.batch.welcome_sleep_from,
+        welcome_sleep_to=settings.batch.welcome_sleep_to,
+        uow=AbstractSQLAlchemyUOW(
+            session_maker=session_maker,
+        ),
     )
 
     rmq_url = (f"amqp://{settings.rabbit.user}:{settings.rabbit.password}@"

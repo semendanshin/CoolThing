@@ -26,11 +26,8 @@ class GPTUseCase:
 
     uow: UOWInterface
 
-    typing_sleep_from: int
-    typing_sleep_to: int
-
-    sending_sleep_from: int
-    sending_sleep_to: int
+    typing_and_sending_sleep_from: int
+    typing_and_sending_sleep_to: int
 
     batching_sleep: int
 
@@ -83,25 +80,29 @@ class GPTUseCase:
                 return
 
             self.waiting_for_new_messages[telegram_chat_id] = datetime.now() + timedelta(
-                    seconds=self.batching_sleep)
+                seconds=self.batching_sleep)
 
             while datetime.now() <= self.waiting_for_new_messages[telegram_chat_id]:
                 await asyncio.sleep(1)
 
-            await asyncio.sleep(randint(self.typing_sleep_from, self.typing_sleep_to))
+            await asyncio.sleep(self.get_random_sleep())
             await self.message_helper.set_typing_status(
                 chat_id=message.chat.id,
             )
 
-            sleep = asyncio.sleep(randint(self.sending_sleep_from, self.sending_sleep_to))
+            sleep = asyncio.sleep(self.get_random_sleep())
+            task = asyncio.create_task(sleep)
 
             response = await self._generate_response(chat_id=chat.id)
 
             await self._save_message(chat.id, response, is_outgoing=True)
 
-            await sleep
+            await task
 
             await self.message_helper.send_message(
                 chat_id=message.chat.id,
                 text=response,
             )
+
+    def get_random_sleep(self):
+        return randint(self.typing_and_sending_sleep_from, self.typing_and_sending_sleep_to)

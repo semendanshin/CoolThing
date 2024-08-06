@@ -33,11 +33,11 @@ class AppSettings(BaseSettings):
 
 
 class BatchSettings(BaseSettings):
-    typing_sleep_from: int
-    typing_sleep_to: int
+    typing_and_sending_sleep_from: int
+    typing_and_sending_sleep_to: int
 
-    sending_sleep_from: int
-    sending_sleep_to: int
+    welcome_sleep_from: int
+    welcome_sleep_to: int
 
     batching_sleep: int
 
