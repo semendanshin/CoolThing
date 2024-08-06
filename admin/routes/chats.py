@@ -31,9 +31,9 @@ async def get_all_chats(
         campaigns_usecase: CampaignsUseCaseInterface = Depends(get_campaigns_usecase),
 ) -> HTMLResponse:
     chats = await chats_service.get_all_chats()
-    bots = [await bots_service.get_by_username(chat.bot_nickname) for chat in chats]
+    bots_usernames = {chat.bot_nickname for chat in chats}
+    bots = [await bots_service.get_by_username(bot_username) for bot_username in bots_usernames]
     campaigns = await campaigns_usecase.get_campaigns()
-    print(chats)
     return templates.TemplateResponse(
         request=request,
         name='chats.html',
@@ -51,15 +51,22 @@ async def get_one_chat(
         chat_id: str,
         request: Request,
         chats_service: ChatsUseCaseInterface = Depends(get_chats_service),
+        bots_service: BotsUseCaseInterface = Depends(get_bots_usecase),
+        campaigns_usecase: CampaignsUseCaseInterface = Depends(get_campaigns_usecase),
 ) -> HTMLResponse:
     chats = await chats_service.get_all_chats()
+    bots_usernames = {chat.bot_nickname for chat in chats}
+    bots = [await bots_service.get_by_username(bot_username) for bot_username in bots_usernames]
     main_chat = await chats_service.get_chat(chat_id=chat_id)
+    campaigns = await campaigns_usecase.get_campaigns()
     return templates.TemplateResponse(
         request=request,
         name='chats.html',
         context={
             'chat_items': chats,
             'chat': main_chat,
+            'bots': bots,
+            'campaigns': campaigns,
         }
     )
 

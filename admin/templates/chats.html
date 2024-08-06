@@ -1,79 +1,83 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Chats
+Chats
 {% endblock %}
 
 {% block head %}
-    <link href="/static/chats.css" rel="stylesheet">
-    <link href="/static/slider.css" rel="stylesheet">
-    <link href="/static/filters.css" rel="stylesheet">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="/static/filters.css" rel="stylesheet">
+<link href="/static/chats.css" rel="stylesheet">
+<link href="/static/slider.css" rel="stylesheet">
+<link href="/static/common.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const filters = {
-                botNickname: document.getElementById('custom-select-bot-nickname'),
-                autoReply: document.getElementById('custom-select-auto-reply')
-            };
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filters = {
+            botNickname: document.getElementById('custom-select-bot-nickname'),
+            autoReply: document.getElementById('custom-select-auto-reply')
+        };
 
-            const chatItems = document.querySelectorAll('.chat-item');
+        const chatItems = document.querySelectorAll('.chat-item');
 
-            Object.values(filters).forEach(filter => {
-                if (filter) {
-                    filter.addEventListener('click', function () {
-                        const options = this.nextElementSibling;
-                        options.classList.toggle('active');
-                    });
-                }
-            });
-
-            document.querySelectorAll('.custom-select-option').forEach(option => {
-                option.addEventListener('click', function () {
-                    var filterType = this.closest('.custom-select-wrapper').querySelector('.custom-select').id.split('-').slice(2).join('-');
-                    var selectedOptionId = `selected-option-${filterType}`;
-                    document.getElementById(selectedOptionId).textContent = this.textContent;
-                    this.closest('.custom-select-options').classList.remove('active');
-                    filterChats();
-                });
-            });
-
-            document.addEventListener('click', function (e) {
-                Object.values(filters).forEach(filter => {
-                    if (filter && !filter.contains(e.target)) {
-                        filter.nextElementSibling.classList.remove('active');
-                    }
-                });
-            });
-
-            function filterChats() {
-                const selectedFilters = {
-                    botNickname: document.getElementById('selected-option-bot-nickname').textContent.toLowerCase(),
-                    autoReply: document.getElementById('selected-option-auto-reply').textContent.toLowerCase()
-                };
-
-                chatItems.forEach(item => {
-                    const chatBotNickname = item.querySelector('.bot-name').textContent.toLowerCase();
-                    const chatAutoReply = item.querySelector('.auto-reply-status').textContent.toLowerCase();
-
-                    console.log(chatBotNickname, chatAutoReply, selectedFilters.botNickname, selectedFilters.autoReply);
-
-                    const matchesBotNickname = selectedFilters.botNickname === 'all' || chatBotNickname === selectedFilters.botNickname;
-                    const matchesAutoReply = selectedFilters.autoReply === 'all' || chatAutoReply === selectedFilters.autoReply;
-
-                    if (matchesBotNickname && matchesAutoReply) {
-                        item.style.display = 'flex';
-                    } else {
-                        item.style.display = 'none';
-                    }
+        Object.values(filters).forEach(filter => {
+            if (filter) {
+                filter.addEventListener('click', function () {
+                    const options = this.nextElementSibling;
+                    options.classList.toggle('active');
                 });
             }
         });
-    </script>
+
+        document.querySelectorAll('.custom-select-option').forEach(option => {
+            option.addEventListener('click', function () {
+                var filterType = this.closest('.custom-select-wrapper').querySelector('.custom-select').id.split('-').slice(2).join('-');
+                var selectedOptionId = `selected-option-${filterType}`;
+                document.getElementById(selectedOptionId).textContent = this.textContent;
+                this.closest('.custom-select-options').classList.remove('active');
+                filterChats();
+            });
+        });
+
+        document.addEventListener('click', function (e) {
+            Object.values(filters).forEach(filter => {
+                if (filter && !filter.contains(e.target)) {
+                    filter.nextElementSibling.classList.remove('active');
+                }
+            });
+        });
+
+        function filterChats() {
+            const selectedFilters = {
+                botNickname: document.getElementById('selected-option-bot-nickname').textContent.trim(),
+                autoReply: document.getElementById('selected-option-auto-reply').textContent.trim().toLowerCase()
+            };
+
+            console.log(selectedFilters);
+
+            chatItems.forEach(item => {
+                const chatBotNickname = item.querySelector('.bot-name').textContent.trim();
+                const chatAutoReply = item.querySelector('.auto-reply-status').textContent.trim().toLowerCase();
+
+                console.log(chatBotNickname, chatAutoReply);
+
+                const matchesBotNickname = selectedFilters.botNickname === 'All' || chatBotNickname === selectedFilters.botNickname;
+                const matchesAutoReply = selectedFilters.autoReply === 'all' || chatAutoReply === selectedFilters.autoReply;
+
+                if (matchesBotNickname && matchesAutoReply) {
+                    item.parentElement.style.display = 'block';
+                } else {
+                    item.parentElement.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}
 
 {% block content %}
-    <div class="filters-container">
+<div class="vertical-container">
+    <div class="filters-container {% if chat is not none %}active-chat{% endif %}">
         <div class="filters">
             <div class="filter bot-nickname-filter">
                 <label for="bot-nickname">Bot Nickname:</label>
@@ -85,8 +89,9 @@
                     <div class="custom-select-options" id="custom-select-options-bot-nickname">
                         <div class="custom-select-option" data-value="all">All</div>
                         {% for bot in bots %}
-                            <div class="custom-select-option"
-                                 data-value="{{ bot.username|lower }}">{{ bot.username }}</div>
+                        <div class="custom-select-option"
+                             data-value="{{ bot.username|lower }}">{{ bot.username }}
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
@@ -112,60 +117,62 @@
          style="gap: 10px; padding-left: 0; padding-right: 0">
         <div class="chat-list">
             {% for item in chat_items %}
-                <a href="/chats/{{ item.id }}" style="text-decoration: none">
-                    <div class="chat-item">
-                        <div class="chat-item-content">
-                            <div class="chat-item-info">
-                                <span class="bot-name"><b>{{ item.bot_nickname }}</b></span>
-                                <span class="user-name"><b>{{ item.user_nickname }}</b></span>
-                            </div>
-                            <div class="chat-item-message">
-                                <span class="last-message">{{ item.last_message }}</span>
-                            </div>
+            <a href="/chats/{{ item.id }}" style="text-decoration: none">
+                <div class="chat-item">
+                    <div class="chat-item-content">
+                        <div class="chat-item-info">
+                            <span class="bot-name"><b>{{ item.bot_nickname }}</b></span>
+                            <span class="user-name"><b>{{ item.user_nickname }}</b></span>
                         </div>
-                        <div class="status {{ item.status }}"></div>
-                        <div class="auto-reply-status"
-                             style="display: none;">{{ 'enabled' if item.auto_reply else 'disabled' }}</div>
+                        <div class="chat-item-message">
+                            <span class="last-message">{{ item.last_message }}</span>
+                        </div>
                     </div>
-                </a>
+                    <div class="status {{ item.status }}"></div>
+                    <div class="auto-reply-status"
+                         style="display: none;">{{ 'enabled' if item.auto_reply else 'disabled' }}
+                    </div>
+                </div>
+            </a>
             {% endfor %}
         </div>
         <div class="chat-content">
             {% if chat is not none %}
-                <div class="chat-header">
-                    <a href="/chats" class="back-button">
-                        <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
-                    </a>
-                    <span class="main-chat header-text header-hide"><b>User: </b>{{ chat.info.user_nickname }}</span>
-                    <span class="main-chat header-text header-hide"><b>Bot: </b>{{ chat.info.bot_nickname }}</span>
-                    <form action="/chats/{{ chat.info.id }}/auto_reply" method="post" class="auto-reply-form">
-                        <label for="auto_reply" class="header-text"><b>Auto reply: </b></label>
-                        <label class="small-switch">
-                            <input type="checkbox" id="auto_reply" name="auto_reply"
-                                   {% if chat.info.auto_reply== true %}checked{% endif %}>
-                            <span class="small-slider round"></span>
-                        </label>
-                        <script>
-                            document.getElementById('auto_reply').addEventListener('change', function () {
-                                this.form.submit();
-                            });
-                        </script>
-                    </form>
-                </div>
-                <div class="main-chat messages">
-                    {% for message in chat.messages|reverse %}
-                        <div class="main-chat message {{ message.type }}">{{ message.text }}</div>
-                    {% endfor %}
-                </div>
-                <form action="/chats/{{ chat.info.id }}/send" method="post" class="input-area">
-                    <label>
-                        <input type="text" name="message" placeholder="Напишите сообщение..." id="messageInput">
+            <div class="chat-header">
+                <a href="/chats" class="back-button">
+                    <i class="fa fa-long-arrow-left" aria-hidden="true"></i>
+                </a>
+                <span class="main-chat header-text header-hide"><b>User: </b>{{ chat.info.user_nickname }}</span>
+                <span class="main-chat header-text header-hide"><b>Bot: </b>{{ chat.info.bot_nickname }}</span>
+                <form action="/chats/{{ chat.info.id }}/auto_reply" method="post" class="auto-reply-form">
+                    <label for="auto_reply" class="header-text"><b>Auto reply: </b></label>
+                    <label class="small-switch">
+                        <input type="checkbox" id="auto_reply" name="auto_reply"
+                               {% if chat.info.auto_reply== true %}checked{% endif %}>
+                        <span class="small-slider round"></span>
                     </label>
-                    <button {% if chat.info.auto_reply==true %}disabled{% endif %}>Отправить</button>
+                    <script>
+                        document.getElementById('auto_reply').addEventListener('change', function () {
+                            this.form.submit();
+                        });
+                    </script>
                 </form>
+            </div>
+            <div class="main-chat messages">
+                {% for message in chat.messages|reverse %}
+                <div class="main-chat message {{ message.type }}">{{ message.text }}</div>
+                {% endfor %}
+            </div>
+            <form action="/chats/{{ chat.info.id }}/send" method="post" class="input-area">
+                <label>
+                    <input type="text" name="message" placeholder="Напишите сообщение..." id="messageInput">
+                </label>
+                <button {% if chat.info.auto_reply==true %}disabled{% endif %}>Отправить</button>
+            </form>
             {% else %}
-                <div class="no-chat">Выберите чат для просмотра</div>
+            <div class="no-chat">Выберите чат для просмотра</div>
             {% endif %}
         </div>
     </div>
+</div>
 {% endblock %}

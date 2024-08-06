@@ -9,9 +9,10 @@
 .vertical-container {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     gap: 10px;
+    height: 100%;
 }
 
 /* Button Styles */

@@ -15,10 +15,33 @@
     --status-offline: red;
 }
 
+.filters-container {
+    background-color: var(--list-background);
+}
+
+.custom-select {
+    background-color: var(--background-color);
+    border-color: var(--list-background);
+}
+
+.custom-select-option {
+    background-color: var(--background-color);
+}
+
+.custom-select-options {
+    background-color: var(--background-color);
+    border-color: var(--list-background);
+}
+
+.filter label {
+    color: var(--text-color);
+}
+
 /* Chat Container Styling */
 .container {
     flex-grow: 1;
     height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: start;
@@ -281,6 +304,10 @@ button[disabled] {
 
     /* Hide chat content if no active chat */
     .container.no-active-chat .chat-content {
+        display: none;
+    }
+
+    .filters-container.active-chat {
         display: none;
     }
 
