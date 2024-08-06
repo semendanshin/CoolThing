@@ -1,28 +1,28 @@
 .filters-container {
     width: 100%;
-    padding: 20px;
+    padding: 10px;
     background-color: var(--background-color);
     border-radius: 10px;
     box-shadow: var(--box-shadow);
-    margin-bottom: 20px;
 }
 
 .filters {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-evenly;
     flex-wrap: wrap;
+    gap: 10px;
 }
 
 .filter {
     display: flex;
     flex-direction: column;
-    margin-right: 20px;
-    margin-bottom: 10px; /* To provide spacing for wrap */
+    padding: 5px;
 }
 
 .filter label {
     margin-bottom: 5px;
+    margin-left: 12px;
     font-weight: bold;
     color: var(--primary-color);
 }
@@ -46,6 +46,13 @@
     font-size: 16px;
     cursor: pointer;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-select span:first-child {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .custom-select:hover, .custom-select:focus {
@@ -74,6 +81,9 @@
 }
 
 .custom-select-option {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: 15px; /* Increased padding for a more voluminous look */
     cursor: pointer;
     transition: background-color 0.3s ease; /* Adjusted for smoother transition */

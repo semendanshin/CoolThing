@@ -50,10 +50,10 @@
                     var matchesStatus = false;
                     switch (selectedFilters.status) {
                         case 'active':
-                            matchesStatus = botStatus === 'true';
+                            matchesStatus = botStatus === 'active';
                             break;
                         case 'inactive':
-                            matchesStatus = botStatus === 'false';
+                            matchesStatus = botStatus === 'stopped';
                             break;
                         case 'all':
                             matchesStatus = true;
@@ -104,8 +104,9 @@
                             <span>&#9660;</span>
                         </div>
                         <div class="custom-select-options" id="custom-select-options-campaign">
+                            <div class="custom-select-option" data-value="all">All</div>
                             {% for campaign in campaigns %}
-                                <div class="custom-select-option" data-value="{{ campaign }}">{{ campaign.id }}</div>
+                                <div class="custom-select-option" data-value="{{ campaign.id }}">{{ campaign.id }}</div>
                             {% endfor %}
                         </div>
                     </div>
@@ -118,6 +119,7 @@
                             <span>&#9660;</span>
                         </div>
                         <div class="custom-select-options" id="custom-select-options-role">
+                            <div class="custom-select-option" data-value="all">All</div>
                             <div class="custom-select-option" data-value="Manager">Manager</div>
                             <div class="custom-select-option" data-value="Parser">Parser</div>
                         </div>
