@@ -1,3 +1,4 @@
+import uuid
 from dataclasses import dataclass
 
 from sqlalchemy import select
@@ -27,8 +28,8 @@ class SQLAlchemyMessagesRepository(
 
     def entity_to_model(self, entity: Message) -> MessageModel:
         return MessageModel(
-            id=entity.id,
-            chat_id=entity.chat_id,
+            id=str(entity.id),
+            chat_id=str(entity.chat_id),
             text=entity.text,
             is_outgoing=entity.is_outgoing,
         )

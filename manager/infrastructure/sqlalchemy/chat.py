@@ -31,14 +31,15 @@ class SQLAlchemyChatsRepository(
 
     def entity_to_model(self, entity: Chat) -> ChatModel:
         return ChatModel(
-            id=entity.id,
-            campaign_id=entity.campaign_id,
+            id=str(entity.id),
+            campaign_id=str(entity.campaign_id),
             telegram_chat_id=entity.telegram_chat_id,
-            worker_id=entity.worker_id,
+            worker_id=str(entity.worker_id),
             username=entity.username,
             status=entity.status,
             lead_message=entity.lead_message,
             lead_chat_id=entity.lead_chat_id,
+            auto_reply=entity.auto_reply,
         )
 
     def model_to_entity(self, model: ChatModel) -> Chat:
@@ -51,4 +52,5 @@ class SQLAlchemyChatsRepository(
             status=model.status,
             lead_message=model.lead_message,
             lead_chat_id=model.lead_chat_id,
+            auto_reply=model.auto_reply,
         )
