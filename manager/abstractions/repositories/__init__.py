@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from contextlib import asynccontextmanager
 
 
 class CRUDRepositoryInterface[Model, CreateDTO, UpdateDTO](ABC):
@@ -24,22 +25,7 @@ class CRUDRepositoryInterface[Model, CreateDTO, UpdateDTO](ABC):
 
 
 class UOWInterface(ABC):
+    @asynccontextmanager
     @abstractmethod
-    async def commit(self) -> None:
-        pass
-
-    @abstractmethod
-    async def rollback(self) -> None:
-        pass
-
-    @abstractmethod
-    async def attach(self, *repositories: CRUDRepositoryInterface) -> None:
-        pass
-
-    @abstractmethod
-    async def __aenter__(self):
-        pass
-
-    @abstractmethod
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def begin(self, *repositories: CRUDRepositoryInterface) -> 'UOWInterface':
         pass
