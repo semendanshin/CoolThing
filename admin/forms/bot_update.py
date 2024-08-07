@@ -10,7 +10,7 @@ def update_worker_form(
         app_id: str = Form(...),
         app_hash: str = Form(...),
         session_string: str = Form(...),
-        proxy: str = Form(...),
+        proxy: str = Form(default=None),
         campaign_id: str = Form(...),
         role: str = Form(...),
         status: str = Form(default=""),

@@ -12,8 +12,10 @@ Chats
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
 <script>
+    // After the page is loaded and media queries are applied
     document.addEventListener('DOMContentLoaded', function () {
         const filters = {
+            campaign: document.getElementById('custom-select-campaign'),
             botNickname: document.getElementById('custom-select-bot-nickname'),
             autoReply: document.getElementById('custom-select-auto-reply')
         };
@@ -49,6 +51,7 @@ Chats
 
         function filterChats() {
             const selectedFilters = {
+                campaign: document.getElementById('selected-option-campaign').textContent.trim(),
                 botNickname: document.getElementById('selected-option-bot-nickname').textContent.trim(),
                 autoReply: document.getElementById('selected-option-auto-reply').textContent.trim().toLowerCase()
             };
@@ -56,21 +59,51 @@ Chats
             console.log(selectedFilters);
 
             chatItems.forEach(item => {
+                const campaignId = item.querySelector('.campaign-id').textContent.trim();
+                // const campaignId = "1";
                 const chatBotNickname = item.querySelector('.bot-name').textContent.trim();
                 const chatAutoReply = item.querySelector('.auto-reply-status').textContent.trim().toLowerCase();
 
-                console.log(chatBotNickname, chatAutoReply);
-
                 const matchesBotNickname = selectedFilters.botNickname === 'All' || chatBotNickname === selectedFilters.botNickname;
                 const matchesAutoReply = selectedFilters.autoReply === 'all' || chatAutoReply === selectedFilters.autoReply;
+                const matchesCampaign = selectedFilters.campaign === 'All' || campaignId === selectedFilters.campaign;
 
-                if (matchesBotNickname && matchesAutoReply) {
+                if (matchesBotNickname && matchesAutoReply && matchesCampaign) {
                     item.parentElement.style.display = 'block';
                 } else {
                     item.parentElement.style.display = 'none';
                 }
             });
         }
+
+        function fitElementToParent(el) {
+            const getAvailableParentSize = (parentEl) => {
+                const parentElHeight = parentEl.clientHeight;
+                const parentElPadding = parseInt(window.getComputedStyle(parentEl).paddingTop) + parseInt(window.getComputedStyle(parentEl).paddingBottom);
+                const parentElBorder = parseInt(window.getComputedStyle(parentEl).borderTopWidth) + parseInt(window.getComputedStyle(parentEl).borderBottomWidth);
+                const parentElMargin = parseInt(window.getComputedStyle(parentEl).marginTop) + parseInt(window.getComputedStyle(parentEl).marginBottom);
+                // Get the gap between the children and multiply it by the number of visible children
+                const parentGap = parseInt(window.getComputedStyle(parentEl).gap) * Array.from(parentEl.children).reduce((acc, child) => {
+                    if (child.style.display !== 'none') {
+                        return acc + 1;
+                    }
+                    return acc;
+                }, -1);
+                const parentElChildren = Array.from(parentEl.children).reduce((acc, child) => {
+                    if (child !== el) {
+                        return acc + child.clientHeight;
+                    }
+                    return acc;
+                }, 0);
+
+                return parentElHeight - parentElMargin - parentElPadding - parentElBorder - parentElChildren - parentGap;
+            };
+
+            const availableHeight = getAvailableParentSize(el.parentElement);
+            el.style.height = `${availableHeight}px`;
+        }
+
+        fitElementToParent(document.getElementById('chat'));
     });
 </script>
 {% endblock %}
@@ -79,8 +112,25 @@ Chats
 <div class="vertical-container">
     <div class="filters-container {% if chat is not none %}active-chat{% endif %}">
         <div class="filters">
+            <div class="filter campaign-filter">
+                <label>Campaign:</label>
+                <div class="custom-select-wrapper">
+                    <div class="custom-select" tabindex="0" id="custom-select-campaign">
+                        <span id="selected-option-campaign">All</span>
+                        <span>&#9660;</span>
+                    </div>
+                    <div class="custom-select-options" id="custom-select-options-campaign">
+                        <div class="custom-select-option" data-value="all">All</div>
+                        {% for campaign in campaigns %}
+                        <div class="custom-select-option"
+                             data-value="{{ campaign.id }}">{{ campaign.id }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
             <div class="filter bot-nickname-filter">
-                <label for="bot-nickname">Bot Nickname:</label>
+                <label>Bot Nickname:</label>
                 <div class="custom-select-wrapper">
                     <div class="custom-select" tabindex="0" id="custom-select-bot-nickname">
                         <span id="selected-option-bot-nickname">All</span>
@@ -97,7 +147,7 @@ Chats
                 </div>
             </div>
             <div class="filter auto-reply-filter">
-                <label for="auto-reply">Auto Reply Status:</label>
+                <label>Auto Reply Status:</label>
                 <div class="custom-select-wrapper">
                     <div class="custom-select" tabindex="0" id="custom-select-auto-reply">
                         <span id="selected-option-auto-reply">All</span>
@@ -114,7 +164,7 @@ Chats
     </div>
 
     <div class="container {% if chat is none %}no-active-chat{% endif %}"
-         style="gap: 10px; padding-left: 0; padding-right: 0">
+         style="gap: 10px; padding-left: 0; padding-right: 0;" id="chat">
         <div class="chat-list">
             {% for item in chat_items %}
             <a href="/chats/{{ item.id }}" style="text-decoration: none">
@@ -123,6 +173,7 @@ Chats
                         <div class="chat-item-info">
                             <span class="bot-name"><b>{{ item.bot_nickname }}</b></span>
                             <span class="user-name"><b>{{ item.user_nickname }}</b></span>
+                            <span class="campaign-id" style="display: none;">{{ item.campaign_id }}</span>
                         </div>
                         <div class="chat-item-message">
                             <span class="last-message">{{ item.last_message }}</span>
@@ -162,6 +213,7 @@ Chats
                 {% for message in chat.messages|reverse %}
                 <div class="main-chat message {{ message.type }}">{{ message.text }}</div>
                 {% endfor %}
+                <br>
             </div>
             <form action="/chats/{{ chat.info.id }}/send" method="post" class="input-area">
                 <label>

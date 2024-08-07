@@ -110,18 +110,8 @@
     color: #fff;
 }
 
-@media (max-width: 768px) {
-    .filters {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .filter {
-        margin-bottom: 15px;
-        margin-right: 0;
-    }
-
-    .custom-select-wrapper {
-        width: 100%; /* Ensure select boxes are full-width on smaller screens */
-    }
-}
+/*@media (max-width: 768px) {*/
+/*    .filters {*/
+/*        wrap-option: wrap;*/
+/*    }*/
+/*}*/

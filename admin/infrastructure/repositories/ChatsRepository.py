@@ -56,7 +56,8 @@ class ChatsRepository(
                 c.username as user_nickname,
                 c.lead_chat_id as user_id,
                 m.text as last_message,
-                c.auto_reply as auto_reply
+                c.auto_reply as auto_reply,
+                c.campaign_id as campaign_id
             FROM chats c
             LEFT JOIN (
                 SELECT distinct on (chat_id) chat_id, text, created_at
@@ -73,7 +74,6 @@ class ChatsRepository(
         async with self.session_maker() as session:
             result = await session.execute(statement)
             rows = result.fetchall()
-        print(rows)
         return [
             ChatInfo(
                 id=str(row.id),
@@ -83,6 +83,7 @@ class ChatsRepository(
                 last_message=row.last_message if row.last_message else "",
                 status="online",
                 auto_reply=row.auto_reply,
+                campaign_id=str(row.campaign_id),
             )
             for row in rows
         ]
@@ -98,7 +99,8 @@ class ChatsRepository(
                 c.username as user_nickname,
                 c.lead_chat_id as user_id,
                 m.text as last_message,
-                c.auto_reply as auto_reply
+                c.auto_reply as auto_reply,
+                c.campaign_id as campaign_id
             FROM chats c
             JOIN (
                 SELECT distinct on (chat_id) chat_id, text, created_at
@@ -148,6 +150,7 @@ class ChatsRepository(
                 last_message=chat_row.last_message,
                 status="online",
                 auto_reply=chat_row.auto_reply,
+                campaign_id=str(chat_row.campaign_id),
             ),
             messages=messages,
         )

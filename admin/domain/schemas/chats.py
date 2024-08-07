@@ -14,6 +14,7 @@ class ChatInfo(BaseModel):
     id: str
     bot_nickname: str
     user_nickname: str
+    campaign_id: str
     user_id: Optional[str] = None
     last_message: str
     auto_reply: bool
