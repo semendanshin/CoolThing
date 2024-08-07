@@ -21,6 +21,10 @@ class ManagerSettings(WorkerSettings):
     openai_proxy: str
     assistant: str
     service_prompt: str
+    typing_and_sending_sleep_from: int
+    typing_and_sending_sleep_to: int
+    welcome_sleep_from: int
+    welcome_sleep_to: int
 
     def __hash__(self):
         return hash(
@@ -39,6 +43,10 @@ class ManagerSettings(WorkerSettings):
                 self.token,
                 self.service_prompt,
                 self.welcome_message,
+                self.typing_and_sending_sleep_from,
+                self.typing_and_sending_sleep_to,
+                self.welcome_sleep_from,
+                self.welcome_sleep_to,
             )
         )
 
