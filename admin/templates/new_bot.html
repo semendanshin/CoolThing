@@ -15,7 +15,7 @@
     <form action="/bot" method="post">
         <div class="row">
             <label for="phone" class="field-label">Phone Number</label>
-            <input class="input-field" id="phone" name="phone" placeholder="+79528120000" pattern="^\+[0-9]{11,12}$" required inputmode="tel">
+            <input class="input-field" id="phone" name="phone" placeholder="+79528120000" pattern="^\+[0-9]*$" required inputmode="tel">
         </div>
         <div class="row">
             <label for="app_id" class="field-label">APP ID</label>
@@ -23,7 +23,7 @@
         </div>
         <div class="row">
             <label for="app_hash" class="field-label">APP Hash</label>
-            <input class="input-field" id="app_hash" name="app_hash" placeholder="0123456789abcdef0123456789abcdef" pattern="^[0-9a-f]{32}$" required>
+            <input class="input-field" id="app_hash" name="app_hash" placeholder="0123456789abcdef0123456789abcdef" required>
         </div>
         <div class="row">
             <label for="proxy" class="field-label">Proxy</label>
