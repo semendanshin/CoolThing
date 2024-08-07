@@ -57,7 +57,13 @@ class GroupMessageHandler:
         app.on(
             events.NewMessage(
                 incoming=True,
-                outgoing=False,
-                func=lambda e: e.message.text
+                outgoing=True,
+                func=lambda e: e.message.text and (
+                        (
+                                e.chat and e.chat.id and e.chat.id in self.chats
+                        ) or (
+                                e.chat and e.chat.username and e.chat.username in self.chats
+                        )
+                )
             )
         )(self.react_to_message)
