@@ -59,11 +59,9 @@ class GroupMessageHandler:
                 incoming=True,
                 outgoing=True,
                 func=lambda e: e.message.text and (
-                        (
-                                e.chat and e.chat.id and e.chat.id in self.chats
-                        ) or (
-                                e.chat and e.chat.username and e.chat.username in self.chats
-                        )
+                    (
+                            e.chat_id in self.chats
+                    )
                 )
             )
         )(self.react_to_message)
