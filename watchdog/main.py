@@ -83,6 +83,7 @@ async def main():
         ),
         db_settings=settings.db,
         tmp_config_dir=TMP_CONFIG_DIR,
+        batching_sleep=settings.batching_sleep,
     )
 
     scheduler.add_job(

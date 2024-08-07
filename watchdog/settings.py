@@ -30,6 +30,8 @@ class Settings(BaseSettings):
     watchdog: WatchdogSettings
     rabbit: RabbitSettings
 
+    batching_sleep: int
+
     debug: bool = False
 
     model_config = SettingsConfigDict(

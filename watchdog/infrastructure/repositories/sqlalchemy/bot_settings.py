@@ -29,7 +29,9 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
             c.welcome_message,
             c.chats,
             c.plus_keywords,
-            c.minus_keywords
+            c.minus_keywords,
+            c.new_lead_wait_interval_seconds,
+            c.chat_answer_wait_interval_seconds
         FROM
             workers AS w
         JOIN
@@ -58,6 +60,8 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
                     )
                     match row.role:
                         case "manager":
+                            typing_and_sending_sleep_from, typing_and_sending_sleep_to = map(int, row.chat_answer_wait_interval_seconds.split("-"))
+                            welcome_sleep_from, welcome_sleep_to = map(int, row.new_lead_wait_interval_seconds.split("-"))
                             worker = ManagerSettings(
                                 **base.__dict__,
                                 model=row.model,
@@ -66,6 +70,10 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
                                 assistant=row.assistant,
                                 service_prompt=row.service_prompt,
                                 welcome_message=row.welcome_message,
+                                typing_and_sending_sleep_from=typing_and_sending_sleep_from,
+                                typing_and_sending_sleep_to=typing_and_sending_sleep_to,
+                                welcome_sleep_from=welcome_sleep_from,
+                                welcome_sleep_to=welcome_sleep_to,
                             )
                         case "parser":
                             worker = ParserSettings(
