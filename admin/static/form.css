@@ -28,10 +28,27 @@ h1 {
     padding: 10px;
 }
 
+.splitted-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 50px;
+}
+
+.splitted-row-element {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 /* Field Label Styles */
 .field-label {
     font-weight: var(--label-font-weight);
     margin-bottom: 5px;
+}
+
+.sub-field-label {
+    font-weight: var(--label-font-weight) - 1;
 }
 
 

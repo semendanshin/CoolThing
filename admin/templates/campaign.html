@@ -1,72 +1,92 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Campaign
+    Campaign
 {% endblock %}
 
 {% block head %}
-<link href="/static/form.css" rel="stylesheet">
+    <link href="/static/form.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Campaign</h1>
-    {# <h1>Campaign: {{ campaign.name }}</h1>#}
-    <p>Here you can edit the details about the campaign.</p>
-    <form action="/campaigns/{{ campaign.id }}" method="post">
-        <div class="row">
-            <label for="campaign_scope" class="field-label">Scope</label>
-            <textarea class="input-field" id="campaign_scope" name="campaign_scope">{{ campaign.scope }}</textarea>
-        </div>
-        <div class="row">
-            <label for="campaign_welcome_message" class="field-label">Welcome Message</label>
-            <textarea class="input-field" id="campaign_welcome_message" name="campaign_welcome_message">{{ campaign.welcome_message }}</textarea>
-        </div>
-        <div class="row">
-            <label for="campaign_chats" class="field-label">Chats</label>
-            <textarea class="input-field" id="campaign_chats"
-                      name="campaign_chats">{{ campaign.chats | join(", ") }}</textarea>
-        </div>
-        <div class="row">
-            <label for="campaign_plus_keywords" class="field-label">Plus Keywords</label>
-            <textarea class="input-field" id="campaign_plus_keywords" name="campaign_plus_keywords">{{ campaign.plus_keywords | join(", ") }}</textarea>
-        </div>
-        <div class="row">
-            <label for="campaign_minus_keywords" class="field-label">Minus Keywords</label>
-            <textarea class="input-field" id="campaign_minus_keywords" name="campaign_minus_keywords">{{ campaign.minus_keywords | join(", ") }}</textarea>
-        </div>
-        {% set campaign_chat_interval_start, campaign_chat_interval_end = campaign.chat_answer_wait_interval_seconds.split("-") %}
-        {% set campaign_welcome_wait_start, campaign_welcome_wait_end = campaign.new_lead_wait_interval_seconds.split("-") %}
-        <div class="row">
-            <label for="campaign_chat_interval_start" class="field-label">Chat waiting interval start</label>
-            <input type="number" class="input-field" id="campaign_chat_interval_start" name="campaign_chat_interval_start" value="{{ campaign_chat_interval_start }}">
-        </div>
-        <div class="row">
-            <label for="campaign_chat_interval_end" class="field-label">Chat waiting interval end</label>
-            <input type="number" class="input-field" id="campaign_chat_interval_end" name="campaign_chat_interval_end" value="{{ campaign_chat_interval_end }}">
-        </div>
-        <div class="row">
-            <label for="campaign_welcome_wait_start" class="field-label">Chat waiting interval start</label>
-            <input type="number" class="input-field" id="campaign_welcome_wait_start" name="campaign_welcome_wait_start" value="{{ campaign_welcome_wait_start }}">
-        </div>
-        <div class="row">
-            <label for="campaign_welcome_wait_end" class="field-label">Welcome message waiting interval end</label>
-            <input type="number" class="input-field" id="campaign_welcome_wait_end" name="campaign_welcome_wait_end" value="{{ campaign_welcome_wait_end }}">
-        </div>
-        <div class="row">
-            <label for="campaign_gpt_settings_id" class="field-label">GPT Settings</label>
-            <select class="select-field" id="campaign_gpt_settings_id" name="campaign_gpt_settings_id">
-                {% for gpt_setting in gpt_settings %}
-                <option value="{{ gpt_setting.id }}" {% if gpt_setting.id== campaign.gpt_settings_id %}selected{% endif
-                        %}>
-                    {{ gpt_setting.id }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="row">
-            <input type="submit" value="Save Changes" class="submit-button">
-        </div>
-    </form>
-</div>
+    <div class="container">
+        <h1>Campaign</h1>
+        {# <h1>Campaign: {{ campaign.name }}</h1>#}
+        <p>Here you can edit the details about the campaign.</p>
+        <form action="/campaigns/{{ campaign.id }}" method="post">
+            <div class="row">
+                <label for="campaign_scope" class="field-label">Scope</label>
+                <textarea class="input-field" id="campaign_scope" name="campaign_scope">{{ campaign.scope }}</textarea>
+            </div>
+            <div class="row">
+                <label for="campaign_welcome_message" class="field-label">Welcome Message</label>
+                <textarea class="input-field" id="campaign_welcome_message"
+                          name="campaign_welcome_message">{{ campaign.welcome_message }}</textarea>
+            </div>
+            <div class="row">
+                <label for="campaign_chats" class="field-label">Chats</label>
+                <textarea class="input-field" id="campaign_chats"
+                          name="campaign_chats">{{ campaign.chats | join(", ") }}</textarea>
+            </div>
+            <div class="row">
+                <label for="campaign_plus_keywords" class="field-label">Plus Keywords</label>
+                <textarea class="input-field" id="campaign_plus_keywords"
+                          name="campaign_plus_keywords">{{ campaign.plus_keywords | join(", ") }}</textarea>
+            </div>
+            <div class="row">
+                <label for="campaign_minus_keywords" class="field-label">Minus Keywords</label>
+                <textarea class="input-field" id="campaign_minus_keywords"
+                          name="campaign_minus_keywords">{{ campaign.minus_keywords | join(", ") }}</textarea>
+            </div>
+            {% set campaign_chat_interval_start, campaign_chat_interval_end = campaign.chat_answer_wait_interval_seconds.split("-") %}
+            {% set campaign_welcome_wait_start, campaign_welcome_wait_end = campaign.new_lead_wait_interval_seconds.split("-") %}
+            <div class="row">
+                <label class="field-label">Random in-chat waiting interval (seconds)</label>
+                <div class="splitted-row">
+                    <div class="splitted-row-element">
+                        <label for="campaign_chat_interval_start" class="field-label sub-field-label">from</label>
+
+                        <input type="number" class="input-field" id="campaign_chat_interval_start"
+                               name="campaign_chat_interval_start" value="{{ campaign_chat_interval_start }}">
+                    </div>
+
+                    <div class="splitted-row-element">
+                        <label for="campaign_chat_interval_end" class="field-label sub-field-label">to</label>
+
+                        <input type="number" class="input-field" id="campaign_chat_interval_end"
+                               name="campaign_chat_interval_end" value="{{ campaign_chat_interval_end }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <label class="field-label">Random welcome waiting interval (seconds)</label>
+                <div class="splitted-row">
+                    <div class="splitted-row-element">
+                        <label for="campaign_welcome_wait_start" class="field-label sub-field-label">from</label>
+                        <input type="number" class="input-field" id="campaign_welcome_wait_start"
+                               name="campaign_welcome_wait_start" value="{{ campaign_welcome_wait_start }}">
+                    </div>
+                    <div class="splitted-row-element">
+                        <label for="campaign_welcome_wait_end" class="field-label sub-field-label">to</label>
+                        <input type="number" class="input-field" id="campaign_welcome_wait_end"
+                               name="campaign_welcome_wait_end" value="{{ campaign_welcome_wait_end }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <label for="campaign_gpt_settings_id" class="field-label">GPT Settings</label>
+                <select class="select-field" id="campaign_gpt_settings_id" name="campaign_gpt_settings_id">
+                    {% for gpt_setting in gpt_settings %}
+                        <option value="{{ gpt_setting.id }}"
+                                {% if gpt_setting.id== campaign.gpt_settings_id %}selected{% endif %}>
+                            {{ gpt_setting.id }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="row">
+                <input type="submit" value="Save Changes" class="submit-button">
+            </div>
+        </form>
+    </div>
 {% endblock %}
