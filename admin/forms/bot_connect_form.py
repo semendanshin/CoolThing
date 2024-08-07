@@ -13,4 +13,5 @@ def bot_connect_form(
         app_hash=bot_base.app_hash,
         phone=bot_base.phone,
         auth_code=auth_code,
+        proxy=bot_base.proxy,
     )

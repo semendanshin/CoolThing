@@ -34,18 +34,18 @@ class TelethonTelegramSessionRepository(
             r"^(?P<scheme>http|socks5|socks4)://(?:(?P<username>[^:]+):(?P<password>[^@]+)@)?(?P<host>[^:]+):(?P<port>\d+)$",
             proxy,
         ).groups()
-        proxy = {
-            "scheme": scheme,
-            "hostname": host,
+        proxy_dict = {
+            "proxy_type": scheme,
+            "addr": host,
             "port": int(port),
         }
         if username:
-            proxy["username"] = username
-            proxy["password"] = password
-        logger.info(f"Using proxy: {proxy}")
-        return proxy
+            proxy_dict["username"] = username
+            proxy_dict["password"] = password
+        logger.info(f"Using proxy: {proxy_dict}")
+        return proxy_dict
 
-    async def send_code(self, app_id: int, app_hash: str, phone: str, proxy: str=None) -> None:
+    async def send_code(self, app_id: int, app_hash: str, phone: str, proxy: str = None) -> None:
         proxy = self.parse_proxy(proxy) if proxy else None
         app = TelegramClient(
             StringSession(),
