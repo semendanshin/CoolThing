@@ -1,8 +1,8 @@
 import asyncio
 import logging
 import re
+import signal
 
-from pyrogram import Client, idle
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from telethon import TelegramClient
 from telethon.sessions import StringSession
@@ -31,6 +31,18 @@ logging.getLogger("aiormq").setLevel(logging.WARNING)
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
 logging.getLogger("openai").setLevel(logging.WARNING)
+
+
+class GracefulKiller:
+    kill_now = False
+
+    def __init__(self):
+        signal.signal(signal.SIGINT, self.exit_gracefully)
+        signal.signal(signal.SIGTERM, self.exit_gracefully)
+
+    def exit_gracefully(self, signum, frame):
+        logger.info("Exiting gracefully")
+        self.kill_now = True
 
 
 async def main():
@@ -123,9 +135,17 @@ async def main():
 
     await listener.start()
 
-    await app.run_until_disconnected()
+    killer = GracefulKiller()
+    future = asyncio.ensure_future(app.run_until_disconnected())
+
+    while not killer.kill_now:
+        await asyncio.sleep(1)
+
+    await app.disconnect()
 
     await listener.stop()
+
+    future.cancel()
 
     logger.info("Bot stopped")
 
