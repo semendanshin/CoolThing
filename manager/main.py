@@ -4,6 +4,8 @@ import re
 
 from pyrogram import Client, idle
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from telethon import TelegramClient
+from telethon.sessions import StringSession
 
 from infrastructure.handlers.incoming import IncomingMessageHandler
 from infrastructure.openai import GPTRepository, AssistantRepository
@@ -21,6 +23,8 @@ logging.basicConfig(
 )
 logging.getLogger("pyrogram").setLevel(logging.WARNING)
 
+logging.getLogger("telethon").setLevel(logging.WARNING)
+
 logging.getLogger("aio_pika").setLevel(logging.WARNING)
 logging.getLogger("aiormq").setLevel(logging.WARNING)
 
@@ -30,31 +34,30 @@ logging.getLogger("openai").setLevel(logging.WARNING)
 
 
 async def main():
-
-    if settings.app.proxy:
+    def parse_proxy(proxy: str):
         scheme, username, password, host, port = re.match(
             r"^(?P<scheme>http|socks5|socks4)://(?:(?P<username>[^:]+):(?P<password>[^@]+)@)?(?P<host>[^:]+):(?P<port>\d+)$",
-            settings.app.proxy
+            proxy
         ).groups()
-        proxy = {
+        proxy_dict = {
             "scheme": scheme,
             "hostname": host,
             "port": int(port),
         }
         if username:
-            proxy["username"] = username
-            proxy["password"] = password
-        logger.info(f"Using proxy: {proxy}")
-    else:
-        proxy = None
+            proxy_dict["username"] = username
+            proxy_dict["password"] = password
+        logger.info(f"Using proxy: {proxy_dict}")
 
-    app = Client(
-        name="my_account",
+    proxy = parse_proxy(settings.app.proxy) if settings.app.proxy else None
+
+    app = TelegramClient(
+        session=StringSession(settings.app.session_string),
         api_id=settings.app.api_id,
         api_hash=settings.app.api_hash,
-        session_string=settings.app.session_string,
         proxy=proxy,
     )
+    await app.connect()
 
     db_url = (f"postgresql+asyncpg://{settings.db.user}:{settings.db.password}"
               f"@{settings.db.host}:{settings.db.port}/{settings.db.name}")
@@ -110,7 +113,6 @@ async def main():
 
     incoming_message_handler = IncomingMessageHandler(
         gpt_use_case=gpt_use_case,
-        chats=[6043397367, 280584516, 5380348133]
     )
 
     incoming_message_handler.register_handlers(app)
@@ -120,12 +122,11 @@ async def main():
 
     await listener.start()
 
-    await idle()
+    await app.run_until_disconnected()
 
     await listener.stop()
 
     logger.info("Bot stopped")
-    await app.stop()
 
 
 if __name__ == "__main__":
