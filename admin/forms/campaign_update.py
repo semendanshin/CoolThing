@@ -13,6 +13,8 @@ def update_campaign_form(
     minus_keywords: str = Form(alias="campaign_minus_keywords"),
     gpt_settings_id: str = Form(alias="campaign_gpt_settings_id"),
     scope: str = Form(alias="campaign_scope"),
+    chat_answer_wait_interval_seconds: str = Form(alias="campaign_chat_interval"),
+    new_lead_wait_interval_seconds: str = Form(alias="campaign_welcome_wait"),
 ) -> CampaignUpdateDTO:
     return CampaignUpdateDTO(
         id=id,
@@ -22,4 +24,6 @@ def update_campaign_form(
         minus_keywords=[keyword for keyword in re.split(r"\s*,\s*", minus_keywords)],
         gpt_settings_id=gpt_settings_id,
         scope=scope,
+        chat_answer_wait_interval_seconds=chat_answer_wait_interval_seconds,
+        new_lead_wait_interval_seconds=new_lead_wait_interval_seconds,
     )
