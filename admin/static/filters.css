@@ -24,6 +24,7 @@
     margin-bottom: 5px;
     margin-left: 12px;
     font-weight: bold;
+    font-size: 16px;
     color: var(--primary-color);
 }
 
@@ -38,7 +39,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 15px; /* Increased padding for a more voluminous look */
+    padding: 15px;
     border: 1px solid #ccc;
     border-radius: 20px;
     background-color: var(--secondary-color);
@@ -110,8 +111,26 @@
     color: #fff;
 }
 
-/*@media (max-width: 768px) {*/
-/*    .filters {*/
-/*        wrap-option: wrap;*/
-/*    }*/
-/*}*/
+@media screen and (max-width: 768px) {
+    .custom-select {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .custom-select-options {
+        font-size: 12px;
+    }
+
+    .custom-select-option {
+        padding: 10px;
+    }
+
+
+    .custom-select-wrapper {
+        width: 150px;
+    }
+
+    .filter label {
+        font-size: 12px;
+    }
+}
