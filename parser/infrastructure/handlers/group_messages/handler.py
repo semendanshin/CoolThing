@@ -2,9 +2,7 @@ import logging
 from dataclasses import dataclass
 
 from nltk.stem.snowball import SnowballStemmer
-from pyrogram import Client, filters
-from pyrogram.handlers import MessageHandler
-from pyrogram.types import Message
+from telethon import TelegramClient, events
 
 from domain.new_target_message import NewTargetMessage
 from usecases.events import EventUseCases
@@ -39,29 +37,27 @@ class GroupMessageHandler:
 
         return True
 
-    async def react_to_message(self, client, message: Message):
-        logger.debug(f"{message.text} from {message.from_user.username} in {message.chat.id}")
-        result = self._is_relevant(message.text)
-        # await client.send_message(
-        #     message.chat.id,
-        #     f"Это сообщение {'актуально' if result else 'неактуально'}"
-        # )
-        if result and message.from_user.username:
-            logger.info(f"Relevant message: {message.text} from {message.from_user.username} in {message.chat.id}")
+    async def react_to_message(self, event: events.NewMessage.Event):
+        username = (await event.get_sender()).username
+        logger.debug(f"{event.message.text} from {username} in {event.chat.id}")
+        result = self._is_relevant(event.message.text)
+        if result and username:
+            logger.info(f"Relevant message: {event.message.text} from {username} in {event.chat.id}")
             await self.event_use_cases.publish(
                 NewTargetMessage(
-                    chat_id=message.chat.id,
-                    username=message.from_user.username,
-                    message=message.text,
+                    chat_id=event.chat.id,
+                    username=username,
+                    message=event.message.text,
                     campaign_id=self.campaign_id,
                     worker_id=self.worker_id,
                 )
             )
 
-    def register_handlers(self, client: Client):
-        client.add_handler(
-            MessageHandler(
-                self.react_to_message,
-                filters.chat(self.chats) & filters.text,
+    def register_handlers(self, app: TelegramClient):
+        app.on(
+            events.NewMessage(
+                incoming=True,
+                outgoing=False,
+                func=lambda e: e.message.text
             )
-        )
+        )(self.react_to_message)
