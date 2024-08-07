@@ -34,20 +34,21 @@ logging.getLogger("openai").setLevel(logging.WARNING)
 
 
 async def main():
-    def parse_proxy(proxy: str):
+    def parse_proxy(proxy: str) -> dict:
         scheme, username, password, host, port = re.match(
             r"^(?P<scheme>http|socks5|socks4)://(?:(?P<username>[^:]+):(?P<password>[^@]+)@)?(?P<host>[^:]+):(?P<port>\d+)$",
-            proxy
+            proxy,
         ).groups()
         proxy_dict = {
-            "scheme": scheme,
-            "hostname": host,
+            "proxy_type": scheme,
+            "addr": host,
             "port": int(port),
         }
         if username:
             proxy_dict["username"] = username
             proxy_dict["password"] = password
         logger.info(f"Using proxy: {proxy_dict}")
+        return proxy_dict
 
     proxy = parse_proxy(settings.app.proxy) if settings.app.proxy else None
 
