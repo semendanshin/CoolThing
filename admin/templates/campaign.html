@@ -35,13 +35,23 @@ Campaign
             <label for="campaign_minus_keywords" class="field-label">Minus Keywords</label>
             <textarea class="input-field" id="campaign_minus_keywords" name="campaign_minus_keywords">{{ campaign.minus_keywords | join(", ") }}</textarea>
         </div>
+        {% set campaign_chat_interval_start, campaign_chat_interval_end = campaign.chat_answer_wait_interval_seconds.split("-") %}
+        {% set campaign_welcome_wait_start, campaign_welcome_wait_end = campaign.new_lead_wait_interval_seconds.split("-") %}
         <div class="row">
-            <label for="campaign_chat_interval" class="field-label">Chat waiting interval</label>
-            <textarea class="input-field" id="campaign_chat_interval" name="campaign_chat_interval">{{ campaign.chat_answer_wait_interval_seconds }}</textarea>
+            <label for="campaign_chat_interval_start" class="field-label">Chat waiting interval start</label>
+            <input type="number" class="input-field" id="campaign_chat_interval_start" name="campaign_chat_interval_start" value="{{ campaign_chat_interval_start }}">
         </div>
         <div class="row">
-            <label for="campaign_welcome_wait" class="field-label">Welcome message waiting interval</label>
-            <textarea class="input-field" id="campaign_welcome_wait" name="campaign_welcome_wait">{{ campaign.new_lead_wait_interval_seconds }}</textarea>
+            <label for="campaign_chat_interval_end" class="field-label">Chat waiting interval end</label>
+            <input type="number" class="input-field" id="campaign_chat_interval_end" name="campaign_chat_interval_end" value="{{ campaign_chat_interval_end }}">
+        </div>
+        <div class="row">
+            <label for="campaign_welcome_wait_start" class="field-label">Chat waiting interval start</label>
+            <input type="number" class="input-field" id="campaign_welcome_wait_start" name="campaign_welcome_wait_start" value="{{ campaign_welcome_wait_start }}">
+        </div>
+        <div class="row">
+            <label for="campaign_welcome_wait_end" class="field-label">Welcome message waiting interval end</label>
+            <input type="number" class="input-field" id="campaign_welcome_wait_end" name="campaign_welcome_wait_end" value="{{ campaign_welcome_wait_end }}">
         </div>
         <div class="row">
             <label for="campaign_gpt_settings_id" class="field-label">GPT Settings</label>

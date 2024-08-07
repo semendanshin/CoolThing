@@ -13,8 +13,10 @@ def update_campaign_form(
     minus_keywords: str = Form(alias="campaign_minus_keywords"),
     gpt_settings_id: str = Form(alias="campaign_gpt_settings_id"),
     scope: str = Form(alias="campaign_scope"),
-    chat_answer_wait_interval_seconds: str = Form(alias="campaign_chat_interval"),
-    new_lead_wait_interval_seconds: str = Form(alias="campaign_welcome_wait"),
+    campaign_chat_interval_start: int = Form(...),
+    campaign_chat_interval_end: int = Form(...),
+    campaign_welcome_wait_start: int = Form(...),
+    campaign_welcome_wait_end: int = Form(...),
 ) -> CampaignUpdateDTO:
     return CampaignUpdateDTO(
         id=id,
@@ -24,6 +26,6 @@ def update_campaign_form(
         minus_keywords=[keyword for keyword in re.split(r"\s*,\s*", minus_keywords)],
         gpt_settings_id=gpt_settings_id,
         scope=scope,
-        chat_answer_wait_interval_seconds=chat_answer_wait_interval_seconds,
-        new_lead_wait_interval_seconds=new_lead_wait_interval_seconds,
+        chat_answer_wait_interval_seconds=f"{campaign_chat_interval_start}-{campaign_chat_interval_end}",
+        new_lead_wait_interval_seconds=f"{campaign_welcome_wait_start}-{campaign_welcome_wait_end}",
     )
