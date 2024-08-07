@@ -16,7 +16,7 @@ router = APIRouter(
 templates = Jinja2Templates(directory='templates')
 
 
-@router.get("/")
+@router.get("")
 async def get_bots(
         request: Request,
         bots: BotsUseCaseInterface = Depends(get_bots_usecase),
