@@ -5,13 +5,13 @@ from domain.dto.worker import WorkerUpdateDTO
 
 def update_worker_form(
         id: str = Path(..., alias="bot_id"),
-        bio: str = Form(...),
+        bio: str | None = Form(default=None),
         username: str = Form(...),
         app_id: str = Form(...),
         app_hash: str = Form(...),
         session_string: str = Form(...),
-        proxy: str = Form(default=None),
-        campaign_id: str = Form(...),
+        proxy: str | None = Form(default=None),
+        campaign_id: str | None = Form(default=None),
         role: str = Form(...),
         status: str = Form(default=""),
 ) -> WorkerUpdateDTO:

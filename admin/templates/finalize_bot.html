@@ -59,8 +59,9 @@ Bot overview
         <div class="row">
             <label for="campaign_id" class="field-label">Campaign</label>
             <select class="select-field" id="campaign_id" name="campaign_id">
+                <option value="">Select campaign</option>
                 {% for campaign in campaigns %}
-                <option value="{{ campaign.id }}" {% if bot.campaign_id==campaign.id %}selected{% endif %}>
+                <option value="{{ campaign.id }}">
                     {{ campaign.scope }}
                 </option>
                 {% endfor %}

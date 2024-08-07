@@ -48,7 +48,7 @@ class SQLAlchemyWorkerRepository(
             app_hash=entity.app_hash,
             session_string=entity.session_string,
             proxy=entity.proxy,
-            campaign_id=str(entity.campaign_id),
+            campaign_id=str(entity.campaign_id) if entity.campaign_id else None,
             role=entity.role,
             status=entity.status,
             username=entity.username,
