@@ -32,13 +32,14 @@ h1 {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    gap: 50px;
+    gap: 15px;
+    margin-top: 10px;
 }
 
 .splitted-row-element {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    justify-content: center;
 }
 
 /* Field Label Styles */
@@ -48,7 +49,8 @@ h1 {
 }
 
 .sub-field-label {
-    font-weight: var(--label-font-weight) - 1;
+    font-weight: normal;
+    font-size: 14px;
 }
 
 
