@@ -5,9 +5,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from random import randint
 
-from pyrogram.types import Message
-
-from abstractions.helpers.message import MessageHelperInterface
+from abstractions.helpers.message import TelegramClientWrapper
 from abstractions.repositories import UOWInterface
 from abstractions.repositories.chat import ChatRepositoryInterface
 from abstractions.repositories.gpt import GPTRepositoryInterface
@@ -22,7 +20,7 @@ class GPTUseCase:
     messages_repo: MessageRepositoryInterface
     chats_repo: ChatRepositoryInterface
 
-    message_helper: MessageHelperInterface
+    message_helper: TelegramClientWrapper
 
     uow: UOWInterface
 
@@ -49,14 +47,17 @@ class GPTUseCase:
         response = await self.gpt_repo.generate_response(messages)
         return response
 
-    async def handle_incoming_message(self, message: Message) -> None:
-        telegram_chat_id = message.chat.id
+    async def handle_incoming_message(self, text: str, telegram_chat_id: int) -> None:
         chat = await self.chats_repo.get_by_telegram_chat_id(telegram_chat_id)
+
+        if not chat:
+            logger.info(f"Chat not found: {telegram_chat_id}")
+            return
 
         # if we are batching messages now, that means that we already opened a transaction.
         # So we can just add messages to the transaction and commit it later
-        if datetime.now() <= self.waiting_for_new_messages[message.chat.id]:
-            await self._save_message(chat.id, message.text, is_outgoing=False)
+        if datetime.now() <= self.waiting_for_new_messages[telegram_chat_id]:
+            await self._save_message(chat.id, text, is_outgoing=False)
             logger.debug(f"Batching messages for chat: {telegram_chat_id}")
             self.waiting_for_new_messages[telegram_chat_id] = datetime.now() + timedelta(
                 seconds=self.batching_sleep
@@ -68,12 +69,7 @@ class GPTUseCase:
                 self.messages_repo,
                 self.chats_repo,
         ):
-
-            if not chat:
-                logger.info(f"Chat not found: {telegram_chat_id}")
-                return
-
-            await self._save_message(chat.id, message.text, is_outgoing=False)
+            await self._save_message(chat.id, text, is_outgoing=False)
 
             if not chat.auto_reply:
                 logger.info(f"Auto reply disabled for chat: {telegram_chat_id}")
@@ -87,7 +83,7 @@ class GPTUseCase:
 
             await asyncio.sleep(self.get_random_sleep())
             await self.message_helper.set_typing_status(
-                chat_id=message.chat.id,
+                chat_id=telegram_chat_id,
             )
 
             sleep = asyncio.sleep(self.get_random_sleep())
@@ -100,7 +96,7 @@ class GPTUseCase:
             await task
 
             await self.message_helper.send_message(
-                chat_id=message.chat.id,
+                chat_id=telegram_chat_id,
                 text=response,
             )
 

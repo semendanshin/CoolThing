@@ -18,8 +18,8 @@ class BotsUseCase(
 
     session_repo: TelegramSessionRepositoryInterface
 
-    async def send_code(self, app_id: int, app_hash: str, phone: str) -> None:
-        await self.session_repo.send_code(app_id, app_hash, phone)
+    async def send_code(self, app_id: int, app_hash: str, phone: str, proxy: str) -> None:
+        await self.session_repo.send_code(app_id, app_hash, phone, proxy)
 
     async def authorize(self, app_id: int, code: str) -> str:
         with suppress(TwoFARequiredException):

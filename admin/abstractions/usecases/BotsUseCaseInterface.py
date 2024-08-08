@@ -20,7 +20,7 @@ class BotsUseCaseInterface(ABC):
         ...
 
     @abstractmethod
-    async def send_code(self, app_id: int, app_hash: str, phone: str) -> None:
+    async def send_code(self, app_id: int, app_hash: str, phone: str, proxy: str) -> None:
         ...
 
     @abstractmethod

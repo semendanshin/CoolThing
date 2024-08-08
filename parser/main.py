@@ -1,10 +1,13 @@
 import asyncio
 import logging
 import re
+import signal
 
 from nltk import SnowballStemmer
-from pyrogram import Client
-from pyrogram.methods.utilities.idle import idle
+from telethon import TelegramClient
+from telethon.sessions import StringSession
+from telethon.tl.functions.channels import JoinChannelRequest
+from telethon.tl.types import Updates
 
 from infrastructure.handlers.group_messages.handler import GroupMessageHandler
 from infrastructure.repositories.rabbitmq.event import RabbitMQEventRepository
@@ -16,24 +19,59 @@ logging.basicConfig(
     level=logging.DEBUG if settings.debug else logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
 )
-logging.getLogger("pyrogram").setLevel(logging.WARNING)
+logging.getLogger("telethon").setLevel(logging.WARNING)
+
 logging.getLogger("aio_pika").setLevel(logging.WARNING)
 logging.getLogger("aiormq").setLevel(logging.WARNING)
 
 
-async def join_chats(client: Client, chats: list[str]):
-    for chat in chats:
+class GracefulKiller:
+    kill_now = False
+
+    def __init__(self):
+        signal.signal(signal.SIGINT, self.exit_gracefully)
+        signal.signal(signal.SIGTERM, self.exit_gracefully)
+
+    def exit_gracefully(self, signum, frame):
+        logger.info("Exiting gracefully")
+        self.kill_now = True
+
+
+async def join_chats(client: TelegramClient, chats: list[str]):
+    for i, chat in enumerate(chats):
         try:
-            chat_info = await client.join_chat(chat)
+            updates: Updates = await client(JoinChannelRequest(
+                channel=chat,
+            ))
         except Exception as e:
             logger.error(f"Error while joining chat {chat}: {e}")
             continue
         else:
-            logger.info(f"Joined chat {chat_info.title}")
+            chat_obj = updates.chats[0]
+            chat_id = chat_obj.id
+            chat_title = chat_obj.title
+            logger.info(f"Joined chat {chat_title} with id {chat_id}")
+            chats[i] = chat_id
     return
 
 
 async def main():
+    def parse_proxy(proxy: str) -> dict:
+        scheme, username, password, host, port = re.match(
+            r"^(?P<scheme>http|socks5|socks4)://(?:(?P<username>[^:]+):(?P<password>[^@]+)@)?(?P<host>[^:]+):(?P<port>\d+)$",
+            proxy,
+        ).groups()
+        proxy_dict = {
+            "proxy_type": scheme,
+            "addr": host,
+            "port": int(port),
+        }
+        if username:
+            proxy_dict["username"] = username
+            proxy_dict["password"] = password
+        logger.info(f"Using proxy: {proxy_dict}")
+        return proxy_dict
+
     stemmer = SnowballStemmer("russian")
     positive_key_words = set([stemmer.stem(word) for word in settings.parser.keywords.positive])
     negative_key_words = set([stemmer.stem(word) for word in settings.parser.keywords.negative])
@@ -59,37 +97,31 @@ async def main():
         campaign_id=settings.rabbit.campaign_id,
     )
 
-    if settings.app.proxy:
-        scheme, username, password, host, port = re.match(
-            r"^(?P<scheme>http|socks5|socks4)://(?:(?P<username>[^:]+):(?P<password>[^@]+)@)?(?P<host>[^:]+):(?P<port>\d+)$",
-            settings.app.proxy
-        ).groups()
-        proxy = {
-            "scheme": scheme,
-            "hostname": host,
-            "port": int(port),
-        }
-        if username:
-            proxy["username"] = username
-            proxy["password"] = password
-        logger.info(f"Using proxy: {proxy}")
-    else:
-        proxy = None
+    proxy = parse_proxy(settings.app.proxy) if settings.app.proxy else None
 
-    app = Client(
-        name="my_account",
+    app = TelegramClient(
+        StringSession(settings.app.session_string),
         api_id=settings.app.api_id,
         api_hash=settings.app.api_hash,
-        session_string=settings.app.session_string,
         proxy=proxy,
     )
 
-    main_handler.register_handlers(app)
-
     await app.start()
     await join_chats(app, settings.parser.chats)
-    await idle()
-    await app.stop()
+
+    main_handler.register_handlers(app)
+
+    future = asyncio.ensure_future(app.run_until_disconnected())
+
+    killer = GracefulKiller()
+
+    while not killer.kill_now:
+        await asyncio.sleep(1)
+
+    await app.disconnect()
+    await future
+
+    logger.info("Exiting.")
 
 
 asyncio.run(main())
