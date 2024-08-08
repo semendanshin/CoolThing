@@ -44,6 +44,8 @@ class Campaign(Model):
     minus_keywords: list[str]
     gpt_settings_id: str
     scope: str
+    chat_answer_wait_interval_seconds: str
+    new_lead_wait_interval_seconds: str
 
 
 @dataclass(kw_only=True)

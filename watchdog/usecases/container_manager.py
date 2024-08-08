@@ -25,6 +25,7 @@ class ManageBotsUseCase:
 
     rabbit_settings: RabbitMQSettings
     db_settings: DBSettings
+    batching_sleep: int
 
     tmp_config_dir: Path
 
@@ -55,7 +56,6 @@ class ManageBotsUseCase:
                         await self.worker_repository.update_status(worker_settings.id, "stopped")
 
         await asyncio.gather(*[process_worker_settings(worker_settings) for worker_settings in workers_settings])
-
         for container_id in running_container_ids - worker_ids:
             await self.stop_container(container_id)
 
@@ -91,6 +91,13 @@ class ManageBotsUseCase:
             },
             "welcome_message": manager_settings.welcome_message,
             "campaign_id": manager_settings.campaign_id,
+            "batch": {
+                "typing_and_sending_sleep_from": manager_settings.typing_and_sending_sleep_from,
+                "typing_and_sending_sleep_to": manager_settings.typing_and_sending_sleep_to,
+                "welcome_sleep_from": manager_settings.welcome_sleep_from,
+                "welcome_sleep_to": manager_settings.welcome_sleep_to,
+                "batching_sleep": self.batching_sleep
+            },
         }
 
     async def _structure_parser_settings(self, parser_settings: ParserSettings) -> dict:

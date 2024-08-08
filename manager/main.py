@@ -7,10 +7,12 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 
+from helpers.message import SendingMessageHelper
 from infrastructure.handlers.incoming import IncomingMessageHandler
 from infrastructure.openai import GPTRepository, AssistantRepository
 from infrastructure.rabbit import RabbitListener
 from infrastructure.sqlalchemy import SQLAlchemyMessagesRepository, SQLAlchemyChatsRepository
+from infrastructure.sqlalchemy.abstract import AbstractSQLAlchemyUOW
 from settings import settings
 from use_cases.gpt_response import GPTUseCase
 from use_cases.target_message import TargetMessageEventHandler
@@ -104,6 +106,15 @@ async def main():
         messages_repo=messages_repo,
         gpt_repo=gpt_repo,
         chats_repo=chats_repo,
+        message_helper=SendingMessageHelper(
+            app=app,
+        ),
+        uow=AbstractSQLAlchemyUOW(
+            session_maker=session_maker,
+        ),
+        typing_and_sending_sleep_from=settings.batch.typing_and_sending_sleep_from,
+        typing_and_sending_sleep_to=settings.batch.typing_and_sending_sleep_to,
+        batching_sleep=settings.batch.batching_sleep,
     )
 
     target_message_use_case = TargetMessageEventHandler(
@@ -113,6 +124,11 @@ async def main():
         welcome_message=settings.welcome_message,
         campaign_id=settings.campaign_id,
         worker_id=settings.app.id,
+        welcome_sleep_from=settings.batch.welcome_sleep_from,
+        welcome_sleep_to=settings.batch.welcome_sleep_to,
+        uow=AbstractSQLAlchemyUOW(
+            session_maker=session_maker,
+        ),
     )
 
     rmq_url = (f"amqp://{settings.rabbit.user}:{settings.rabbit.password}@"

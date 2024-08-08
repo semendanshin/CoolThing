@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from contextlib import asynccontextmanager
 
 
 class CRUDRepositoryInterface[Model, CreateDTO, UpdateDTO](ABC):
@@ -22,3 +23,9 @@ class CRUDRepositoryInterface[Model, CreateDTO, UpdateDTO](ABC):
     async def get_all(self, limit: int = 100, offset: int = 0) -> list[Model]:
         pass
 
+
+class UOWInterface(ABC):
+    @asynccontextmanager
+    @abstractmethod
+    async def begin(self, *repositories: CRUDRepositoryInterface) -> 'UOWInterface':
+        pass

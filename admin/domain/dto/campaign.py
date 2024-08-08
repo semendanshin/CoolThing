@@ -12,6 +12,8 @@ class CampaignCreateDTO:
     minus_keywords: list[str]
     gpt_settings_id: str
     scope: str
+    chat_answer_wait_interval_seconds: Optional[str] = None
+    new_lead_wait_interval_seconds: Optional[str] = None
 
 
 @dataclass(kw_only=True)
@@ -23,3 +25,5 @@ class CampaignUpdateDTO:
     minus_keywords: Optional[list[str]] = None
     gpt_settings_id: Optional[str] = None
     scope: Optional[str] = None
+    chat_answer_wait_interval_seconds: Optional[str] = None
+    new_lead_wait_interval_seconds: Optional[str] = None
