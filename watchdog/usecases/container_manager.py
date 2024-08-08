@@ -32,17 +32,13 @@ class ManageBotsUseCase:
     _containers_settings_hashes: dict[str, int] = field(default_factory=dict, init=False)
 
     async def execute(self):
-        print("executing")
         workers_settings, running_containers = await asyncio.gather(
             self.worker_settings_repository.get_active_bot_settings(),
             self.container_manager.get_running_containers()
         )
 
-        print("got settings and containers")
-
         worker_ids = {worker.id for worker in workers_settings}
         running_container_ids = {container.id for container in running_containers}
-        print(worker_ids, running_container_ids)
 
         async def process_worker_settings(worker_settings: WorkerSettings):
             if worker_settings.id not in self._containers_settings_hashes:
