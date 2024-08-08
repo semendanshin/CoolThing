@@ -7,8 +7,8 @@ from random import randint
 from typing import Annotated
 
 from aio_pika import IncomingMessage
-from telethon import TelegramClient
 
+from abstractions.helpers.message import TelegramClientWrapper
 from abstractions.repositories import UOWInterface
 from abstractions.repositories.chat import ChatRepositoryInterface, ChatCreateDTO
 from abstractions.repositories.message import MessageRepositoryInterface, MessageCreateDTO
@@ -22,7 +22,7 @@ class TargetMessageEventHandler:
     chats_repo: ChatRepositoryInterface
     messages_repo: MessageRepositoryInterface
 
-    app: TelegramClient
+    message_helper: TelegramClientWrapper
 
     welcome_message: str
     campaign_id: str
@@ -38,7 +38,7 @@ class TargetMessageEventHandler:
         logger.info(f"New target message received: {event}")
 
         try:
-            telegram_chat_id = (await self.app.get_entity(event.username)).id
+            telegram_chat_id = await self.message_helper.get_chat_id(event.username)
         except Exception as e:
             logger.error(f"Error getting chat: {e}")
             return
@@ -70,9 +70,10 @@ class TargetMessageEventHandler:
 
             await asyncio.sleep(self.get_random_sleep())
 
-            raise NotImplementedError("This code is not finished yet")
-
-            sent_message = await self.app.send_message(chat_id=event.username, text=self.welcome_message)
+            sent_message = await self.message_helper.send_message(
+                telegram_chat_id,
+                self.welcome_message,
+            )
 
             logger.debug(f"Welcome message sent: {sent_message}")
 

@@ -1,13 +1,9 @@
-import asyncio
 import logging
 from dataclasses import dataclass, field
-from random import randint
 
-from telethon.tl.types import SendMessageTypingAction
+from telethon import TelegramClient, events
 
 from use_cases.gpt_response import GPTUseCase
-
-from telethon import TelegramClient, events, functions
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +17,10 @@ class IncomingMessageHandler:
     async def response_to_user(self, event: events.NewMessage.Event) -> None:
         logger.info(f"Received message: {event.message.text}")
 
-        await self.gpt_use_case.handle_incoming_message(event.message)
+        await self.gpt_use_case.handle_incoming_message(
+            text=event.message.text,
+            telegram_chat_id=event.chat_id,
+        )
 
     def register_handlers(self, app: TelegramClient) -> None:
         app.on(

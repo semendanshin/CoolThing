@@ -106,10 +106,10 @@ async def main():
         proxy=proxy,
     )
 
-    main_handler.register_handlers(app)
-
     await app.start()
     await join_chats(app, settings.parser.chats)
+
+    main_handler.register_handlers(app)
 
     future = asyncio.ensure_future(app.run_until_disconnected())
 

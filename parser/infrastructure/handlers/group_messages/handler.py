@@ -54,14 +54,15 @@ class GroupMessageHandler:
             )
 
     def register_handlers(self, app: TelegramClient):
+        logger.info("Registering handlers. Chats: %s", self.chats)
+
+        def _filter(event: events.NewMessage.Event):
+            return event.message.text and (int(str(event.chat_id).removeprefix("-100")) in self.chats)
+
         app.on(
             events.NewMessage(
                 incoming=True,
                 outgoing=True,
-                func=lambda e: e.message.text and (
-                    (
-                            e.chat_id in self.chats
-                    )
-                )
+                func=_filter
             )
         )(self.react_to_message)
