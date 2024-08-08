@@ -14,27 +14,60 @@ Campaign
     <p>Here you can create a new campaign.</p>
     <form action="/campaigns" method="post">
         <div class="row">
-            <label for="scope" class="campaign-field-label">Scope</label>
-            <input class="input-field" id="scope" name="scope">
+            <label for="scope" class="field-label required">Scope</label>
+            <input class="input-field" id="scope" name="scope" placeholder="Real Estate" required>
         </div>
         <div class="row">
-            <label for="welcome_message" class="campaign-field-label">Welcome Message</label>
-            <textarea class="input-field" id="welcome_message" name="welcome_message"></textarea>
+            <label for="welcome_message" class="field-label required">Welcome Message</label>
+            <textarea class="input-field" id="welcome_message" name="welcome_message" placeholder="Hello!" required></textarea>
         </div>
         <div class="row">
-            <label for="chats" class="campaign-field-label">Chats</label>
-            <textarea class="input-field" id="chats" name="chats"></textarea>
+            <label for="chats" class="field-label required">Chats</label>
+            <textarea class="input-field" id="chats" name="chats" placeholder="chatusername, t.me/+3GdS35GHsd" required></textarea>
         </div>
         <div class="row">
-            <label for="plus_keywords" class="campaign-field-label">Plus Keywords</label>
-            <textarea class="input-field" id="plus_keywords" name="plus_keywords"></textarea>
+            <label for="plus_keywords" class="field-label required">Plus Keywords</label>
+            <textarea class="input-field" id="plus_keywords" name="plus_keywords" placeholder="buy, sell" required></textarea>
         </div>
         <div class="row">
-            <label for="minus_keywords" class="campaign-field-label">Minus Keywords</label>
-            <textarea class="input-field" id="minus_keywords" name="minus_keywords"></textarea>
+            <label for="minus_keywords" class="field-label required">Minus Keywords</label>
+            <textarea class="input-field" id="minus_keywords" name="minus_keywords" placeholder="rent, lease" required></textarea>
         </div>
         <div class="row">
-            <label for="gpt_settings_id" class="campaign-field-label">GPT Settings</label>
+                <label class="field-label">In-chat answer delay interval (seconds)</label>
+                <div class="splitted-row">
+                    <div class="splitted-row-element">
+                        <label for="campaign_chat_interval_start" class="field-label sub-field-label">from:</label>
+
+                        <input type="number" class="input-field" id="campaign_chat_interval_start"
+                               name="campaign_chat_interval_start" placeholder="15">
+                    </div>
+
+                    <div class="splitted-row-element">
+                        <label for="campaign_chat_interval_end" class="field-label sub-field-label">to:</label>
+
+                        <input type="number" class="input-field" id="campaign_chat_interval_end"
+                               name="campaign_chat_interval_end" placeholder="30">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <label class="field-label">Welcome message delay interval (seconds)</label>
+                <div class="splitted-row">
+                    <div class="splitted-row-element">
+                        <label for="campaign_welcome_wait_start" class="field-label sub-field-label">from:</label>
+                        <input type="number" class="input-field" id="campaign_welcome_wait_start"
+                               name="campaign_welcome_wait_start" placeholder="150">
+                    </div>
+                    <div class="splitted-row-element">
+                        <label for="campaign_welcome_wait_end" class="field-label sub-field-label">to:</label>
+                        <input type="number" class="input-field" id="campaign_welcome_wait_end"
+                               name="campaign_welcome_wait_end" placeholder="300">
+                    </div>
+                </div>
+            </div>
+        <div class="row">
+            <label for="gpt_settings_id" class="field-label">GPT Settings</label>
             <select class="select-field" id="gpt_settings_id" name="gpt_settings_id">
                 {% for gpt_setting in gpt_settings %}
                     <option value="{{ gpt_setting.id }}">
