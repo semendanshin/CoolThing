@@ -76,6 +76,7 @@
     <link href="/static/bots.css" rel="stylesheet">
     <link href="/static/common.css" rel="stylesheet">
     <link href="/static/filters.css" rel="stylesheet">
+    <link href="/static/item_cards.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -129,10 +130,10 @@
             </div>
         </div>
 
-        <div class="bot-cards">
+        <div class="cards-container">
             {% for bot in bots %}
                 <a href="/bot/{{ bot.id }}">
-                    <div class="bot-card" data-status="{{ bot.status }}" data-campaign="{% if bot.campaign_id != None %}{{ bot.campaign_id }}{% else %}No campaign{% endif %}"
+                    <div class="item-card" data-status="{{ bot.status }}" data-campaign="{% if bot.campaign_id != None %}{{ bot.campaign_id }}{% else %}No campaign{% endif %}"
                          data-role="{{ bot.role }}">
                         <h3>{{ bot.username }}</h3>
                         <p><strong>App ID:</strong> {{ bot.app_id }}</p>
