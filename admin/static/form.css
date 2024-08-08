@@ -9,15 +9,24 @@
 }
 
 .container p {
+    text-align: left;
+}
+
+.form-header-container {
+    display: flex;
+    justify-content: flex-end;
     padding: 10px;
-    text-align: center;
-    width: 100%;
+}
+
+.form-header {
+    flex: 1 1 auto;
 }
 
 /* Heading Styles */
 h1 {
     color: var(--primary-color);
-    text-align: center;
+    text-align: left;
+    margin-bottom: 10px;
 }
 
 /* Row Styles */

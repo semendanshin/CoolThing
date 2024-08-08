@@ -6,11 +6,11 @@ from domain.models import GPT
 
 class GPTSettingsUseCaseInterface(ABC):
     @abstractmethod
-    async def get(self, campaign_id: str) -> GPT:
+    async def get(self, settings_id: str) -> GPT:
         ...
 
     @abstractmethod
-    async def update(self, campaign_id: str, schema: GPTUpdateDTO) -> None:
+    async def update(self, settings_id: str, schema: GPTUpdateDTO) -> None:
         ...
 
     @abstractmethod
@@ -19,4 +19,8 @@ class GPTSettingsUseCaseInterface(ABC):
 
     @abstractmethod
     async def get_all(self, offset: int = 0, limit: int = 10) -> list[GPT]:
+        ...
+
+    @abstractmethod
+    async def delete(self, settings_id: str) -> None:
         ...

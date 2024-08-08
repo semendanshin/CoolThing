@@ -22,3 +22,7 @@ class CampaignsUseCaseInterface(ABC):
     @abstractmethod
     async def create(self, schema: CampaignCreateDTO) -> None:
         ...
+
+    @abstractmethod
+    async def delete(self, campaign_id: str) -> None:
+        ...

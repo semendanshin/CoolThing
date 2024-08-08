@@ -1,0 +1,30 @@
+:root {
+    --delete-button-size: 20px;
+}
+
+.delete-button {
+    width: var(--delete-button-size);
+    height: var(--delete-button-size);
+    border: none;
+    padding: 10px 20px;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 2px;
+    cursor: pointer;
+    transition: filter 0.5s ease;
+    filter: invert(14%) sepia(15%) saturate(2389%) hue-rotate(221deg) brightness(92%) contrast(83%);
+}
+
+.delete-button:hover {
+    filter: invert(13%) sepia(68%) saturate(4261%) hue-rotate(352deg) brightness(92%) contrast(119%);
+}
+
+.delete-button-svg {
+    width: var(--delete-button-size);
+    height: var(--delete-button-size);
+}
+
+.delete-button-container {
+    flex: 0 1 var(--delete-button-size);
+    padding: 10px;
+}
