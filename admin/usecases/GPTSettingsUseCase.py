@@ -23,3 +23,6 @@ class GPTSettingsUseCase(
 
     async def get_all(self, offset: int = 0, limit: int = 10) -> list[GPT]:
         return await self.repository.get_all(offset=offset, limit=limit)
+
+    async def delete(self, settings_id: str) -> None:
+        await self.repository.delete(settings_id)

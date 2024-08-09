@@ -43,3 +43,5 @@ class BotsUseCase(
     async def create(self, schema: WorkerCreateDTO) -> None:
         await self.workers_repo.create(schema)
 
+    async def delete(self, bot_id: str) -> None:
+        await self.workers_repo.delete(obj_id=bot_id)

@@ -178,6 +178,7 @@ async def get_bot(
         context={
             'bot': bot,
             'campaigns': campaigns_list,
+            'delete_url': f"/bots/{bot.id}",
         }
     )
 
@@ -190,3 +191,12 @@ async def update_bot_backend(
 ) -> RedirectResponse:
     await bots.update(bot_id, update_schema)
     return RedirectResponse(url=f'/bot/{bot_id}', status_code=303)
+
+
+@router.delete("/{bot_id}")
+async def delete_bot_backend(
+        bot_id: str,
+        bots: BotsUseCaseInterface = Depends(get_bots_usecase),
+) -> RedirectResponse:
+    await bots.delete(bot_id)
+    return RedirectResponse(url='/bots', status_code=303)

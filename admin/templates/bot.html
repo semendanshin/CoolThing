@@ -1,24 +1,23 @@
-{% extends 'base.html' %}
+{% extends 'update_form.html' %}
 
 {% block title %}
-Bot overview
+    Bot overview
 {% endblock %}
 
-{% block head %}
-<link href="/static/slider.css" rel="stylesheet">
-<link href="/static/common.css" rel="stylesheet">
-<link href="/static/form.css" rel="stylesheet">
+{% block form_header %}
+    Bot details
 {% endblock %}
 
-{% block content %}
-<div class="container">
-    <h1>Bot details</h1>
-    <p>Here you can see detail about the bot.</p>
+{% block entity %}
+    bot
+{% endblock %}
+
+{% block fields %}
     <form action="/bot/{{ bot.id }}" method="post">
         <div class="row">
             <label for="status" class="field-label">Status</label>
             <label class="switch">
-                <input type="checkbox" id="status" name="status" {% if bot.status== 'active' %}checked{% endif %}>
+                <input type="checkbox" id="status" name="status" {% if bot.status == 'active' %}checked{% endif %}>
                 <span class="slider round"></span>
             </label>
         </div>
@@ -62,9 +61,9 @@ Bot overview
             <select class="select-field" id="campaign_id" name="campaign_id">
                 <option value="" {% if bot.campaign_id==None %}selected{% endif %}>Select campaign</option>
                 {% for campaign in campaigns %}
-                <option value="{{ campaign.id }}" {% if bot.campaign_id==campaign.id %}selected{% endif %}>
-                    {{ campaign.scope }}
-                </option>
+                    <option value="{{ campaign.id }}" {% if bot.campaign_id == campaign.id %}selected{% endif %}>
+                        {{ campaign.scope }}
+                    </option>
                 {% endfor %}
             </select>
         </div>
@@ -72,8 +71,8 @@ Bot overview
         <div class="row">
             <label for="role" class="field-label">Role</label>
             <select class="select-field" id="role" name="role">
-                <option value="manager" {% if bot.role=='manager' %}selected{% endif %}>Manager</option>
-                <option value="parser" {% if bot.role=='parser' %}selected{% endif %}>Parser</option>
+                <option value="manager" {% if bot.role == 'manager' %}selected{% endif %}>Manager</option>
+                <option value="parser" {% if bot.role == 'parser' %}selected{% endif %}>Parser</option>
             </select>
         </div>
 
@@ -81,5 +80,4 @@ Bot overview
             <input type="submit" value="Save Changes" class="submit-button">
         </div>
     </form>
-</div>
 {% endblock %}

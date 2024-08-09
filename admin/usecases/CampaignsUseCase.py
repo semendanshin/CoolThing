@@ -24,3 +24,6 @@ class CampaignsUseCase(
 
     async def create(self, schema: CampaignCreateDTO) -> None:
         return await self.repository.create(schema)
+
+    async def delete(self, campaign_id: str) -> None:
+        await self.repository.delete(campaign_id)

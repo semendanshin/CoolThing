@@ -38,3 +38,7 @@ class BotsUseCaseInterface(ABC):
     @abstractmethod
     async def get_by_username(self, username: str) -> Worker:
         ...
+
+    @abstractmethod
+    async def delete(self, bot_id: str) -> None:
+        ...

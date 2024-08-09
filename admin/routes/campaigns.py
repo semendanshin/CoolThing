@@ -64,6 +64,7 @@ async def get_campaign(
         context={
             'campaign': campaign,
             'gpt_settings': gpt_settings_list,
+            'delete_url': f"/campaigns/{campaign.id}",
         }
     )
 
@@ -76,6 +77,15 @@ async def update_campaign_backend(
 ) -> RedirectResponse:
     await campaigns.update(campaign_id=campaign_id, schema=update_schema)
     return RedirectResponse(url=f'/campaigns/{campaign_id}', status_code=303)
+
+
+@router.delete("/{campaign_id}")
+async def delete_campaign_backend(
+        campaign_id: str,
+        campaigns: CampaignsUseCaseInterface = Depends(get_campaigns_usecase)
+) -> RedirectResponse:
+    await campaigns.delete(campaign_id=campaign_id)
+    return RedirectResponse(url=f'/campaigns', status_code=303)
 
 
 @router.post("")

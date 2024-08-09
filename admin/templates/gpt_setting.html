@@ -1,15 +1,18 @@
-{% extends 'base.html' %}
+{% extends 'update_form.html' %}
 
-{% block title %}GPT Setting{% endblock %}
+{% block title %}
+    GPT Setting
+{% endblock %}
 
-{% block head %}
-<link href="/static/form.css" rel="stylesheet">
+{% block form_header %}
+    GPT Setting
+{% endblock %}
+
+{% block entity %}
+    GPT Setting
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>GPT Setting</h1>
-    <p>Here you can edit the details about the GPT Setting.</p>
     <form action="/gpt/{{ gpt_setting.id }}" method="post">
         <div class="row">
             <label for="model" class="field-label">Model</label>
@@ -22,7 +25,7 @@
         <div class="row">
             <label for="assistant" class="field-label">Assistant ID</label>
             <input class="input-field" id="assistant" name="assistant" value="{{ gpt_setting.assistant }}"
-            placeholder="asst_0A9p3q4r5s6t3dH2Gd">
+                   placeholder="asst_0A9p3q4r5s6t3dH2Gd">
         </div>
         <div class="row">
             <label for="service_prompt" class="field-label">Service Prompt</label>
@@ -38,5 +41,4 @@
             <input type="submit" value="Save Changes" class="submit-button">
         </div>
     </form>
-</div>
 {% endblock %}
