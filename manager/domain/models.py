@@ -50,6 +50,7 @@ class Chat(Model):
     status: str
     lead_message: str
     lead_chat_id: str
+    auto_reply: bool
 
 
 @dataclass(kw_only=True)

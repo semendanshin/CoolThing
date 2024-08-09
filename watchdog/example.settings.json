@@ -1,0 +1,20 @@
+{
+    "db": {
+        "host": "db",
+        "port": 5432,
+        "user": "postgres",
+        "password": "postgres",
+        "name": "postgres"
+    },
+    "watchdog": {
+        "interval_seconds": 10,
+        "root_config_path": "/etc/watchdog"
+    },
+    "rabbit": {
+        "host": "queue",
+        "port": 5672,
+        "user": "guest",
+        "password": "guest",
+        "vhost": ""
+    }
+}

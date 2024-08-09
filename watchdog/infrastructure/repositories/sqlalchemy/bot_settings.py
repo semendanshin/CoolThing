@@ -22,13 +22,16 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
             w.role,
             w.status,
             g.model,
-            g.assistant,
             g.token,
+            g.proxy AS openai_proxy,
+            g.assistant,
+            g.service_prompt,
             c.welcome_message,
-            c.topic,
             c.chats,
             c.plus_keywords,
-            c.minus_keywords
+            c.minus_keywords,
+            c.new_lead_wait_interval_seconds,
+            c.chat_answer_wait_interval_seconds
         FROM
             workers AS w
         JOIN
@@ -36,7 +39,7 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
         JOIN
             gpt_settings AS g ON c.gpt_settings_id = g.id
         WHERE
-            w.status = 'active'
+            w.status = 'active' AND w.deleted_at IS NULL
     """
 
     async def get_active_bot_settings(self) -> list[WorkerSettings]:
@@ -57,13 +60,20 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
                     )
                     match row.role:
                         case "manager":
+                            typing_and_sending_sleep_from, typing_and_sending_sleep_to = map(int, row.chat_answer_wait_interval_seconds.split("-"))
+                            welcome_sleep_from, welcome_sleep_to = map(int, row.new_lead_wait_interval_seconds.split("-"))
                             worker = ManagerSettings(
                                 **base.__dict__,
                                 model=row.model,
-                                assistant=row.assistant,
                                 token=row.token,
+                                openai_proxy=row.openai_proxy,
+                                assistant=row.assistant,
+                                service_prompt=row.service_prompt,
                                 welcome_message=row.welcome_message,
-                                topic=row.topic,
+                                typing_and_sending_sleep_from=typing_and_sending_sleep_from,
+                                typing_and_sending_sleep_to=typing_and_sending_sleep_to,
+                                welcome_sleep_from=welcome_sleep_from,
+                                welcome_sleep_to=welcome_sleep_to,
                             )
                         case "parser":
                             worker = ParserSettings(
@@ -71,7 +81,6 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
                                 chats=row.chats,
                                 plus_keywords=row.plus_keywords,
                                 minus_keywords=row.minus_keywords,
-                                topic=row.topic,
                             )
                         case _:
                             worker = base

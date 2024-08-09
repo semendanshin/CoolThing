@@ -8,6 +8,7 @@ services:
     ports:
       - "24224:24224"
       - "24224:24224/udp"
+      - "24224:24224/tcp"
     restart: unless-stopped
     networks:
       - bridge

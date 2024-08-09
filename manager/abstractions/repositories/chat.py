@@ -16,11 +16,12 @@ class ChatCreateDTO:
     status: str
     lead_message: str
     lead_chat_id: str
+    auto_reply: bool = None
 
 
 @dataclass
 class ChatUpdateDTO:
-    pass
+    ...
 
 
 class ChatRepositoryInterface(

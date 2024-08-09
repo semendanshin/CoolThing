@@ -1,0 +1,44 @@
+{% extends 'update_form.html' %}
+
+{% block title %}
+    GPT Setting
+{% endblock %}
+
+{% block form_header %}
+    GPT Setting
+{% endblock %}
+
+{% block entity %}
+    GPT Setting
+{% endblock %}
+
+{% block content %}
+    <form action="/gpt/{{ gpt_setting.id }}" method="post">
+        <div class="row">
+            <label for="model" class="field-label">Model</label>
+            <input class="input-field" id="model" name="model" value="{{ gpt_setting.model }}">
+        </div>
+        <div class="row">
+            <label for="token" class="field-label">Token</label>
+            <input class="input-field" id="token" name="token" value="{{ gpt_setting.token }}">
+        </div>
+        <div class="row">
+            <label for="assistant" class="field-label">Assistant ID</label>
+            <input class="input-field" id="assistant" name="assistant" value="{{ gpt_setting.assistant }}"
+                   placeholder="asst_0A9p3q4r5s6t3dH2Gd">
+        </div>
+        <div class="row">
+            <label for="service_prompt" class="field-label">Service Prompt</label>
+            <textarea class="input-field" id="service_prompt"
+                      name="service_prompt">{{ gpt_setting.service_prompt }}</textarea>
+        </div>
+        <div class="row">
+            <label for="proxy" class="field-label">Proxy</label>
+            <input class="input-field" id="proxy" name="proxy" value="{{ gpt_setting.proxy }}"
+                   placeholder="socks5://username:password@host:port">
+        </div>
+        <div class="row">
+            <input type="submit" value="Save Changes" class="submit-button">
+        </div>
+    </form>
+{% endblock %}

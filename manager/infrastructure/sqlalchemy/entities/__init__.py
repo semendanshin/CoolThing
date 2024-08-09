@@ -1,6 +1,8 @@
 import uuid
+from datetime import datetime
+from typing import Optional
 
-from sqlalchemy import String, Boolean, ForeignKey, BigInteger, func
+from sqlalchemy import String, Boolean, ForeignKey, BigInteger, func, TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column
@@ -12,8 +14,15 @@ class BaseEntity(Base):
     __abstract__ = True
 
     id: Mapped[str] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    created_at: Mapped[str] = mapped_column(String, nullable=False, server_default=func.now())
-    updated_at: Mapped[str] = mapped_column(String, nullable=False, server_default=func.now(), onupdate=func.current_timestamp())
+    created_at: Mapped[datetime] = mapped_column(TIMESTAMP, nullable=False, server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(TIMESTAMP, nullable=False, server_default=func.now(), onupdate=func.current_timestamp())
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, nullable=True, index=True, server_default=None)
+
+    def soft_delete(self):
+        self.deleted_at = datetime.now()
+
+    def restore(self):
+        self.deleted_at = None
 
 
 class Worker(BaseEntity):
@@ -23,17 +32,21 @@ class Worker(BaseEntity):
     app_hash: Mapped[str] = mapped_column(String, nullable=False)
     session_string: Mapped[str] = mapped_column(String, nullable=False)
     proxy: Mapped[str] = mapped_column(String, nullable=True)
-    campaign_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('campaigns.id'), nullable=False)
-    role: Mapped[str] = mapped_column(String, nullable=False)
-    status: Mapped[str] = mapped_column(String, nullable=False)
+    campaign_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('campaigns.id'), nullable=True)
+    role: Mapped[str] = mapped_column(String, nullable=False, server_default='parser')
+    status: Mapped[str] = mapped_column(String, nullable=False, server_default='stoped')
+    username: Mapped[str] = mapped_column(String, nullable=False)
+    bio: Mapped[str] = mapped_column(String, nullable=True)
 
 
 class GPT(BaseEntity):
     __tablename__ = 'gpt_settings'
 
     model: Mapped[str] = mapped_column(String, nullable=False)
-    assistant: Mapped[str] = mapped_column(String, nullable=False)
+    assistant: Mapped[str] = mapped_column(String, nullable=True)
     token: Mapped[str] = mapped_column(String, nullable=False)
+    service_prompt: Mapped[str] = mapped_column(String, nullable=True)
+    proxy: Mapped[str] = mapped_column(String, nullable=True)
 
 
 class Campaign(BaseEntity):
@@ -44,7 +57,9 @@ class Campaign(BaseEntity):
     plus_keywords: Mapped[list[str]] = mapped_column(JSONB, nullable=False)
     minus_keywords: Mapped[list[str]] = mapped_column(JSONB, nullable=False)
     gpt_settings_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('gpt_settings.id'), nullable=False)
-    topic: Mapped[str] = mapped_column(String, nullable=False)
+    scope: Mapped[str] = mapped_column(String, nullable=False)
+    new_lead_wait_interval_seconds: Mapped[str] = mapped_column(String, nullable=False, server_default='180-300')
+    chat_answer_wait_interval_seconds: Mapped[str] = mapped_column(String, nullable=False, server_default='15-30')
 
 
 class Chat(BaseEntity):
@@ -57,6 +72,7 @@ class Chat(BaseEntity):
     status: Mapped[str] = mapped_column(String, nullable=False)
     lead_message: Mapped[str] = mapped_column(String, nullable=False)
     lead_chat_id: Mapped[str] = mapped_column(String, nullable=False)
+    auto_reply: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default='true')
 
 
 class Message(BaseEntity):

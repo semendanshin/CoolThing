@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <link href="/static/slider.css" rel="stylesheet">
+    <link href="/static/common.css" rel="stylesheet">
+    <link href="/static/form.css" rel="stylesheet">
+    <link href="/static/delete-button.css" rel="stylesheet">  <!-- Link to custom CSS for the delete button -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <script>
+        async function confirmDelete() {
+            if (confirm('Are you sure you want to delete this bot? This action cannot be undone.')) {
+                let response = await fetch('{{ delete_url }}', {
+                    method: 'DELETE'
+                });
+                if (response.redirected) {
+                    window.location = response.url;
+                }
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="form-header-container">
+            <div class="form-header">
+                <h1>{% block form_header %} {% endblock %}</h1>
+                <p>Here you can see and edit detail about the {% block entity %}{% endblock %}.</p>
+            </div>
+            <div class="delete-button-container">
+                <svg class="delete-button-svg" onclick="confirmDelete()">
+                    <image class="delete-button" href="/static/icons/trash-solid.svg"></image>
+                </svg>
+            </div>
+        </div>
+        {% block fields %}{% endblock %}
+    </div>
+{% endblock %}
