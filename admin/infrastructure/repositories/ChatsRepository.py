@@ -42,7 +42,13 @@ class ChatsRepository(
 
     async def get_by_worker_id(self, worker_id: str) -> list[ChatModel]:
         async with self.session_maker() as session:
-            entities = (await session.execute(select(Chat).where(Chat.worker_id == worker_id))).scalars().all()
+            entities = (await session.execute(
+                select(Chat)
+                .where(
+                    Chat.worker_id == worker_id,
+                    Chat.deleted_at.is_(None)
+                )
+            )).scalars().all()
         return [
             self.entity_to_model(entity) for entity in entities
         ]
@@ -66,6 +72,7 @@ class ChatsRepository(
             ) m on m.chat_id = c.id  
             JOIN public.workers w on w.id = c.worker_id
             JOIN public.campaigns c2 on c2.id = c.campaign_id
+            WHERE c.deleted_at IS NULL
             ORDER BY m.created_at DESC
             LIMIT :limit OFFSET :offset
             """
@@ -109,7 +116,7 @@ class ChatsRepository(
             ) m on m.chat_id = c.id  
             JOIN public.workers w on w.id = c.worker_id
             JOIN public.campaigns c2 on c2.id = c.campaign_id
-            WHERE c.id = :id
+            WHERE c.id = :id AND c.deleted_at IS NULL
             ORDER BY m.created_at DESC
             """
         ).bindparams(id=uuid_obj_id)
@@ -121,7 +128,7 @@ class ChatsRepository(
                 m.created_at as sent_at,
                 m.is_outgoing as type
             FROM messages m
-            WHERE m.chat_id = :id
+            WHERE m.chat_id = :id AND m.deleted_at IS NULL
             ORDER BY m.created_at
             """
         ).bindparams(id=uuid_obj_id)

@@ -39,7 +39,7 @@ class SQLAlchemyBotSettingsRepository(BotSettingsRepositoryInterface):
         JOIN
             gpt_settings AS g ON c.gpt_settings_id = g.id
         WHERE
-            w.status = 'active'
+            w.status = 'active' AND w.deleted_at IS NULL
     """
 
     async def get_active_bot_settings(self) -> list[WorkerSettings]:
