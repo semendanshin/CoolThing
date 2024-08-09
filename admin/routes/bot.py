@@ -178,7 +178,7 @@ async def get_bot(
         context={
             'bot': bot,
             'campaigns': campaigns_list,
-            'delete_url': f"/bots/{bot.id}",
+            'delete_url': f"/bot/{bot.id}",
         }
     )
 
