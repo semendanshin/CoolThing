@@ -41,7 +41,9 @@ class AbstractSQLAlchemyRepository[Entity, Model, CreateDTO, UpdateDTO](
     async def update(self, obj: UpdateDTO) -> None:
         async with self.session_maker() as session:
             async with session.begin():
-                await session.merge(self.model_to_entity(obj))
+                entity = await session.get(self.entity, obj.id)
+                for key, value in obj.__dict__.items():
+                    setattr(entity, key, value)
 
     async def delete(self, obj_id: str) -> None:
         async with self.session_maker() as session:
@@ -53,12 +55,12 @@ class AbstractSQLAlchemyRepository[Entity, Model, CreateDTO, UpdateDTO](
         async with self.session_maker() as session:
             return [
                 self.entity_to_model(entity)
-                for entity in await session.execute(
+                for entity in (await session.execute(
                     select(self.entity)
                     .where(self.entity.deleted_at.is_(None))
                     .limit(limit)
                     .offset(offset)
-                )
+                )).scalars().all()
             ]
 
     @abstractmethod
