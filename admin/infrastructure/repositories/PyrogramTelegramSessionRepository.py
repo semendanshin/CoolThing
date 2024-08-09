@@ -35,7 +35,7 @@ class PyrogramTelegramSessionRepository(
 ):
     _apps: dict[int, ClientData] = field(default_factory=dict)
 
-    async def send_code(self, app_id: int, app_hash: str, phone: str) -> None:
+    async def send_code(self, app_id: int, app_hash: str, phone: str, proxy: str) -> None:
         app = MyClient(
             name="bot",
             api_id=app_id,

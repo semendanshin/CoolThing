@@ -21,7 +21,13 @@ class SQLAlchemyWorkerRepository(
 ):
     async def get_by_role(self, role: Literal['manager', 'parser']) -> list[WorkerModel]:
         async with self.session_maker() as session:
-            entities = (await session.execute(select(Worker).where(Worker.role == role))).scalars().all()
+            entities = (await session.execute(
+                select(Worker)
+                .where(
+                    Worker.role == role,
+                    Worker.deleted_at.is_(None),
+                )
+            )).scalars().all()
         return [
             self.entity_to_model(entity) for entity in entities
         ]
@@ -30,7 +36,7 @@ class SQLAlchemyWorkerRepository(
         async with self.session_maker() as session:
             return self.entity_to_model(
                 (await session.execute(
-                    select(Worker).where(Worker.username == username)
+                    select(Worker).where(Worker.username == username, Worker.deleted_at.is_(None))
                 )).scalar_one()
             )
 
@@ -48,7 +54,7 @@ class SQLAlchemyWorkerRepository(
             app_hash=entity.app_hash,
             session_string=entity.session_string,
             proxy=entity.proxy,
-            campaign_id=str(entity.campaign_id),
+            campaign_id=str(entity.campaign_id) if entity.campaign_id else None,
             role=entity.role,
             status=entity.status,
             username=entity.username,

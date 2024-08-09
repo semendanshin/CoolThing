@@ -13,4 +13,5 @@ def bot_connect_2fa_form(
         app_hash=bot_base.app_hash,
         phone=bot_base.phone,
         password=password,
+        proxy=bot_base.proxy,
     )

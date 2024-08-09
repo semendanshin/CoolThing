@@ -24,7 +24,7 @@ Bot overview
         </div>
 
         <div class="row">
-            <label for="username" class="field-label">Username</label>
+            <label for="username" class="field-label required">Username</label>
             <input class="input-field" type="text" id="username" name="username" value="{{ bot.username }}" required>
         </div>
 
@@ -34,18 +34,18 @@ Bot overview
         </div>
 
         <div class="row">
-            <label for="app_id" class="field-label">App ID</label>
+            <label for="app_id" class="field-label required">App ID</label>
             <input class="input-field" type="text" id="app_id" name="app_id" value="{{ bot.app_id }}" required readonly>
         </div>
 
         <div class="row">
-            <label for="app_hash" class="field-label">App hash</label>
+            <label for="app_hash" class="field-label required">App hash</label>
             <input class="input-field" type="text" id="app_hash" name="app_hash" value="{{ bot.app_hash }}" required
                    readonly>
         </div>
 
         <div class="row">
-            <label for="session_string" class="field-label">Session string</label>
+            <label for="session_string" class="field-label required">Session string</label>
             <input class="input-field" type="text" id="session_string" name="session_string"
                    value="{{ bot.session_string }}" required readonly>
         </div>
@@ -53,14 +53,15 @@ Bot overview
         <div class="row">
             <label for="proxy" class="field-label">Proxy</label>
             <input class="input-field" type="text" id="proxy" name="proxy"
-                   placeholder="http://user:pass@host:port">>
+                   placeholder="http://user:pass@host:port" value="{% if bot.proxy %}{{ bot.proxy }}{% endif %}">
         </div>
 
         <div class="row">
             <label for="campaign_id" class="field-label">Campaign</label>
             <select class="select-field" id="campaign_id" name="campaign_id">
+                <option value="">Select campaign</option>
                 {% for campaign in campaigns %}
-                <option value="{{ campaign.id }}" {% if bot.campaign_id==campaign.id %}selected{% endif %}>
+                <option value="{{ campaign.id }}">
                     {{ campaign.scope }}
                 </option>
                 {% endfor %}
@@ -68,7 +69,7 @@ Bot overview
         </div>
 
         <div class="row">
-            <label for="role" class="field-label">Role</label>
+            <label for="role" class="field-label required">Role</label>
             <select class="select-field" id="role" name="role">
                 <option value="manager" {% if bot.role=='manager' %}selected{% endif %}>Manager</option>
                 <option value="parser" {% if bot.role=='parser' %}selected{% endif %}>Parser</option>

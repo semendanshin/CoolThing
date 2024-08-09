@@ -30,7 +30,7 @@
 
         <div class="row">
             <label for="bio" class="field-label">Bio</label>
-            <textarea class="input-field" id="bio" name="bio">{{ bot.bio }}</textarea>
+            <textarea class="input-field" id="bio" name="bio">{% if bot.bio != None %}{{ bot.bio }}{% endif %}</textarea>
         </div>
 
         <div class="row">
@@ -59,6 +59,7 @@
         <div class="row">
             <label for="campaign_id" class="field-label">Campaign</label>
             <select class="select-field" id="campaign_id" name="campaign_id">
+                <option value="" {% if bot.campaign_id==None %}selected{% endif %}>Select campaign</option>
                 {% for campaign in campaigns %}
                     <option value="{{ campaign.id }}" {% if bot.campaign_id == campaign.id %}selected{% endif %}>
                         {{ campaign.scope }}

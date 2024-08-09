@@ -9,7 +9,7 @@
                 role: document.getElementById('custom-select-role'),
             };
 
-            const botCards = document.querySelectorAll('.bot-card');
+            const botCards = document.querySelectorAll('.item-card');
 
             Object.values(filters).forEach(filter => {
                 filter.addEventListener('click', function () {
@@ -47,7 +47,7 @@
                     const botCampaign = card.getAttribute('data-campaign').toLowerCase();
                     const botRole = card.getAttribute('data-role').toLowerCase();
 
-                    var matchesStatus = false;
+                    let matchesStatus = false;
                     switch (selectedFilters.status) {
                         case 'active':
                             matchesStatus = botStatus === 'active';
@@ -76,6 +76,7 @@
     <link href="/static/bots.css" rel="stylesheet">
     <link href="/static/common.css" rel="stylesheet">
     <link href="/static/filters.css" rel="stylesheet">
+    <link href="/static/item_cards.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -105,6 +106,7 @@
                         </div>
                         <div class="custom-select-options" id="custom-select-options-campaign">
                             <div class="custom-select-option" data-value="all">All</div>
+                            <div class="custom-select-option" data-value="no-campaign">No campaign</div>
                             {% for campaign in campaigns %}
                                 <div class="custom-select-option" data-value="{{ campaign.id }}">{{ campaign.id }}</div>
                             {% endfor %}
@@ -128,14 +130,14 @@
             </div>
         </div>
 
-        <div class="bot-cards">
+        <div class="cards-container">
             {% for bot in bots %}
                 <a href="/bot/{{ bot.id }}">
-                    <div class="bot-card" data-status="{{ bot.status }}" data-campaign="{{ bot.campaign_id }}"
+                    <div class="item-card" data-status="{{ bot.status }}" data-campaign="{% if bot.campaign_id != None %}{{ bot.campaign_id }}{% else %}No campaign{% endif %}"
                          data-role="{{ bot.role }}">
                         <h3>{{ bot.username }}</h3>
                         <p><strong>App ID:</strong> {{ bot.app_id }}</p>
-                        <p><strong>Campaign:</strong> {{ bot.campaign_id }}</p>
+                        <p><strong>Campaign:</strong> {% if bot.campaign_id != None %}{{ bot.campaign_id }}{% else %}No campaign{% endif %}</p>
                         <p><strong>Role:</strong> {{ bot.role|capitalize }}</p>
                         <p><strong>Proxy:</strong> {% if bot.proxy != None %}{{ bot.proxy }}{% else %}No proxy{% endif %}</p>
                         <p><strong>Status:</strong>

@@ -1,6 +1,7 @@
 from abc import ABC
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Optional
 from uuid import uuid4, UUID
 
 
@@ -16,14 +17,14 @@ class Worker(Model):
     app_id: str
     app_hash: str
     session_string: str
-    proxy: str
+    proxy: Optional[str] = None
 
-    campaign_id: str
+    campaign_id: Optional[str] = None
     role: str
     status: str
 
     username: str
-    bio: str
+    bio: Optional[str] = None
 
 
 @dataclass(kw_only=True)

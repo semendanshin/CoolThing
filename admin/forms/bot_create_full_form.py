@@ -11,7 +11,7 @@ def bot_create_full_form(
         proxy: str = Form(default=None),
         role: str = Form(...),
         status: str = Form(default=""),
-        campaign_id: str = Form(None),
+        campaign_id: str = Form(default=None),
         bio: str = Form(None),
 ) -> WorkerCreateDTO:
     return WorkerCreateDTO(

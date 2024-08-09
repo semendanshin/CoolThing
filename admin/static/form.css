@@ -64,7 +64,7 @@ h1 {
 
 
 .required::after {
-    content: "*";
+    content: " *";
     color: red;
 }
 
