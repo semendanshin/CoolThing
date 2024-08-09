@@ -18,7 +18,7 @@ templates = Jinja2Templates(directory='templates')
 
 
 @router.get("")
-async def get_gpt(
+async def get_gpts(
         request: Request,
         gpt_settings: GPTSettingsUseCaseInterface = Depends(get_gpt_settings_usecase)
 ) -> HTMLResponse:
