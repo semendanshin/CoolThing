@@ -25,11 +25,15 @@ async def get_campaigns(
         campaigns: CampaignsUseCaseInterface = Depends(get_campaigns_usecase)
 ) -> HTMLResponse:
     campaigns_list = await campaigns.get_campaigns()
+    scopes = set(x.scope for x in campaigns_list)
+    gpt_settings = set(x.gpt_settings_id for x in campaigns_list)
     return templates.TemplateResponse(
         request=request,
         name="campaigns.html",
         context={
             'campaigns': campaigns_list,
+            'scopes': scopes,
+            'gpt_settings': gpt_settings,
         }
     )
 

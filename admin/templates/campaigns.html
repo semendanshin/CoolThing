@@ -5,19 +5,109 @@
 {% block head %}
     <link rel="stylesheet" href="/static/item_cards.css">
     <link rel="stylesheet" href="/static/common.css">
+    <link rel="stylesheet" href="/static/filters.css">
+    <link rel="stylesheet" href="/static/floating-button.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const filters = {
+                scope: document.getElementById('custom-select-scope'),
+                gptSettingsId: document.getElementById('custom-select-gpt-settings-id')
+            };
+
+            const campaignCards = document.querySelectorAll('.item-card');
+
+            Object.values(filters).forEach(filter => {
+                filter.addEventListener('click', function () {
+                    const options = this.nextElementSibling;
+                    options.classList.toggle('active');
+                });
+            });
+
+            document.querySelectorAll('.custom-select-option').forEach(option => {
+                option.addEventListener('click', function () {
+                    const filterType = this.closest('.custom-select-wrapper').querySelector('.custom-select').id.split('-').slice(2).join("-");
+                    document.getElementById(`selected-option-${filterType}`).textContent = this.textContent;
+                    this.closest('.custom-select-options').classList.remove('active');
+                    filterCampaigns();
+                });
+            });
+
+            document.addEventListener('click', function (e) {
+                Object.values(filters).forEach(filter => {
+                    if (!filter.contains(e.target)) {
+                        filter.nextElementSibling.classList.remove('active');
+                    }
+                });
+            });
+
+            function filterCampaigns() {
+                const selectedFilters = {
+                    scope: document.getElementById('selected-option-scope').textContent.toLowerCase(),
+                    gptSettingsId: document.getElementById('selected-option-gpt-settings-id').textContent.toLowerCase()
+                };
+
+                campaignCards.forEach(card => {
+                    const campaignScope = card.getAttribute('data-scope').toLowerCase();
+                    const campaignGptSettingsId = card.getAttribute('data-gpt-settings-id').toLowerCase();
+
+                    const matchesScope = selectedFilters.scope === 'all' || campaignScope === selectedFilters.scope;
+                    const matchesGptSettingsId = selectedFilters.gptSettingsId === 'all' || campaignGptSettingsId === selectedFilters.gptSettingsId;
+
+                    if (matchesScope && matchesGptSettingsId) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
 {% endblock %}
+
 
 {% block content %}
     <div class="vertical-container" style="gap:0">
-        <!--    Button to add a new campaign -->
-        <div class="horizontal-container" style="align-items: end;">
-            <a href="/campaigns/new" class="button" style="width: fit-content;">New Campaign</a>
+        <!-- Filters section -->
+        <div class="filters-container">
+            <div class="filters">
+                <div class="filter scope-filter">
+                    <label for="scope">Scope:</label>
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select" tabindex="0" id="custom-select-scope">
+                            <span id="selected-option-scope">All</span>
+                            <span>&#9660;</span>
+                        </div>
+                        <div class="custom-select-options" id="custom-select-options-scope">
+                            <div class="custom-select-option" data-value="all">All</div>
+                            {% for scope in scopes %}
+                                <div class="custom-select-option" data-value="{{ scope }}">{{ scope }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="filter gpt-settings-filter">
+                    <label for="gpt-settings-id">GPT Settings ID:</label>
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select" tabindex="0" id="custom-select-gpt-settings-id">
+                            <span id="selected-option-gpt-settings-id">All</span>
+                            <span>&#9660;</span>
+                        </div>
+                        <div class="custom-select-options" id="custom-select-options-gpt-settings-id">
+                            <div class="custom-select-option" data-value="all">All</div>
+                            {% for gpt_setting in gpt_settings %}
+                                <div class="custom-select-option" data-value="{{ gpt_setting }}">{{ gpt_setting }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- Campaigns section -->
         <div class="cards-container">
             {% for campaign in campaigns %}
                 <a href="/campaigns/{{ campaign.id }}">
-                    <div class="item-card">
+                    <div class="item-card" data-scope="{{ campaign.scope }}" data-gpt-settings-id="{{ campaign.gpt_settings_id }}">
                         <h3>{{ campaign.id }}</h3>
                         <p><strong>Scope:</strong> {{ campaign.scope }}</p>
                         <p><strong>Welcome Message:</strong> {{ campaign.welcome_message }}</p>
@@ -30,4 +120,7 @@
             {% endfor %}
         </div>
     </div>
+
+    <!-- Floating New Campaign Button -->
+    <a href="/campaigns/new" class="floating-button">+</a>
 {% endblock %}
