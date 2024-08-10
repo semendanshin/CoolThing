@@ -3,32 +3,32 @@
 {% block title %}GPT Settings{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" href="/static/item_cards.css">
-<link rel="stylesheet" href="/static/common.css">
+    <link rel="stylesheet" href="/static/item_cards.css">
+    <link rel="stylesheet" href="/static/common.css">
 {% endblock %}
 
 {% block content %}
-<div class="vertical-container" style="gap:0">
-    <!--    Button to add a new campaign -->
-    <div class="horizontal-container" style="align-items: end;">
-        <a href="/gpt/new" class="button" style="width: fit-content;">New GPT Setting</a>
-    </div>
+    <div class="vertical-container" style="gap:0">
+        <!--    Button to add a new campaign -->
+        <div class="horizontal-container" style="align-items: end;">
+            <a href="/gpt/new" class="button" style="width: fit-content;">New GPT Setting</a>
+        </div>
 
-    <div class="cards-container">
-        {% for gpt_setting in gpt_settings %}
-        <a href="/gpt/{{ gpt_setting.id }}">
-            <div class="item-card">
-                <h3>{{ gpt_setting.id }}</h3>
-                <p><strong>Model:</strong> {{ gpt_setting.model }}</p>
-                {% if gpt_setting.assistant %}
-                <p><strong>Assistant:</strong> {{ gpt_setting.assistant }}</p>
-                {% else %}
-                <p><strong>Service Prompt:</strong> {{ gpt_setting.service_prompt }}</p>
-                {% endif %}
-                <p><strong>Proxy:</strong> {{ gpt_setting.proxy }}</p>
-            </div>
-        </a>
-        {% endfor %}
+        <div class="cards-container">
+            {% for gpt_setting in gpt_settings %}
+                <a href="/gpt/{{ gpt_setting.id }}">
+                    <div class="item-card">
+                        <h3>{{ gpt_setting.id }}</h3>
+                        <p><strong>Model:</strong> {{ gpt_setting.model }}</p>
+                        {% if gpt_setting.assistant %}
+                            <p><strong>Assistant:</strong> {{ gpt_setting.assistant }}</p>
+                        {% else %}
+                            <p><strong>Service Prompt:</strong> {{ gpt_setting.service_prompt }}</p>
+                        {% endif %}
+                        <p><strong>Proxy:</strong> {% if gpt_setting.proxy %}{{ gpt_setting.proxy }}{% else %}No proxy</p>{% endif %}
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
     </div>
-</div>
 {% endblock %}

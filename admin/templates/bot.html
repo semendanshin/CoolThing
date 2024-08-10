@@ -52,7 +52,7 @@
         <div class="row">
             <label for="proxy" class="field-label">Proxy</label>
             <input class="input-field" type="text" id="proxy" name="proxy"
-                   value="{% if bot.proxy != None %}{{ bot.proxy }}{% endif %}"
+                   value="{% if bot.proxy %}{{ bot.proxy }}{% endif %}"
                    placeholder="http://user:pass@host:port">
         </div>
 

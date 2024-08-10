@@ -11,6 +11,7 @@ def bot_create_form(
         phone: str = Form(...),
         proxy: Optional[str] = Form(default=None),
 ) -> BotCreateBase:
+    print(f"got proxy: {proxy}, {type(proxy)}")
     return BotCreateBase(
         app_hash=app_hash,
         app_id=app_id,

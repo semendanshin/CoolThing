@@ -3,31 +3,31 @@
 {% block title %}Campaigns{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" href="/static/item_cards.css">
-<link rel="stylesheet" href="/static/common.css">
+    <link rel="stylesheet" href="/static/item_cards.css">
+    <link rel="stylesheet" href="/static/common.css">
 {% endblock %}
 
 {% block content %}
-<div class="vertical-container" style="gap:0">
-    <!--    Button to add a new campaign -->
-    <div class="horizontal-container" style="align-items: end;">
-        <a href="/campaigns/new" class="button" style="width: fit-content;">New Campaign</a>
-    </div>
+    <div class="vertical-container" style="gap:0">
+        <!--    Button to add a new campaign -->
+        <div class="horizontal-container" style="align-items: end;">
+            <a href="/campaigns/new" class="button" style="width: fit-content;">New Campaign</a>
+        </div>
 
-    <div class="cards-container">
-        {% for campaign in campaigns %}
-        <a href="/campaigns/{{ campaign.id }}">
-            <div class="item-card">
-                <h3>{{ campaign.id }}</h3>
-                <p><strong>Scope:</strong> {{ campaign.scope }}</p>
-                <p><strong>Welcome Message:</strong> {{ campaign.welcome_message }}</p>
-                <p><strong>Chats:</strong> {{ campaign.chats | join(", ") }}</p>
-                <p><strong>Plus Keywords:</strong> {{ campaign.plus_keywords | join(", ") }}</p>
-                <p><strong>Minus Keywords:</strong> {{ campaign.minus_keywords | join(", ") }}</p>
-                <p><strong>GPT Settings ID:</strong> {{ campaign.gpt_settings_id }}</p>
-            </div>
-        </a>
-        {% endfor %}
+        <div class="cards-container">
+            {% for campaign in campaigns %}
+                <a href="/campaigns/{{ campaign.id }}">
+                    <div class="item-card">
+                        <h3>{{ campaign.id }}</h3>
+                        <p><strong>Scope:</strong> {{ campaign.scope }}</p>
+                        <p><strong>Welcome Message:</strong> {{ campaign.welcome_message }}</p>
+                        <p><strong>Chats:</strong> {% if campaign.chats %}{{ campaign.chats | join(", ") }}{% else %}No chats{% endif %}</p>
+                        <p><strong>Plus Keywords:</strong> {{ campaign.plus_keywords | join(", ") }}</p>
+                        <p><strong>Minus Keywords:</strong> {{ campaign.minus_keywords | join(", ") }}</p>
+                        <p><strong>GPT Settings ID:</strong> {{ campaign.gpt_settings_id }}</p>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
     </div>
-</div>
 {% endblock %}

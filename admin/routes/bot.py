@@ -43,7 +43,7 @@ async def create_new_bot_backend(
     await bots.send_code(bot.app_id, bot.app_hash, bot.phone, bot.proxy)
     return RedirectResponse(
         url=f'/bot/connect?app_id={bot.app_id}&phone={bot.phone}&'
-            f'app_hash={bot.app_hash}&proxy={bot.proxy}',
+            f'app_hash={bot.app_hash}&proxy={bot.proxy if bot.proxy else ""}',
         status_code=303)
 
 
@@ -73,12 +73,15 @@ async def connect_bot_backend(
         bots: BotsUseCaseInterface = Depends(get_bots_usecase),
 ) -> RedirectResponse:
     if session_string := await bots.authorize(connection.app_id, connection.auth_code):
+        print(f"no 2fa needed, {connection.proxy}, {type(connection.proxy)}")
+        url = f'/bot/new/finalize?app_id={connection.app_id}&' \
+              f'phone={connection.phone}&' \
+              f'app_hash={connection.app_hash}&' \
+              f'session_string={session_string}&' \
+              f'proxy={connection.proxy if connection.proxy else ""}'
+        print(url)
         return RedirectResponse(
-            url=f'/bot/new/finalize?app_id={connection.app_id}&'
-                f'phone={connection.phone}&'
-                f'app_hash={connection.app_hash}&'
-                f'session_string={session_string}&'
-                f'proxy={connection.proxy}',
+            url=url,
             status_code=303
         )
     return RedirectResponse(

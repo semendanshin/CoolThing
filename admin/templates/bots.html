@@ -139,7 +139,7 @@
                         <p><strong>App ID:</strong> {{ bot.app_id }}</p>
                         <p><strong>Campaign:</strong> {% if bot.campaign_id != None %}{{ bot.campaign_id }}{% else %}No campaign{% endif %}</p>
                         <p><strong>Role:</strong> {{ bot.role|capitalize }}</p>
-                        <p><strong>Proxy:</strong> {% if bot.proxy != None %}{{ bot.proxy }}{% else %}No proxy{% endif %}</p>
+                        <p><strong>Proxy:</strong> {% if bot.proxy %}{{ bot.proxy }}{% else %}No proxy{% endif %}</p>
                         <p><strong>Status:</strong>
                         {% if bot.status == 'active' %}
                             <span class="status-up">{{ bot.status|capitalize }}</span>
