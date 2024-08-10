@@ -1,0 +1,107 @@
+/* Styles specific to the new_script.html page */
+form {
+    background-color: var(--secondary-color);
+    padding: var(--padding);
+    box-shadow: var(--box-shadow);
+    border-radius: var(--field-border-radius);
+    margin-top: var(--padding);
+    transition: all 0.3s ease;
+}
+
+label {
+    font-weight: var(--label-font-weight);
+    display: block;
+    margin-top: var(--field-margin);
+}
+
+select, textarea, button {
+    width: 100%;
+    padding: var(--field-padding);
+    margin-top: var(--field-margin);
+    border: 1px solid #ccc;
+    border-radius: var(--field-border-radius);
+    transition: all 0.3s ease;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button {
+    background-color: var(--submit-button-background);
+    color: var(--submit-button-color);
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--submit-button-hover-background);
+}
+
+.add-message-button {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 10px 20px;
+    margin-top: var(--field-margin);
+    border: none;
+    border-radius: var(--field-border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-message-button:hover {
+    background-color: #45a049;
+}
+
+.message-entry {
+    margin-bottom: var(--field-margin);
+    padding: var(--field-padding);
+    background-color: var(--field-background);
+    border-radius: var(--field-border-radius);
+    box-shadow: var(--box-shadow);
+    transition: opacity 0.5s ease;
+}
+
+/* Popup Styles */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background-color: var(--secondary-color);
+    padding: var(--padding);
+    box-shadow: var(--box-shadow);
+    border-radius: var(--field-border-radius);
+    transition: opacity 0.3s ease;
+}
+
+.popup-content {
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #aaa;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    form {
+        padding: 10px;
+    }
+
+    .message-entry {
+        padding: 10px;
+    }
+}
