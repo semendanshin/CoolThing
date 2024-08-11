@@ -10,8 +10,12 @@ Connect the bot
 
 {% block content %}
 <div class="container">
-    <h1>Connect the bot</h1>
-    <p>Enter the auth code to connect the bot.</p>
+    <div class="form-header-container">
+        <div class="form-header">
+            <h1>Connect the bot</h1>
+            <p>Enter the auth code to connect the bot.</p>
+        </div>
+    </div>
     <form action="/bot/connect" method="post">
         <div class="">
             <label for="app_id" class="field-label"></label>

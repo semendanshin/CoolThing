@@ -10,8 +10,12 @@
 
 {% block content %}
 <div class="container">
-    <h1>Create a New Bot</h1>
-    <p>Here you can create a new bot.</p>
+    <div class="form-header-container">
+        <div class="form-header">
+            <h1>Create a New Bot</h1>
+            <p>Here you can create a new bot.</p>
+        </div>
+    </div>
     <form action="/bot" method="post">
         <div class="row">
             <label for="phone" class="field-label required">Phone Number</label>
