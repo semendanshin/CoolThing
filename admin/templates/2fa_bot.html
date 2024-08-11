@@ -10,8 +10,12 @@
 
 {% block content %}
 <div class="container">
-    <h1>2FA</h1>
-    <p>Enter the 2FA password to connect the bot.</p>
+    <div class="form-header-container">
+        <div class="form-header">
+            <h1>2FA</h1>
+            <p>Enter the 2FA password to connect the bot.</p>
+        </div>
+    </div>
     <form action="/bot/connect/2fa" method="post">
         <div class="" hidden="hidden">
             <label for="app_id" class="field-label"></label>

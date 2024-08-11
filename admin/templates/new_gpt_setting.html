@@ -8,8 +8,12 @@
 
 {% block content %}
 <div class="container">
-    <h1>GPT Setting</h1>
-    <p>Here you can create a new GPT Setting.</p>
+    <div class="form-header-container">
+        <div class="form-header">
+            <h1>GPT Setting</h1>
+            <p>Here you can create a new GPT Setting.</p>
+        </div>
+    </div>
     <form action="/gpt" method="post">
         <div class="row">
             <label for="model" class="field-label required">Model</label>
