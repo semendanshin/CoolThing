@@ -2,49 +2,154 @@
 
 {% block head %}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const selectors = document.querySelectorAll('.bot-type-selector p');
-            selectors.forEach(selector => {
-                selector.addEventListener('click', function() {
-                    selectors.forEach(s => s.classList.remove('active')); // Remove active class from all
-                    this.classList.add('active'); // Add active class to clicked element
-                    window.location.href = this.getAttribute('data-url');
+        document.addEventListener('DOMContentLoaded', function () {
+            const filters = {
+                status: document.getElementById('custom-select-status'),
+                campaign: document.getElementById('custom-select-campaign'),
+                role: document.getElementById('custom-select-role'),
+            };
+
+            const botCards = document.querySelectorAll('.item-card');
+
+            Object.values(filters).forEach(filter => {
+                filter.addEventListener('click', function () {
+                    const options = this.nextElementSibling;
+                    options.classList.toggle('active');
                 });
             });
-            document.querySelector('#{{ active }}').classList.add('active');
+
+            document.querySelectorAll('.custom-select-option').forEach(option => {
+                option.addEventListener('click', function () {
+                    const filterType = this.closest('.custom-select-wrapper').querySelector('.custom-select').id.split('-').pop();
+                    document.getElementById(`selected-option-${filterType}`).textContent = this.textContent;
+                    this.closest('.custom-select-options').classList.remove('active');
+                    filterBots();
+                });
+            });
+
+            document.addEventListener('click', function (e) {
+                Object.values(filters).forEach(filter => {
+                    if (!filter.contains(e.target)) {
+                        filter.nextElementSibling.classList.remove('active');
+                    }
+                });
+            });
+
+            function filterBots() {
+                const selectedFilters = {
+                    status: document.getElementById('selected-option-status').textContent.toLowerCase(),
+                    campaign: document.getElementById('selected-option-campaign').textContent.toLowerCase(),
+                    role: document.getElementById('selected-option-role').textContent.toLowerCase(),
+                };
+
+                botCards.forEach(card => {
+                    const botStatus = card.getAttribute('data-status');
+                    const botCampaign = card.getAttribute('data-campaign').toLowerCase();
+                    const botRole = card.getAttribute('data-role').toLowerCase();
+
+                    let matchesStatus = false;
+                    switch (selectedFilters.status) {
+                        case 'active':
+                            matchesStatus = botStatus === 'active';
+                            break;
+                        case 'inactive':
+                            matchesStatus = botStatus === 'stopped';
+                            break;
+                        case 'all':
+                            matchesStatus = true;
+                            break;
+                    }
+                    const matchesCampaign = selectedFilters.campaign === 'all' || botCampaign === selectedFilters.campaign;
+                    const matchesRole = selectedFilters.role === 'all' || botRole === selectedFilters.role;
+
+                    if (matchesStatus && matchesCampaign && matchesRole) {
+                        card.style.display = 'block';
+                    } else {
+                        console.log(`hiding ${card} with `, botStatus, selectedFilters.status)
+                        card.style.display = 'none';
+                    }
+                });
+            }
         });
+
     </script>
-    <link href="{{ url_for('static', path='/bots.css') }}" rel="stylesheet">
+    <link href="/static/bots.css" rel="stylesheet">
+    <link href="/static/common.css" rel="stylesheet">
+    <link href="/static/filters.css" rel="stylesheet">
+    <link href="/static/item_cards.css" rel="stylesheet">
 {% endblock %}
 
-
 {% block content %}
-    <div class="bot-type-selector">
-{#    {% if managers %}#}
-        <p id="managers" data-url="/bots/managers">Managers</p>
-        <p id="parsers" data-url="/bots/parsers">Parsers</p>
+    <div class="vertical-container">
+        <div class="filters-container">
+            <div class="filters">
+                <div class="filter status-filter">
+                    <label for="status">Status:</label>
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select" tabindex="0" id="custom-select-status">
+                            <span id="selected-option-status">All</span>
+                            <span>&#9660;</span>
+                        </div>
+                        <div class="custom-select-options" id="custom-select-options-status">
+                            <div class="custom-select-option" data-value="all">All</div>
+                            <div class="custom-select-option" data-value="active">Active</div>
+                            <div class="custom-select-option" data-value="inactive">Inactive</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter campaign-filter">
+                    <label for="campaign">Campaign:</label>
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select" tabindex="0" id="custom-select-campaign">
+                            <span id="selected-option-campaign">All</span>
+                            <span>&#9660;</span>
+                        </div>
+                        <div class="custom-select-options" id="custom-select-options-campaign">
+                            <div class="custom-select-option" data-value="all">All</div>
+                            <div class="custom-select-option" data-value="no-campaign">No campaign</div>
+                            {% for campaign in campaigns %}
+                                <div class="custom-select-option" data-value="{{ campaign.id }}">{{ campaign.id }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="filter role-filter">
+                    <label for="role">Role:</label>
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select" tabindex="0" id="custom-select-role">
+                            <span id="selected-option-role">All</span>
+                            <span>&#9660;</span>
+                        </div>
+                        <div class="custom-select-options" id="custom-select-options-role">
+                            <div class="custom-select-option" data-value="all">All</div>
+                            <div class="custom-select-option" data-value="Manager">Manager</div>
+                            <div class="custom-select-option" data-value="Parser">Parser</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <div class="cards-container">
+            {% for bot in bots %}
+                <a href="/bot/{{ bot.id }}">
+                    <div class="item-card" data-status="{{ bot.status }}" data-campaign="{% if bot.campaign_id != None %}{{ bot.campaign_id }}{% else %}No campaign{% endif %}"
+                         data-role="{{ bot.role }}">
+                        <h3>{{ bot.username }}</h3>
+                        <p><strong>App ID:</strong> {{ bot.app_id }}</p>
+                        <p><strong>Campaign:</strong> {% if bot.campaign_id != None %}{{ bot.campaign_id }}{% else %}No campaign{% endif %}</p>
+                        <p><strong>Role:</strong> {{ bot.role|capitalize }}</p>
+                        <p><strong>Proxy:</strong> {% if bot.proxy %}{{ bot.proxy }}{% else %}No proxy{% endif %}</p>
+                        <p><strong>Status:</strong>
+                        {% if bot.status == 'active' %}
+                            <span class="status-up">{{ bot.status|capitalize }}</span>
+                        {% else %}
+                            <span class="status-down">{{ bot.status|capitalize }}</span>
+                        {% endif %}
+                        </p>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
     </div>
-    <table>
-        <tr>
-            <th>Nickname</th>
-            <th>Scope</th>
-            {% block table_headers %} {% endblock %}
-            <th>Proxy</th>
-        </tr>
-    {% for bot in bots %}
-        <tr>
-            <td>{{ bot.nickname }}</td>
-            <td>{{ bot.scope }}</td>
-
-            {% block specific_fields %} {% endblock %}
-
-            {% if bot.proxy_status %}
-                <td class="bot-proxy-up">{{ bot.proxy }}</td>
-            {% else %}
-                <td class="bot-proxy-down">{{ bot.proxy }}</td>
-            {% endif %}
-        </tr>
-    {% endfor %}
-    </table>
 {% endblock %}

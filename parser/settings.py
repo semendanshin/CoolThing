@@ -1,8 +1,10 @@
 import os
+import re
 
 from pathlib import Path
-from typing import Type, Tuple
+from typing import Type, Tuple, Optional
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict, PydanticBaseSettingsSource, JsonConfigSettingsSource
 
 
@@ -13,7 +15,7 @@ class Keywords(BaseSettings):
 
 class ParserSettings(BaseSettings):
     keywords: Keywords
-    chats: list[int]
+    chats: list[str | int]
 
 
 class AppSettings(BaseSettings):
@@ -21,6 +23,24 @@ class AppSettings(BaseSettings):
     api_id: int
     api_hash: str
     session_string: str
+    proxy: Optional[str] = None
+
+    @field_validator('proxy')
+    @classmethod
+    def validate_proxy(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+
+        protocol_regex = r'^(http|socks4|socks5)://'
+        body_regex = r'\w+://(\w+:\w+@)?[\w.-]+:\d+'
+
+        if re.match(body_regex, value):
+            if re.match(protocol_regex, value):
+                return value
+            else:
+                raise ValueError('Available protocols: http, socks4, socks5')
+        else:
+            raise ValueError('Invalid proxy format')
 
 
 class RabbitSettings(BaseSettings):
@@ -29,7 +49,7 @@ class RabbitSettings(BaseSettings):
     user: str
     password: str
     vhost: str
-    queue: str
+    campaign_id: str
 
 
 class Settings(BaseSettings):
@@ -40,7 +60,7 @@ class Settings(BaseSettings):
     debug: bool = False
 
     model_config = SettingsConfigDict(
-        extra='allow',
+        extra='ignore',
         json_file=Path(__file__).parent / 'settings.json',
         json_file_encoding='utf-8',
     )

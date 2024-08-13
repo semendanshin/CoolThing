@@ -1,9 +1,12 @@
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.exceptions import HTTPException
 
-from dependencies.bots_service import get_bots_service
-from abstractions.AbstractBotsService import AbstractBotsService
+from abstractions.usecases.CampaingsUseCaseInterface import CampaignsUseCaseInterface
+from dependencies.usecases.bots import get_bots_usecase
+from abstractions.usecases.BotsUseCaseInterface import BotsUseCaseInterface
+from dependencies.usecases.campaign import get_campaigns_usecase
 
 router = APIRouter(
     prefix='/bots',
@@ -14,37 +17,25 @@ templates = Jinja2Templates(directory='templates')
 
 
 @router.get("")
-async def get_all_bots() -> RedirectResponse:
-    return RedirectResponse(url='/bots/managers')
-
-
-@router.get("/managers")
-async def get_manager_bots(
+async def get_bots(
         request: Request,
-        bots: AbstractBotsService = Depends(get_bots_service),
+        bots: BotsUseCaseInterface = Depends(get_bots_usecase),
+        campaigns: CampaignsUseCaseInterface = Depends(get_campaigns_usecase),
 ) -> HTMLResponse:
-    bots_overview = await bots.get_manager_bots()
+    # match role:
+    #     case 'managers':
+    #         bots = await bots.get_manager_bots()
+    #     case 'parsers':
+    #         bots = await bots.get_parser_bots()
+    #     case _:
+    #         raise HTTPException(status_code=404, detail='Role not found')
+    bots = await bots.get_all_bots()
+    campaigns = await campaigns.get_campaigns()
     return templates.TemplateResponse(
         request=request,
-        name='manager_bots.html',
+        name='bots.html',
         context={
-            'bots': bots_overview,
-            'active': 'managers',
-        }
-    )
-
-
-@router.get("/parsers")
-async def get_manager_bots(
-        request: Request,
-        bots: AbstractBotsService = Depends(get_bots_service),
-) -> HTMLResponse:
-    bots_overview = await bots.get_parser_bots()
-    return templates.TemplateResponse(
-        request=request,
-        name='parser_bots.html',
-        context={
-            'bots': bots_overview,
-            'active': 'parsers',
+            'bots': bots,
+            'campaigns': campaigns,
         }
     )

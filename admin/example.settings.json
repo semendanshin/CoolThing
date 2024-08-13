@@ -1,0 +1,14 @@
+{
+    "db": {
+        "host": "localhost",
+        "port": 5430,
+        "user": "postgres",
+        "password": "postgres",
+        "name": "postgres"
+    },
+    "auth": {
+        "code": "123456",
+        "secret_key": "123asd",
+        "access_token_lifetime_seconds": 3600
+    }
+}
