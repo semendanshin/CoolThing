@@ -24,6 +24,16 @@
     flex-direction: column;
     align-items: center;
 }
+.sortable-chosen {
+    opacity: 0.5;  /* Полупрозрачность для выбранного элемента */
+}
+
+.sortable-ghost {
+    position: absolute;  /* Позволяет элементу-призраку перемещаться */
+    opacity: 1;  /* Призрак остается видимым */
+    transform: translate3d(0, 0, 0);  /* Ускорение рендеринга и предотвращение мерцания */
+    z-index: 1000;  /* Устанавливаем высокий z-index, чтобы элемент-призрак был поверх других элементов */
+}
 
 /* Message Styles */
 .message-container {
