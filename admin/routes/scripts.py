@@ -69,7 +69,7 @@ async def get_script_entity(
         script_id: str,
 ) -> int:
     script = await get_scripts_use_case().get_script(script_id)
-    return len(set([x.bot_index for x in script.messages]))
+    return max([x.bot_index for x in script.messages])
 
 
 @router.post("")

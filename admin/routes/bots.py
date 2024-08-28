@@ -1,3 +1,5 @@
+from dataclasses import asdict
+
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -7,6 +9,7 @@ from abstractions.usecases.CampaingsUseCaseInterface import CampaignsUseCaseInte
 from dependencies.usecases.bots import get_bots_usecase
 from abstractions.usecases.BotsUseCaseInterface import BotsUseCaseInterface
 from dependencies.usecases.campaign import get_campaigns_usecase
+from domain.models import Worker
 
 router = APIRouter(
     prefix='/bots',
@@ -39,3 +42,10 @@ async def get_bots(
             'campaigns': campaigns,
         }
     )
+
+
+@router.get("/entities")
+async def get_bots_entities(
+        bots: BotsUseCaseInterface = Depends(get_bots_usecase),
+) -> list[str]:
+    return [x.username for x in await bots.get_all_bots()]

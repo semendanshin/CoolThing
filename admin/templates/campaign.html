@@ -12,6 +12,11 @@
     campaign
 {% endblock %}
 
+{% block inner_head %}
+    <link rel="stylesheet" href="/static/campaign.css">
+    <link rel="stylesheet" href="/static/filters.css">
+{% endblock %}
+
 {% block fields %}
     <form action="/campaigns/{{ campaign.id }}" method="post">
         <div class="row">
@@ -95,54 +100,144 @@
         <input type="text" id="script-id" placeholder="script ID">
         <br>
         <p>Enter the bots mapping</p>
-        <div class="bots-mapping-input">
+        <div id="bots-mapping-input-container">
 
         </div>
-        <input type="text" id="bots-mapping" placeholder="bots mapping">
         <br>
         <button>Activate Script</button>
     </div>
+    <template id="bot-entry-template">
+        <div class="bot-entry-container">
+            <div class="bot-index-container">
+                <p id="bot-index"></p>
+            </div>
+            <div class="bot-username-container">
+                <div class="custom-select-wrapper">
+                    <div class="custom-select" tabindex="0" id="custom-select">
+                        <span id="selected-option" class="selected-option">All</span>
+                        <span>&#9660;</span>
+                    </div>
+                    <div class="custom-select-options" id="custom-select-options">
+                        {# Options will be inserted by js #}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", async function () {
+            let botsCount;
             document.querySelector(".activate-script button").addEventListener("click", async function () {
+                let bots_mapping = {};
+                let usernamesSpans = document.querySelectorAll(".selected-option");
+                for (let i = 0; i < botsCount - 1; i++) {
+                    console.log(i, usernamesSpans[i]);
+                    bots_mapping[(i + 1).toString()] = usernamesSpans[i].textContent;
+                }
+                let body = JSON.stringify({
+                        script_id: document.querySelector(".activate-script input#script-id").value,
+                        campaign_id: "{{ campaign.id }}",
+                        bots_mapping: bots_mapping
+                    })
                 let response = await fetch("/scripts/activate", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({
-                        script_id: document.querySelector(".activate-script input#script-id").value,
-                        campaign_id: "{{ campaign.id }}",
-                        bots_mapping: JSON.parse(document.querySelector(".activate-script input#bots-mapping").value),
-                    }),
+                    body: body
                 });
 
                 if (response.ok) {
                     alert("Script activated successfully");
                 } else {
                     alert("Failed to activate script");
-                    console.log(response.json())
+                    console.log(await response.json())
+                    console.log(body);
                 }
             });
-        });
 
-        document.addEventListener("DOMContentLoaded", async function () {
-            var scriptIdInput = document.querySelector(".activate-script input#script-id");
+            let scriptIdInput = document.querySelector(".activate-script input#script-id");
             scriptIdInput.onblur = async function () {
-                var scriptId = scriptIdInput.value;
+                let scriptId = scriptIdInput.value;
+                {
+                    let response = await fetch(`/scripts/bots-count/${scriptId}`, {
+                            method: 'GET'
+                        }
+                    )
 
-                var response = await fetch(`/scripts/bots-count/${scriptId}`, {
-                        method: 'GET'
+                    if (!response.ok) {
+                        alert("Error while retrieving script");
+                        return;
                     }
-                )
 
-                if (!response.ok) {
-                    alert("Error while retrieving script");
-                    return;
+                    var scriptBotsCount = Number.parseInt(await response.json());
                 }
-                var botsCount = response.then((x) => {Number.parseInt(x)});
-                console.log(botsCount);
-            }
+                let botEntryTemplate = document.getElementById("bot-entry-template").content
+                let botsMappingInputContainer = document.getElementById("bots-mapping-input-container");
+
+                botsMappingInputContainer.textContent = '';
+
+                for (let i = 1; i <= scriptBotsCount; i++) {
+                    let newMessage = document.importNode(botEntryTemplate, true);
+                    newMessage.getElementById("bot-index").innerText = i.toString();
+                    botsMappingInputContainer.appendChild(newMessage);
+                }
+                let bots;
+                {
+                    let response = await fetch(`/bots/entities`, {
+                            method: 'GET'
+                        }
+                    )
+
+                    if (!response.ok) {
+                        alert("Error while retrieving bots");
+                        return;
+                    }
+
+                    bots = await response.json();
+                }
+                botsCount = bots.length;
+                if (!botsCount) return;
+                const botOptions = Array.from({length: botsCount}, (_, i) => `<div class="custom-select-option" data-value="${bots[i]}">${bots[i]}</div>`).join('');
+                document.querySelectorAll(".custom-select-options").forEach(select => {
+                    select.insertAdjacentHTML("afterbegin", botOptions);
+                });
+                let event = new CustomEvent("optionsInserted");
+                document.dispatchEvent(event);
+            };
+
+            document.addEventListener("optionsInserted", async function () {
+                const customSelects = document.querySelectorAll('.custom-select-wrapper');
+
+                customSelects.forEach(selectWrapper => {
+                    const select = selectWrapper.querySelector('.custom-select');
+                    const options = selectWrapper.querySelector('.custom-select-options');
+
+                    select.addEventListener('click', function () {
+                        console.log(select);
+                        options.classList.toggle('active');
+                    });
+
+                    options.querySelectorAll('.custom-select-option').forEach(option => {
+                        option.addEventListener('click', function () {
+                            const selectedOption = select.querySelector('span');
+                            selectedOption.textContent = this.textContent;
+                            options.classList.remove('active');
+                        });
+                    });
+                });
+
+                document.addEventListener('click', function (e) {
+                    customSelects.forEach(selectWrapper => {
+                        const select = selectWrapper.querySelector('.custom-select');
+                        const options = selectWrapper.querySelector('.custom-select-options');
+                        if (!select.contains(e.target)) {
+                            options.classList.remove('active');
+                        }
+                    });
+                });
+            });
         });
     </script>
 {% endblock %}
