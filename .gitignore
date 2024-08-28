@@ -163,3 +163,5 @@ cython_debug/
 **/*settings.json
 !**/example.settings.json
 **/.DS_Store
+
+**/data

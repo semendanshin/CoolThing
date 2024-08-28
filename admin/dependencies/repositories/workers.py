@@ -1,5 +1,5 @@
 from . import get_session_maker
-from infrastructure.repositories.WorkersRepository import SQLAlchemyWorkerRepository
+from infrastructure.repositories.sqlalchemy.WorkersRepository import SQLAlchemyWorkerRepository
 
 
 def get_workers_repository() -> SQLAlchemyWorkerRepository:

@@ -1,5 +1,5 @@
 from abstractions.repositories.CampaignRepositoryInterface import CampaignRepositoryInterface
-from infrastructure.repositories.CampaignRepository import CampaignRepository
+from infrastructure.repositories.sqlalchemy.CampaignRepository import CampaignRepository
 from . import get_session_maker
 
 

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    All Scripts
+{% endblock %}
+
+{% block head %}
+    <link href="/static/scripts.css" rel="stylesheet">
+    <link href="/static/filters.css" rel="stylesheet">
+    <link href="/static/floating-button.css" rel="stylesheet">
+    <link href="/static/item_cards.css" rel="stylesheet">
+    <script src="/static/scripts/scripts.js" defer></script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>All Scripts</h1>
+        <div class="filters-container">
+            <div class="filters">
+                <div class="filter type-filter">
+                    <label for="script-type">Type:</label>
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select" tabindex="0" id="custom-select-type">
+                            <span id="selected-option-type">All</span>
+                            <span>&#9660;</span>
+                        </div>
+                        <div class="custom-select-options" id="custom-select-options-type">
+                            <div class="custom-select-option" data-value="all">All</div>
+                            <div class="custom-select-option" data-value="native integration">Native integration</div>
+                            <div class="custom-select-option" data-value="monitoring">Monitoring</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter name-filter">
+                    <label for="script-name">Name:</label>
+                    <input type="text" id="script-name" placeholder="Search by name...">
+                </div>
+            </div>
+        </div>
+        <div class="cards-container">
+            {% for script in scripts %}
+                <a href="/scripts/{{ script.id }}">
+                    <div class="item-card" data-type="{{ script.type }}" data-name="{{ script.name }}">
+                        <h3>{{ script.name }}</h3>
+                        <p>Type: {{ script.type }}</p>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+        <a href="/scripts/new" class="floating-button">+</a>
+    </div>
+{% endblock %}

@@ -1,5 +1,5 @@
 from abstractions.repositories.GptSettingsRepositoryInterface import GptSettingsRepositoryInterface
-from infrastructure.repositories.GptSettingsRepository import GPTRepository
+from infrastructure.repositories.sqlalchemy.GptSettingsRepository import GPTRepository
 from . import get_session_maker
 
 

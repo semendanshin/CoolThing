@@ -81,3 +81,12 @@ class Message(BaseEntity):
     chat_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('chats.id'), nullable=False)
     text: Mapped[str] = mapped_column(String, nullable=False)
     is_outgoing: Mapped[bool] = mapped_column(Boolean, nullable=False)
+
+
+class Script(BaseEntity):
+    __tablename__ = 'scripts'
+
+    name: Mapped[str]
+    type: Mapped[str]
+    bots_count: Mapped[int]
+    messages: Mapped[dict[int, str]] = mapped_column(JSONB)

@@ -1,0 +1,6 @@
+class NoSuchCampaignError(Exception):
+    ...
+
+
+class NoSuchScriptError(Exception):
+    ...

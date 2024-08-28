@@ -1,11 +1,10 @@
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from abstractions.repositories.MessagesRepositoryInterface import MessagesRepositoryInterface
 from domain.dto.message import MessageCreateDTO, MessageUpdateDTO
 from domain.models import Message as MessageModel
 from infrastructure.entities import Message
-from infrastructure.repositories import AbstractSQLAlchemyRepository
+from infrastructure.repositories.sqlalchemy import AbstractSQLAlchemyRepository
 
 
 @dataclass

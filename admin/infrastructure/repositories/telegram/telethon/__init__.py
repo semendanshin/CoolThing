@@ -1,0 +1,2 @@
+from .TelethonTelegramMessageRepository import TelethonTelegramMessagesRepository
+from .TelethonTelegramSessionRepository import TelethonTelegramSessionRepository

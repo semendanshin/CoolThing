@@ -17,15 +17,41 @@ class DBSettings(BaseSettings):
         return f"postgresql+asyncpg://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/{self.name}"
 
 
+class ScriptsDBSettings(BaseSettings):
+    user: str
+    password: SecretStr
+    host: str
+    port: int
+    name: str
+
+    @property
+    def url(self):
+        return f"mongodb://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/"
+
+
 class AuthSettings(BaseSettings):
     code: SecretStr
     secret_key: SecretStr
     access_token_lifetime_seconds: int = 60 * 60
 
 
+class MQSettings(BaseSettings):
+    host: str
+    port: int
+    user: str
+    password: str
+    vhost: str
+
+    @property
+    def url(self):
+        return f"amqp://{self.user}:{self.password}@{self.host}:{self.port}/{self.vhost}"
+
+
 class Settings(BaseSettings):
     db: DBSettings
+    scripts_db: ScriptsDBSettings
     auth: AuthSettings
+    mq: MQSettings
 
     debug: bool = True
 

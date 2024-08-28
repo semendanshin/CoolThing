@@ -1,77 +1,45 @@
-{% extends "base.html" %}
+{% extends 'script.html' %}
 
-{% block title %}Create New Script{% endblock %}
+{% block inner_head %}
+    <link rel="stylesheet" href="/static/script-delete-button.css">
+    <script defer>
 
-{% block head %}
-    <link href="/static/new_script.css" rel="stylesheet">
-{% endblock %}
+    function getActiveTypeOption() {
+        return document.querySelector(`#selected-option-type`).textContent;
+    }
 
-{% block content %}
-    <h1>Create a New Script</h1>
-    <form id="script-form" action="/create_script" method="post">
-        <div id="messages-container" class="messages-container">
-            <div class="message-entry">
-                <label for="bot-select-0">Select Bot:</label>
-                <select id="bot-select-0" name="bot_ids[]" required>
-                    <!-- Example options; replace with dynamic content from your backend -->
-                    <option value="bot1">Bot 1</option>
-                    <option value="bot2">Bot 2</option>
-                    <option value="bot3">Bot 3</option>
-                </select>
-
-                <label for="message-0">Message:</label>
-                <textarea id="message-0" name="messages[]" rows="3" required></textarea>
-            </div>
-        </div>
-        <button type="button" id="add-message-button" class="add-message-button">Add Another Message</button>
-        <button type="submit" class="submit-button">Create Script</button>
-    </form>
-
-    <script>
-        let messageCount = 1;
-
-        document.getElementById('add-message-button').addEventListener('click', function () {
-            const container = document.getElementById('messages-container');
-
-            const newMessageEntry = document.createElement('div');
-            newMessageEntry.classList.add('message-entry');
-            newMessageEntry.style.opacity = '0';
-            newMessageEntry.style.transition = 'opacity 0.5s';
-
-            const botLabel = document.createElement('label');
-            botLabel.setAttribute('for', 'bot-select-' + messageCount);
-            botLabel.textContent = 'Select Bot:';
-            newMessageEntry.appendChild(botLabel);
-
-            const botSelect = document.createElement('select');
-            botSelect.setAttribute('id', 'bot-select-' + messageCount);
-            botSelect.setAttribute('name', 'bot_ids[]');
-            botSelect.required = true;
-            botSelect.innerHTML = `
-            <option value="bot1">Bot 1</option>
-            <option value="bot2">Bot 2</option>
-            <option value="bot3">Bot 3</option>
-        `;
-            newMessageEntry.appendChild(botSelect);
-
-            const messageLabel = document.createElement('label');
-            messageLabel.setAttribute('for', 'message-' + messageCount);
-            messageLabel.textContent = 'Message:';
-            newMessageEntry.appendChild(messageLabel);
-
-            const messageTextarea = document.createElement('textarea');
-            messageTextarea.setAttribute('id', 'message-' + messageCount);
-            messageTextarea.setAttribute('name', 'messages[]');
-            messageTextarea.setAttribute('rows', '3');
-            messageTextarea.required = true;
-            newMessageEntry.appendChild(messageTextarea);
-
-            container.appendChild(newMessageEntry);
-            setTimeout(() => newMessageEntry.style.opacity = '1', 10);
-
-
-            messageCount++;
+    document.getElementById("save-button").addEventListener("click", async () => {
+        const name = document.getElementById("script-name").value;
+        const type = getActiveTypeOption();
+        const messages = [];
+        scriptMessages.querySelectorAll(".message").forEach(message => {
+            const bot = message.querySelector(".bot-select").value;
+            const text = message.querySelector(".message-text").value;
+            messages.push({bot, text});
         });
+        console.log("Saving script:", {name, type, messages});
+        // Here you would send the data to the server, e.g., via fetch API
 
+        var data = {name, type, messages};
+        try {
+
+            var response = await fetch('http://localhost:8080/scripts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            console.log(response);
+            if (response.ok) {
+                window.location = "/scripts";
+            } else {
+                alert("Failed to save the script. Please try again.");
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Failed to save the script. Please try again.");
+        }
+    });
     </script>
 {% endblock %}

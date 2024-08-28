@@ -7,7 +7,7 @@ from domain.dto.chat import ChatCreateDTO, ChatUpdateDTO
 from domain.models import Chat as ChatModel
 from domain.schemas.chats import ChatInfo, Chat as ChatDTO, Message
 from infrastructure.entities import Chat
-from infrastructure.repositories import AbstractSQLAlchemyRepository
+from infrastructure.repositories.sqlalchemy import AbstractSQLAlchemyRepository
 
 
 class ChatsRepository(

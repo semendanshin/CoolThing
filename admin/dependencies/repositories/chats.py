@@ -1,5 +1,5 @@
 from abstractions.repositories.ChatsRepositoryInterface import ChatsRepositoryInterface
-from infrastructure.repositories.ChatsRepository import ChatsRepository
+from infrastructure.repositories.sqlalchemy.ChatsRepository import ChatsRepository
 from . import get_session_maker
 
 

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Script{% endblock %}
+
+{% block head %}
+    <link href="/static/new_script.css" rel="stylesheet">
+    <script src="/static/scripts/script.js" defer></script>
+    {% block inner_head %}
+    {% endblock %}
+{% endblock %}
+
+{% block content %}
+    <button class="cancel-button" id="cancel-button">✖</button>
+    {% block delete_button %}{% endblock %}
+    <button class="save-button" id="save-button">✔</button>
+
+    <!-- Template for a message -->
+    <template id="message-template">
+        <div class="message-container is-idle js-item">
+            <div class="drag-handle js-drag-handle">
+                <!-- Reorder button can be here if needed -->
+            </div>
+            <div class="message">
+                <select class="bot-select">
+                    <!-- Options will be dynamically generated -->
+                </select>
+                <textarea class="message-text" rows="2" placeholder="{Hi|Hello}"></textarea>
+            </div>
+            <button class="delete-button">🗑️</button>
+        </div>
+    </template>
+
+    <div class="script-container">
+        <div class="script-header">
+            <h1>{% block action %}{% endblock %}Script</h1>
+            <!-- New inputs for script name and bots count -->
+            <div class="script-details">
+                <div class="script-details-field">
+                    <label for="script-name">Script Name:</label>
+                    <input type="text" id="script-name" name="name" placeholder="Enter script name">
+                </div>
+                {% block script_id %}{% endblock %}
+                <div class="script-details-field">
+                    <label for="script-type">Script Type:</label>
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select" tabindex="0" id="custom-select-type">
+                            <span id="selected-option-type">All</span>
+                            <span>&#9660;</span>
+                        </div>
+                        <div class="custom-select-options" id="custom-select-options-type">
+                            <div class="custom-select-option" data-value="all">All</div>
+                            <div class="custom-select-option" data-value="native integration">Native integration</div>
+                            <div class="custom-select-option" data-value="monitoring">Monitoring</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="script-details-field">
+                    <label for="bots-count">Bots Count:</label>
+                    <input type="number" id="bots-count" placeholder="Enter bots count" min="1" value="1">
+                </div>
+            </div>
+        </div>
+        <div id="script-messages" class="script-messages js-list">
+            <!-- Messages will be appended here -->
+            {% block messages %}{% endblock %}
+        </div>
+        <div class="floating-button" id="add-message-button">+</div>
+    </div>
+    <br><br><br>
+{% endblock %}

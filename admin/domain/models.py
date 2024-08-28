@@ -66,3 +66,26 @@ class Message(Model):
     chat_id: str
     text: str
     is_outgoing: bool
+
+
+@dataclass(kw_only=True)
+class ScriptMessage:
+    bot_index: int
+    text: str
+
+
+@dataclass(kw_only=True)
+class Script(Model):
+    name: str
+    type: str
+    messages: list[ScriptMessage]
+
+
+@dataclass(kw_only=True)
+class ScriptForCampaign(Model):
+    script_id: str
+    campaign_id: str
+    bots_mapping: dict[str, str]
+
+    class Settings:
+        name = 'scripts_for_campaigns'

@@ -1,13 +1,24 @@
+import asyncio
+from contextlib import asynccontextmanager
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
+from infrastructure.repositories import init_db
 from routes import (dashboard_router, bots_router, bot_router, fallback_router, chats_router,
                     campaigns_router, gpt_settings_router, auth_router, script_router)
 
 from middlewares import check_for_auth
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_db()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.mount('/static', StaticFiles(directory='static'), name='static')
 
@@ -26,3 +37,4 @@ app.include_router(script_router)
 
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=8080)
+    # uvicorn.run(app, host='0.0.0.0', port=8080)

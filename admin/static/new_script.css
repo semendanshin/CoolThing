@@ -1,107 +1,398 @@
-/* Styles specific to the new_script.html page */
-form {
-    background-color: var(--secondary-color);
-    padding: var(--padding);
-    box-shadow: var(--box-shadow);
-    border-radius: var(--field-border-radius);
-    margin-top: var(--padding);
-    transition: all 0.3s ease;
+/* Container Styles */
+.script-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
 }
 
-label {
-    font-weight: var(--label-font-weight);
-    display: block;
-    margin-top: var(--field-margin);
+.script-header {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-select, textarea, button {
+.script-messages {
     width: 100%;
-    padding: var(--field-padding);
-    margin-top: var(--field-margin);
-    border: 1px solid #ccc;
-    border-radius: var(--field-border-radius);
-    transition: all 0.3s ease;
+    max-width: 600px;
+    border-radius: 10px;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-textarea {
+/* Message Styles */
+.message-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 80%;
+    will-change: transform;
+}
+
+.message {
+    flex-grow: 1;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    box-shadow: var(--box-shadow);
+    position: relative;
+    padding-left: 50px; /* Adjust padding to make room for the reorder button */
+    padding-right: 50px; /* Adjust padding to make room for the delete button */
+}
+
+.bot-select {
+    width: 100%;
+    padding: 10px;
+    border-radius: var(--field-border-radius);
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+}
+
+.message-text {
+    width: 100%;
+    padding: 10px;
+    border-radius: var(--field-border-radius);
+    border: 1px solid #ccc;
+    background-color: var(--field-background);
+    color: #000;
     resize: vertical;
 }
 
-button {
-    background-color: var(--submit-button-background);
-    color: var(--submit-button-color);
-    border: none;
+/* Floating and Action Button Styles */
+.floating-button, .cancel-button, .save-button {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    font-size: 24px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    transition: transform 0.3s ease;
+    margin-top: 20px;
 }
 
-button:hover {
-    background-color: var(--submit-button-hover-background);
+.floating-button:hover, .cancel-button:hover, .save-button:hover {
+    transform: scale(1.1);
 }
 
-.add-message-button {
-    background-color: #4CAF50; /* Green */
-    color: white;
-    padding: 10px 20px;
-    margin-top: var(--field-margin);
-    border: none;
-    border-radius: var(--field-border-radius);
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.add-message-button:hover {
-    background-color: #45a049;
-}
-
-.message-entry {
-    margin-bottom: var(--field-margin);
-    padding: var(--field-padding);
-    background-color: var(--field-background);
-    border-radius: var(--field-border-radius);
-    box-shadow: var(--box-shadow);
-    transition: opacity 0.5s ease;
-}
-
-/* Popup Styles */
-.popup {
-    display: none;
+.cancel-button, .save-button {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    background-color: var(--secondary-color);
-    padding: var(--padding);
-    box-shadow: var(--box-shadow);
-    border-radius: var(--field-border-radius);
-    transition: opacity 0.3s ease;
+    bottom: 20px;
 }
 
-.popup-content {
-    position: relative;
+.cancel-button {
+    left: 20px;
 }
 
-.close-btn {
+.save-button {
+    right: 20px;
+}
+
+.cancel-button:hover, .save-button:hover {
+    background-color: var(--hover-color);
+}
+
+/* Delete and Reorder Button Styles */
+.delete-button {
     position: absolute;
     top: 10px;
-    right: 10px;
-    color: #aaa;
-    font-size: 20px;
-    font-weight: bold;
+    right: -40px; /* Position outside the container */
+    background-color: #f44336; /* Red color for delete button */
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.close-btn:hover {
-    color: #000;
+.delete-button:hover {
+    background-color: #d32f2f;
+    transform: scale(1.1);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    form {
+.reorder-button {
+    position: absolute;
+    top: 50%;
+    left: -40px; /* Position outside the container */
+    transform: translateY(-50%); /* Center vertically */
+    background-color: transparent;
+    border: none;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.reorder-button:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+.reorder-button img {
+    width: 35px; /* Adjust size as needed */
+    height: 35px; /* Adjust size as needed */
+    transition: transform 0.3s ease;
+}
+
+.reorder-button:hover img {
+    transform: scale(1.1);
+}
+
+.message-container {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.message-container.dragging {
+    opacity: 0.5;
+}
+
+.message-container.invisible {
+    display: none;
+}
+
+.message-container + .message-container {
+    margin-top: 10px;
+}
+
+.script-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    white-space: nowrap;
+}
+
+.script-details label {
+    margin-bottom: 5px;
+    margin-left: 12px;
+    padding-right: 15px;
+    font-weight: bold;
+    font-size: 16px;
+    color: var(--primary-color);
+}
+
+.script-details input {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    font-size: 16px;
+    /*width: 100%;*/
+    box-sizing: border-box; /* Ensures padding is included in the element's total width and height */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input::placeholder {
+    color: var(--text-color);
+    opacity: 0.6;
+}
+
+input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* Inner shadow effect */
+}
+
+.script-details-field {
+    padding: 20px 20px 0;
+    box-sizing: border-box;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  width: 100%;
+  gap: 10px 0;
+}
+
+.list__item {
+  width: 100%;
+  background: white;
+  padding: 15px;
+  border-radius: 5px;
+  color: #001d29;
+  font-weight: 500;
+  font-size: 18px;
+  box-shadow: 0 4px 6px -1px #001d2910, 0 2px 4px -2px #001d2910;
+  display: flex;
+  align-items: center;
+  position: relative;
+  will-change: transform;
+}
+
+.drag-handle {
+  position: absolute;
+  right: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.drag-handle::after {
+  content: '⠿';
+  font-size: 25px;
+  color: #00000099;
+}
+
+.list__item.is-idle .drag-handle {
+  cursor: grab;
+}
+
+.list__item.is-idle {
+  transition: 0.25s ease transform;
+}
+
+.list__item.is-draggable,
+.list__item.is-draggable .drag-handle {
+  cursor: grabbing;
+}
+
+.list__item.is-draggable {
+  z-index: 10;
+}
+
+.custom-select-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+}
+
+.custom-select {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    font-size: 16px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-select span:first-child {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.custom-select:hover, .custom-select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* Inner shadow effect */
+}
+
+.custom-select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--secondary-color);
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), inset 0 0 10px rgba(0, 0, 0, 0.1); /* Inner and outer shadow for dropdown */
+    z-index: 10;
+    display: none;
+    flex-direction: column;
+    margin-top: 5px;
+}
+
+.custom-select-options.active {
+    display: flex;
+}
+
+.custom-select-option {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 15px; /* Increased padding for a more voluminous look */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Adjusted for smoother transition */
+    border-radius: 0; /* Reset border-radius for all */
+}
+
+.custom-select-option:first-child {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+.custom-select-option:last-child {
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.custom-select-option:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.custom-select-option.active {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+@media screen and (max-width: 768px) {
+    .custom-select {
+        font-size: 12px;
         padding: 10px;
     }
 
-    .message-entry {
+    .custom-select-options {
+        font-size: 12px;
+    }
+
+    .custom-select-option {
         padding: 10px;
+    }
+
+}
+
+@media (max-width: 1050px) {
+    .script-details {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .script-container {
+        padding: 10px;
+    }
+
+    .script-messages {
+        padding: 10px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
     }
 }

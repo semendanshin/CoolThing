@@ -1,0 +1,11 @@
+services:
+  scripts-db:
+    image: mongodb/mongodb-community-server:5.0.2-ubuntu2004
+    container_name: coolthing-scripts-db
+    ports:
+      - "27017:27017"
+    env_file: .env
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data/db

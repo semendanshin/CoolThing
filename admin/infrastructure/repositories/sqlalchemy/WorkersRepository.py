@@ -3,13 +3,11 @@ from typing import Literal
 
 from sqlalchemy import update, select
 
-from domain.dto.worker import WorkerCreateDTO, WorkerUpdateDTO
-from infrastructure.entities import Worker
-from infrastructure.repositories import AbstractSQLAlchemyRepository
-
-from domain.models import Worker as WorkerModel
-
 from abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
+from domain.dto.worker import WorkerCreateDTO, WorkerUpdateDTO
+from domain.models import Worker as WorkerModel
+from infrastructure.entities import Worker
+from infrastructure.repositories.sqlalchemy import AbstractSQLAlchemyRepository
 
 
 @dataclass

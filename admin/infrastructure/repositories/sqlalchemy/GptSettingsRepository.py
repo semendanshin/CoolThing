@@ -2,7 +2,7 @@ from abstractions.repositories.GptSettingsRepositoryInterface import GptSettings
 from domain.dto.gpt import GPTCreateDTO, GPTUpdateDTO
 from domain.models import GPT as GPTModel
 from infrastructure.entities import GPT
-from infrastructure.repositories import AbstractSQLAlchemyRepository
+from infrastructure.repositories.sqlalchemy import AbstractSQLAlchemyRepository
 
 
 class GPTRepository(

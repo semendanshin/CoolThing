@@ -9,8 +9,8 @@
     <link href="/static/base.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="/static/scripts/expand_tg_miniapp.js"></script>
+{#    <script src="https://telegram.org/js/telegram-web-app.js"></script>#}
+{#    <script src="/static/scripts/expand_tg_miniapp.js"></script>#}
     {% block head %} {% endblock %}
 </head>
 <body>
@@ -20,6 +20,7 @@
     <a href="/campaigns">Campaigns</a>
     <a href="/gpt">GPT settings</a>
     <a href="/chats">Chat</a>
+    <a href="/scripts">Scripts</a>
     <a href="javascript:void(0);" class="icon" onclick="toggleNav()">
         <i class="fa fa-bars"></i>
     </a>
@@ -39,4 +40,6 @@
     {% block content %} {% endblock %}
 </div>
 </body>
+{% block scripts %}
+{% endblock %}
 </html>

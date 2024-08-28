@@ -1,0 +1,119 @@
+{% extends 'script.html' %}
+
+{% block inner_head %}
+    <link rel="stylesheet" href="/static/script-delete-button.css">
+    <script defer>
+
+    </script>
+{% endblock %}
+
+{% block delete_button %}
+    <button class="script-delete-button" id="script-delete-button">🗑️</button>
+{% endblock %}
+
+{% block messages %}
+{% endblock %}
+
+{% block script_id %}
+    <p style="color: grey;margin-top:10px;">ID: {{ script.id }}</p>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('script-delete-button').addEventListener('click', function () {
+                if (confirm('Are you sure you want to delete this script?')) {
+                    fetch('{{ delete_url }}', {
+                        method: 'DELETE',
+
+                    }).then(function (response) {
+                        if (response.ok) {
+                            window.location = '/scripts';
+                        } else {
+                            alert('Failed to delete script');
+                        }
+                    });
+                }
+            });
+        });
+
+        const messagesObjectString = `{{ messages_object | safe }}`;
+        console.log(messagesObjectString);
+
+        var existingMessages = JSON.parse(messagesObjectString);
+        console.log(existingMessages)
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const botsCountInput = document.getElementById("bots-count");
+            botsCountInput.value = existingMessages.length;
+
+            const messageTemplate = document.getElementById("message-template").content;
+            const scriptMessages = document.getElementById("script-messages");
+            const scriptNameInput = document.getElementById("script-name");
+            const scriptTypeInput = document.getElementById("custom-select-type");
+
+            const botsCount = botsCountInput.value;
+            document.querySelector("#selected-option-type").textContent = `{{ script.type }}`;
+
+            scriptNameInput.value = `{{ script.name }}`;
+
+            const botOptions = Array.from({length: botsCount}, (_, i) => `<option value="bot${i + 1}">Bot ${i + 1}</option>`).join('');
+            console.log("options", botOptions);
+
+            for (let i = 0; i < existingMessages.length; i++) {
+                if (i >= scriptMessages.children.length) {
+                    const newMessage = document.importNode(messageTemplate, true);
+                    scriptMessages.appendChild(newMessage);
+                }
+
+                var message = scriptMessages.children[i];
+                var existingMessage = existingMessages[i];
+                var selector = message.querySelector("select");
+                selector.innerHTML = botOptions;
+                console.log(existingMessage);
+                selector.options.selectedIndex = existingMessage.bot_index - 1;
+                message.querySelector(".message-text").value = existingMessage["text"];
+            }
+
+            function getActiveTypeOption() {
+                return document.querySelector(`#selected-option-type`).textContent;
+            }
+
+            document.getElementById("save-button").addEventListener("click", async () => {
+                const name = document.getElementById("script-name").value;
+                const type = getActiveTypeOption();
+                const messages = [];
+                scriptMessages.querySelectorAll(".message").forEach(message => {
+                    const bot = message.querySelector(".bot-select").value;
+                    const text = message.querySelector(".message-text").value;
+                    messages.push({bot, text});
+                });
+                var id = "{{ script.id }}"
+                var data = {id, name, type, messages};
+
+                console.log("Saving script:", data);
+                // Here you would send the data to the server, e.g., via fetch API
+
+                try {
+
+                    var response = await fetch('http://localhost:8080/scripts/{{ script.id }}', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    });
+                    console.log(response);
+                    if (response.ok) {
+                        window.location = "/scripts";
+                    } else {
+                        alert("Failed to save the script. Please try again.");
+                    }
+                } catch (e) {
+                    console.error(e);
+                    alert("Failed to save the script. Please try again.");
+                }
+            });
+        });
+    </script>
+{% endblock %}

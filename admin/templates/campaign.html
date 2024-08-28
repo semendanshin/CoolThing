@@ -88,4 +88,61 @@
             <input type="submit" value="Save Changes" class="submit-button">
         </div>
     </form>
+    <div class="activate-script">
+        <h3>Activate Script</h3>
+        <br>
+        <p>Enter the script ID</p>
+        <input type="text" id="script-id" placeholder="script ID">
+        <br>
+        <p>Enter the bots mapping</p>
+        <div class="bots-mapping-input">
+
+        </div>
+        <input type="text" id="bots-mapping" placeholder="bots mapping">
+        <br>
+        <button>Activate Script</button>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelector(".activate-script button").addEventListener("click", async function () {
+                let response = await fetch("/scripts/activate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        script_id: document.querySelector(".activate-script input#script-id").value,
+                        campaign_id: "{{ campaign.id }}",
+                        bots_mapping: JSON.parse(document.querySelector(".activate-script input#bots-mapping").value),
+                    }),
+                });
+
+                if (response.ok) {
+                    alert("Script activated successfully");
+                } else {
+                    alert("Failed to activate script");
+                    console.log(response.json())
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            var scriptIdInput = document.querySelector(".activate-script input#script-id");
+            scriptIdInput.onblur = async function () {
+                var scriptId = scriptIdInput.value;
+
+                var response = await fetch(`/scripts/bots-count/${scriptId}`, {
+                        method: 'GET'
+                    }
+                )
+
+                if (!response.ok) {
+                    alert("Error while retrieving script");
+                    return;
+                }
+                var botsCount = response.then((x) => {Number.parseInt(x)});
+                console.log(botsCount);
+            }
+        });
+    </script>
 {% endblock %}
