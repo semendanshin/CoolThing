@@ -54,6 +54,28 @@ services:
       options:
         fluentd-address: 127.0.0.1:24224
         tag: bot
+  scripts:
+    build:
+      context: ./scripts
+      dockerfile: Dockerfile
+    container_name: cool_thing_scripts
+    restart: unless-stopped
+    networks:
+      - bridge
+    volumes:
+      - ./scripts/settings.json:/app/settings.json
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    depends_on:
+      fluentd:
+        condition: service_started
+      queue:
+        condition: service_healthy
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
+        tag: scripts
   admin:
     build:
       context: ./admin
