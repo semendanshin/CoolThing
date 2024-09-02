@@ -1,4 +1,5 @@
 from pathlib import Path
+from urllib.parse import quote_plus
 from typing import Type, Tuple
 
 from pydantic import SecretStr
@@ -23,6 +24,9 @@ class ScriptsDBSettings(BaseSettings):
     host: str
     port: int
     name: str
+
+    def __post_init__(self):
+        self.password = SecretStr(quote_plus(self.password.get_secret_value()))
 
     @property
     def url(self):

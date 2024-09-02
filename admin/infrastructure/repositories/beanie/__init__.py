@@ -18,7 +18,7 @@ async def init_db():
             document_models=[
                 Script,
                 ScriptForCampaign,
-            ]
+            ],
         )
         logger.info("DB initialized")
     except Exception as e:

@@ -1,4 +1,4 @@
-import asyncio
+import logging
 from contextlib import asynccontextmanager
 
 import uvicorn
@@ -6,15 +6,15 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from infrastructure.repositories import init_db
+from middlewares import check_for_auth
 from routes import (dashboard_router, bots_router, bot_router, fallback_router, chats_router,
                     campaigns_router, gpt_settings_router, auth_router, script_router)
-
-from middlewares import check_for_auth
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
+    logging.getLogger(__name__).info("inited db")
     yield
 
 
