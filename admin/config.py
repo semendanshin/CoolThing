@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from urllib.parse import quote_plus
 from typing import Type, Tuple
@@ -27,11 +28,11 @@ class ScriptsDBSettings(BaseSettings):
 
     def __post_init__(self):
         self.password = SecretStr(quote_plus(self.password.get_secret_value()))
-        self.user =quote_plus(self.user)
+        self.user = quote_plus(self.user)
 
     @property
     def url(self):
-        return f"mongodb://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/"
+        return f"mongodb://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/{self.name}?authSource=admin&directConnection=true"
 
 
 class AuthSettings(BaseSettings):
