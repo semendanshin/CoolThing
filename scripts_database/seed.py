@@ -9,6 +9,7 @@ async def seed():
     script = Script(
         name="demo script",
         type="Native integration",
+        bots_count=3,
         messages=[
             Message(bot_index=1, text="hi there how to buy drugs"),
             Message(bot_index=2, text="me and @3"),
