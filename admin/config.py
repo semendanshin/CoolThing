@@ -27,6 +27,7 @@ class ScriptsDBSettings(BaseSettings):
 
     def __post_init__(self):
         self.password = SecretStr(quote_plus(self.password.get_secret_value()))
+        self.user =quote_plus(self.user)
 
     @property
     def url(self):
