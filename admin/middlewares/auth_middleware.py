@@ -21,7 +21,7 @@ async def check_for_auth(
 
     auth_use_case = get_auth_use_case()
     if not await auth_use_case.check_tokens(tokens):
-        destination_url = request.url.path
+        destination_url = request.url.path or '/dashboard'
         url = URL("/auth").include_query_params(destination=destination_url)
         return RedirectResponse(url=url, status_code=303)
     else:
