@@ -1,8 +1,8 @@
 include:
-  - ./database/db-compose.yaml
+  - ./database/db-compose-side.yaml
   - rabbit_mq/rabbit-compose.yaml
   - fluentd/fluentd-compose.yaml
-  - scripts_database/scripts-db-compose.yaml
+#  - scripts_database/scripts-db-compose.yaml
 
 
 services:
