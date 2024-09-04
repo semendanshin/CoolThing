@@ -14,7 +14,7 @@
             {% for gpt_setting in gpt_settings %}
                 <a href="/gpt/{{ gpt_setting.id }}">
                     <div class="item-card">
-                        <h3>{{ gpt_setting.id }}</h3>
+                        <h3>{{ gpt_setting.name }}</h3>
                         <p><strong>Model:</strong> {{ gpt_setting.model }}</p>
                         {% if gpt_setting.assistant %}
                             <p><strong>Assistant:</strong> {{ gpt_setting.assistant }}</p>

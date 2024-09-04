@@ -4,6 +4,7 @@ from domain.dto.gpt import GPTCreateDTO
 
 
 def create_gpt_setting_form(
+    name: str = Form(...),
     model: str = Form(...),
     token: str = Form(...),
     assistant: str = Form(default=""),
@@ -11,6 +12,7 @@ def create_gpt_setting_form(
     proxy: str = Form(default=""),
 ) -> GPTCreateDTO:
     return GPTCreateDTO(
+        name=name,
         model=model,
         assistant=assistant,
         token=token,
