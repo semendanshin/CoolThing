@@ -37,7 +37,7 @@ async def get_create_script(
 ):
     return templates.TemplateResponse(
         request=request,
-        name='script.html',
+        name='new_script.html',
         context={
 
         }
