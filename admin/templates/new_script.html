@@ -3,43 +3,47 @@
 {% block inner_head %}
     <link rel="stylesheet" href="/static/script-delete-button.css">
     <script defer>
+        document.addEventListener("DOMContentLoaded", () => {
 
-    function getActiveTypeOption() {
-        return document.querySelector(`#selected-option-type`).textContent;
-    }
-
-    document.getElementById("save-button").addEventListener("click", async () => {
-        const name = document.getElementById("script-name").value;
-        const type = getActiveTypeOption();
-        const messages = [];
-        scriptMessages.querySelectorAll(".message").forEach(message => {
-            const bot = message.querySelector(".bot-select").value;
-            const text = message.querySelector(".message-text").value;
-            messages.push({bot, text});
-        });
-        console.log("Saving script:", {name, type, messages});
-        // Here you would send the data to the server, e.g., via fetch API
-
-        var data = {name, type, messages};
-        try {
-
-            var response = await fetch('http://localhost:8080/scripts', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-            console.log(response);
-            if (response.ok) {
-                window.location = "/scripts";
-            } else {
-                alert("Failed to save the script. Please try again.");
+            function getActiveTypeOption() {
+                return document.querySelector(`#selected-option-type`).textContent;
             }
-        } catch (e) {
-            console.error(e);
-            alert("Failed to save the script. Please try again.");
-        }
-    });
+
+            document.getElementById("save-button").addEventListener("click", async () => {
+                const name = document.getElementById("script-name").value;
+                const type = getActiveTypeOption();
+                const messages = [];
+                var scriptMessages = document.querySelector("#script-messages");
+                scriptMessages.querySelectorAll(".message").forEach(message => {
+                    const bot = message.querySelector(".bot-select").value;
+                    const text = message.querySelector(".message-text").value;
+                    messages.push({bot, text});
+                });
+                console.log("Saving script:", {name, type, messages});
+                // Here you would send the data to the server, e.g., via fetch API
+
+                var data = {name, type, messages};
+                try {
+
+                    var response = await fetch('http://localhost:8080/scripts', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    });
+                    console.log(response);
+                    if (response.ok) {
+                        window.location = "/scripts";
+                    } else {
+                        alert("Failed to save the script. Please try again.");
+                    }
+                } catch (e) {
+                    console.error(e);
+                    alert("Failed to save the script. Please try again.");
+                }
+            });
+        });
+
     </script>
 {% endblock %}
