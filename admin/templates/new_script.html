@@ -13,6 +13,7 @@
                 const name = document.getElementById("script-name").value;
                 const type = getActiveTypeOption();
                 const messages = [];
+                var scriptMessages = document.querySelector("#script-messages");
                 scriptMessages.querySelectorAll(".message").forEach(message => {
                     const bot = message.querySelector(".bot-select").value;
                     const text = message.querySelector(".message-text").value;
