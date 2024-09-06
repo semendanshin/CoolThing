@@ -66,13 +66,13 @@ class Campaign(BaseEntity):
 class Chat(BaseEntity):
     __tablename__ = 'chats'
 
-    campaign_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('campaigns.id'))
+    campaign_id: Mapped[Optional[str]] = mapped_column(UUID(as_uuid=True), ForeignKey('campaigns.id'))
     worker_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('workers.id'))
     telegram_chat_id: Mapped[int] = mapped_column(BigInteger)
-    username: Mapped[str]
-    status: Mapped[str]
-    lead_message: Mapped[str]
-    lead_chat_id: Mapped[str]
+    username: Mapped[Optional[str]]
+    status: Mapped[Optional[str]]
+    lead_message: Mapped[Optional[str]]
+    lead_chat_id: Mapped[Optional[str]]
     auto_reply: Mapped[bool] = mapped_column(server_default='true')
 
 

@@ -11,6 +11,13 @@ class TelegramClientWrapper(ABC):
         ...
 
     @abstractmethod
+    async def get_username_by_chat_id(
+            self,
+            chat_id: int,
+    ) -> str:
+        ...
+
+    @abstractmethod
     async def set_typing_status(
             self,
             chat_id: int,
