@@ -6,6 +6,7 @@ from domain.dto.campaign import CampaignCreateDTO
 
 
 def create_campaign_form(
+        name: str = Form(...),
         welcome_message: str = Form(...),
         chats: str = Form(...),
         plus_keywords: str = Form(...),
@@ -18,6 +19,7 @@ def create_campaign_form(
         campaign_welcome_wait_end: int = Form(default=None),
 ) -> CampaignCreateDTO:
     return CampaignCreateDTO(
+        name=name,
         welcome_message=welcome_message,
         chats=[chat for chat in re.split(r"\s*,\s*", chats)],
         plus_keywords=[keyword for keyword in re.split(r"\s*,\s*", plus_keywords)],

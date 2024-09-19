@@ -6,16 +6,15 @@ from abstractions.repositories import CRUDRepositoryInterface
 from domain.models import Chat
 
 
-@dataclass
+@dataclass(kw_only=True)
 class ChatCreateDTO:
-    id: str
-    campaign_id: str
+    campaign_id: str = None
     telegram_chat_id: int
     worker_id: str
     username: str
-    status: str
-    lead_message: str
-    lead_chat_id: str
+    status: str = None
+    lead_message: str = None
+    lead_chat_id: str = None
     auto_reply: bool = None
 
 

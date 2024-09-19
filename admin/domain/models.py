@@ -29,6 +29,7 @@ class Worker(Model):
 
 @dataclass(kw_only=True)
 class GPT(Model):
+    name: str
     model: str
     token: str
     proxy: str
@@ -38,6 +39,7 @@ class GPT(Model):
 
 @dataclass(kw_only=True)
 class Campaign(Model):
+    name: str
     welcome_message: str
     chats: list[str]
     plus_keywords: list[str]

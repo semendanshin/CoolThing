@@ -96,7 +96,7 @@
 
                 try {
 
-                    var response = await fetch('http://localhost:8080/scripts/{{ script.id }}', {
+                    var response = await fetch('/scripts/{{ script.id }}', {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',

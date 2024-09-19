@@ -7,6 +7,7 @@ from domain.dto.campaign import CampaignUpdateDTO
 
 def update_campaign_form(
     id: str = Path(..., alias="campaign_id"),
+    name: str = Form(..., alias="campaign_name"),
     welcome_message: str = Form(alias="campaign_welcome_message"),
     chats: str = Form(alias="campaign_chats"),
     plus_keywords: str = Form(alias="campaign_plus_keywords"),
@@ -20,6 +21,7 @@ def update_campaign_form(
 ) -> CampaignUpdateDTO:
     return CampaignUpdateDTO(
         id=id,
+        name=name,
         welcome_message=welcome_message,
         chats=[chat for chat in re.split(r"\s*,\s*", chats)],
         plus_keywords=[keyword for keyword in re.split(r"\s*,\s*", plus_keywords)],

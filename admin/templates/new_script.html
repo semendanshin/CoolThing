@@ -3,12 +3,12 @@
 {% block inner_head %}
     <link rel="stylesheet" href="/static/script-delete-button.css">
     <script defer>
+
+        function getActiveTypeOption() {
+            return document.querySelector(`#selected-option-type`).textContent;
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
-
-            function getActiveTypeOption() {
-                return document.querySelector(`#selected-option-type`).textContent;
-            }
-
             document.getElementById("save-button").addEventListener("click", async () => {
                 const name = document.getElementById("script-name").value;
                 const type = getActiveTypeOption();
@@ -25,7 +25,7 @@
                 var data = {name, type, messages};
                 try {
 
-                    var response = await fetch('http://localhost:8080/scripts', {
+                    var response = await fetch('/scripts', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -44,6 +44,5 @@
                 }
             });
         });
-
     </script>
 {% endblock %}

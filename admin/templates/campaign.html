@@ -20,7 +20,11 @@
 {% block fields %}
     <form action="/campaigns/{{ campaign.id }}" method="post">
         <div class="row">
-            <label for="campaign_scope" class="field-label">Scope</label>
+            <label for="campaign_name" class="field-label required">Name</label>
+            <input class="input-field" id="campaign_name" name="campaign_name" value="{{ campaign.name }}">
+        </div>
+        <div class="row">
+            <label for="campaign_scope" class="field-label required">Scope</label>
             <input class="input-field" id="campaign_scope" name="campaign_scope" value="{{ campaign.scope }}">
         </div>
         <div class="row">
@@ -114,7 +118,7 @@
             <div class="bot-username-container">
                 <div class="custom-select-wrapper">
                     <div class="custom-select" tabindex="0" id="custom-select">
-                        <span id="selected-option" class="selected-option">All</span>
+                        <span id="selected-option" class="selected-option">No bot selected</span>
                         <span>&#9660;</span>
                     </div>
                     <div class="custom-select-options" id="custom-select-options">

@@ -6,6 +6,7 @@ from typing import Optional
 @dataclass(kw_only=True)
 class CampaignCreateDTO:
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
     welcome_message: str
     chats: list[str]
     plus_keywords: list[str]
@@ -19,6 +20,7 @@ class CampaignCreateDTO:
 @dataclass(kw_only=True)
 class CampaignUpdateDTO:
     id: str
+    name: Optional[str] = None
     welcome_message: Optional[str] = None
     chats: Optional[list[str]] = None
     plus_keywords: Optional[list[str]] = None

@@ -14,6 +14,7 @@ class CampaignRepository(
     def entity_to_model(self, entity: Campaign) -> CampaignModel:
         return CampaignModel(
             id=str(entity.id),
+            name=entity.name,
             welcome_message=entity.welcome_message,
             chats=entity.chats,
             plus_keywords=entity.plus_keywords,
@@ -27,6 +28,7 @@ class CampaignRepository(
     def model_to_entity(self, model: CampaignModel) -> Campaign:
         return Campaign(
             id=model.id,
+            name=model.name,
             welcome_message=model.welcome_message,
             chats=model.chats,
             plus_keywords=model.plus_keywords,
