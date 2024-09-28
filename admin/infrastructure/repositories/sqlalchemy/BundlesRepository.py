@@ -4,18 +4,22 @@ from abstractions.repositories.BundlesRepositoryInterface import BundlesReposito
 from domain.dto.bundle import BundleCreateDTO, BundleUpdateDTO
 from domain.models import Bundle as BundleModel
 from domain.models import Worker as WorkerModel
-from infrastructure.entities import BotsBundle
+from infrastructure.entities import BotBundle
 from infrastructure.entities.sqlalchemy import BotBundleMapping
 from infrastructure.repositories.sqlalchemy import AbstractSQLAlchemyRepository
 
 
 class BundlesRepository(
     AbstractSQLAlchemyRepository[
-        BotsBundle, BundleModel, BundleCreateDTO, BundleUpdateDTO
+        BotBundle, BundleModel, BundleCreateDTO, BundleUpdateDTO
     ],
     BundlesRepositoryInterface,
 ):
     bundles_workers_mapping_entity = BotBundleMapping
+
+    def __post_init__(self):
+        super().__post_init__()
+        super()._set_lazy_fields(['bots'])
 
     async def add_worker_to_bundle(self, worker_id: str, bundle_id: str) -> None:
         mapping_instance = BotBundleMapping(
@@ -26,7 +30,7 @@ class BundlesRepository(
             async with session.begin():
                 session.add(mapping_instance)
 
-    def entity_to_model(self, entity: BotsBundle) -> BundleModel:
+    def entity_to_model(self, entity: BotBundle) -> BundleModel:
         return BundleModel(
             id=str(entity.id),
             name=entity.name,
@@ -34,8 +38,8 @@ class BundlesRepository(
                   in entity.bots],
         )
 
-    def model_to_entity(self, model: BundleModel) -> BotsBundle:
-        return BotsBundle(
+    def model_to_entity(self, model: BundleModel) -> BotBundle:
+        return BotBundle(
             id=model.id,
             name=model.name,
         )

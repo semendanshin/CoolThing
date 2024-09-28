@@ -1,7 +1,7 @@
 from abc import ABC
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Literal
 from uuid import uuid4
 
 
@@ -26,6 +26,8 @@ class Worker(Model):
     username: str
     bio: Optional[str] = None
 
+    chats: Optional[list[str]] = None
+
 
 @dataclass(kw_only=True)
 class GPT(Model):
@@ -46,6 +48,9 @@ class Campaign(Model):
     scope: str
     chat_answer_wait_interval_seconds: str
     new_lead_wait_interval_seconds: str
+
+    enabled: Optional[bool] = None
+    type: Optional[Literal["Native integration", "Monitoring"]] = None
 
 
 @dataclass(kw_only=True)

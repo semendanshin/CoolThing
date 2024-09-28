@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from infrastructure.repositories import init_db
 from middlewares import check_for_auth
 from routes import (dashboard_router, bots_router, bot_router, fallback_router, chats_router,
-                    campaigns_router, gpt_settings_router, auth_router, script_router)
+                    campaigns_router, gpt_settings_router, auth_router, script_router, bundles_router)
 
 
 @asynccontextmanager
@@ -34,6 +34,7 @@ app.include_router(campaigns_router)
 app.include_router(gpt_settings_router)
 app.include_router(auth_router)
 app.include_router(script_router)
+# app.include_router(bundles_router)
 
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=8080)

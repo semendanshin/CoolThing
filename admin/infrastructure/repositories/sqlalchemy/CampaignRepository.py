@@ -23,6 +23,8 @@ class CampaignRepository(
             scope=entity.scope,
             new_lead_wait_interval_seconds=entity.new_lead_wait_interval_seconds,
             chat_answer_wait_interval_seconds=entity.chat_answer_wait_interval_seconds,
+            enabled=entity.enabled,
+            type=entity.type,
         )
 
     def model_to_entity(self, model: CampaignModel) -> Campaign:
@@ -37,4 +39,6 @@ class CampaignRepository(
             scope=model.scope,
             new_lead_wait_interval_seconds=model.new_lead_wait_interval_seconds,
             chat_answer_wait_interval_seconds=model.chat_answer_wait_interval_seconds,
+            enabled=model.enabled,
+            type=model.type,
         )

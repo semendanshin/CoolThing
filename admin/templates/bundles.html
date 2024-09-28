@@ -1,10 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}
+    Bundles
+{% endblock %}
+
+{% block head %}
+    <link href="/static/floating-button.css" rel="stylesheet">
+    <link href="/static/bundles.css" rel="stylesheet">
+    <link href="/static/item_cards.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>All Bundles</h1>
+
+        <div class="cards-container">
+            {% for bundle in bundles %}
+                <a href="/bundles/{{ bundle.id }}">
+                    <div class="item-card">
+                        <h3>{{ bundle.name }}</h3>
+                        <div class="bundle-details">
+                            <h4>Bots:</h4>
+                            <div class="workers-container">
+                                {% for worker in bundle.bots %}
+                                    <div class="worker-item">
+                                        <p><strong>Username:</strong> {{ worker.username }}</p>
+                                        <p><strong>Role:</strong> {{ worker.role }}</p>
+                                        <p><strong>Status:</strong> {{ worker.status }}</p>
+                                        <p><strong>Proxy:</strong> {{ worker.proxy if worker.proxy else "None" }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+
+        <a href="/bundles/new" class="floating-button">+</a>
+    </div>
+{% endblock %}

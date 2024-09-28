@@ -16,6 +16,8 @@ class WorkerCreateDTO:
     role: str
     status: str
 
+    chats: Optional[list[str]] = None
+
 
 @dataclass(kw_only=True)
 class WorkerUpdateDTO:
@@ -29,3 +31,4 @@ class WorkerUpdateDTO:
     campaign_id: Optional[str] = None
     role: Optional[str] = None
     status: Optional[str] = None
+    chats: Optional[list[str]] = None

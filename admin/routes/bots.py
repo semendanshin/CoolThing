@@ -1,4 +1,5 @@
 from dataclasses import asdict
+from typing import Any
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -47,5 +48,11 @@ async def get_bots(
 @router.get("/entities")
 async def get_bots_entities(
         bots: BotsUseCaseInterface = Depends(get_bots_usecase),
-) -> list[str]:
-    return [x.username for x in await bots.get_all_bots()]
+) -> list[dict[str, Any]]:
+    usernames = [
+        {
+            "username": x.username if x.username else "",
+            "chats": x.chats if x.chats else [],
+        } for x in await bots.get_all_bots()]
+    print(usernames)
+    return usernames

@@ -12,6 +12,9 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class WorkersUseCase(WorkersUseCaseInterface):
+    async def get_by_username(self, username: str) -> Worker:
+        return await self.workers.get_by_username(username)
+
     workers: WorkersRepositoryInterface
     messenger: TelegramMessagesRepositoryInterface
 

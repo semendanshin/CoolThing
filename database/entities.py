@@ -1,10 +1,10 @@
 import uuid
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Literal
 
 from sqlalchemy import ForeignKey, BigInteger, func, TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID, JSONB
-from sqlalchemy.orm import Mapped, mapped_column, declarative_base
+from sqlalchemy.orm import Mapped, mapped_column, declarative_base, relationship
 
 Base = declarative_base()
 
@@ -14,7 +14,8 @@ class BaseEntity(Base):
 
     id: Mapped[str] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     created_at: Mapped[datetime] = mapped_column(TIMESTAMP, server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(TIMESTAMP, server_default=func.now(), onupdate=func.current_timestamp())
+    updated_at: Mapped[datetime] = mapped_column(TIMESTAMP, server_default=func.now(),
+                                                 onupdate=func.current_timestamp())
     deleted_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, index=True, server_default=None)
 
     def soft_delete(self):
@@ -37,6 +38,8 @@ class Worker(BaseEntity):
     username: Mapped[str]
     bio: Mapped[Optional[str]]
 
+    chats: Mapped[Optional[list[str]]] = mapped_column(JSONB)
+
 
 class GPT(BaseEntity):
     __tablename__ = 'gpt_settings'
@@ -52,15 +55,20 @@ class GPT(BaseEntity):
 class Campaign(BaseEntity):
     __tablename__ = 'campaigns'
 
+    # TODO: review nullability
     name: Mapped[str]
-    welcome_message: Mapped[str]
-    chats: Mapped[list[str]] = mapped_column(JSONB)
-    plus_keywords: Mapped[list[str]] = mapped_column(JSONB)
-    minus_keywords: Mapped[list[str]] = mapped_column(JSONB)
-    gpt_settings_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('gpt_settings.id'))
     scope: Mapped[str]
-    new_lead_wait_interval_seconds: Mapped[str] = mapped_column(server_default='180-300')
-    chat_answer_wait_interval_seconds: Mapped[str] = mapped_column(server_default='15-30')
+    enabled: Mapped[Optional[bool]]
+    type: Mapped[Optional[Literal["Native integration", "Monitoring"]]]
+    new_lead_wait_interval_seconds: Mapped[Optional[str]] = mapped_column(server_default='180-300')
+    chat_answer_wait_interval_seconds: Mapped[Optional[str]] = mapped_column(server_default='15-30')
+
+    # only monitoring
+    welcome_message: Mapped[Optional[str]]
+    chats: Mapped[Optional[list[str]]] = mapped_column(JSONB)
+    plus_keywords: Mapped[Optional[list[str]]] = mapped_column(JSONB)
+    minus_keywords: Mapped[Optional[list[str]]] = mapped_column(JSONB)
+    gpt_settings_id: Mapped[Optional[str]] = mapped_column(UUID(as_uuid=True), ForeignKey('gpt_settings.id'))
 
 
 class Chat(BaseEntity):
@@ -82,3 +90,20 @@ class Message(BaseEntity):
     chat_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('chats.id'))
     text: Mapped[str]
     is_outgoing: Mapped[bool]
+
+
+class BotBundle(BaseEntity):
+    __tablename__ = 'bots_bundles'
+
+    name: Mapped[str]
+    bots: Mapped[list[Worker]] = relationship(
+        'Worker',
+        secondary='bots_bundles_mappings',
+    )
+
+
+class BotBundleMapping(BaseEntity):
+    __tablename__ = 'bots_bundles_mappings'
+
+    bot_id: Mapped[UUID] = mapped_column(ForeignKey('workers.id'))
+    bundle_id: Mapped[UUID] = mapped_column(ForeignKey('bots_bundles.id'))

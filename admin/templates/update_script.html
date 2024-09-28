@@ -92,8 +92,6 @@
                 var data = {id, name, type, messages};
 
                 console.log("Saving script:", data);
-                // Here you would send the data to the server, e.g., via fetch API
-
                 try {
 
                     var response = await fetch('/scripts/{{ script.id }}', {

@@ -8,11 +8,11 @@ from domain.models import Bundle as BundleModel
 @dataclass
 class BundlesUseCaseInterface(ABC):
     @abstractmethod
-    async def get_campaign(self, bundle_id: str) -> BundleModel:
+    async def get_bundle(self, bundle_id: str) -> BundleModel:
         ...
 
     @abstractmethod
-    async def get_campaigns(self) -> list[BundleModel]:
+    async def get_bundles(self) -> list[BundleModel]:
         ...
 
     @abstractmethod
@@ -24,7 +24,7 @@ class BundlesUseCaseInterface(ABC):
         ...
 
     @abstractmethod
-    async def delete(self, campaign_id: str) -> None:
+    async def delete(self, bundle_id: str) -> None:
         ...
 
     @abstractmethod
