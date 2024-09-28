@@ -11,3 +11,7 @@ class WorkersUseCaseInterface(ABC):
     @abstractmethod
     async def get(self, bot_id: str) -> Worker:
         ...
+
+    @abstractmethod
+    async def get_by_username(self, username: str) -> Worker:
+        ...

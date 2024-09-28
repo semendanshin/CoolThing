@@ -1,10 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'bundle.html' %}
 
-</body>
-</html>
+{% block form_title %}
+    Create New Bundle
+{% endblock %}
+
+{% block form_action %}
+    /bundles
+{% endblock %}
+
+{% block bundle_name_value %}{% endblock %}
+{% block selected_bots %}{% endblock %}
+
+
+{% block fetch_script %}
+    <script>
+        document.querySelector('form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const bundleName = document.getElementById('bundle-name').value;
+            const selectedBots = [...document.querySelectorAll('input[name="selected_bots"]')]
+                .map(input => input.value);
+
+            // Create a JSON object from the form data
+            const data = {
+                name: bundleName,
+                bots: selectedBots
+            };
+
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('Bundle created successfully');
+                    window.location = '/bundles';
+                } else {
+                    alert('Error creating bundle');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    </script>
+{% endblock %}

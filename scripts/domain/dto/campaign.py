@@ -1,6 +1,6 @@
 import uuid
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, Literal
 
 
 @dataclass(kw_only=True)
@@ -14,6 +14,9 @@ class CampaignCreateDTO:
     scope: str
     chat_answer_wait_interval_seconds: Optional[str] = None
     new_lead_wait_interval_seconds: Optional[str] = None
+
+    enabled: Optional[bool] = None
+    type: Optional[Literal["Native integration", "Monitoring"]] = None
 
 
 @dataclass(kw_only=True)

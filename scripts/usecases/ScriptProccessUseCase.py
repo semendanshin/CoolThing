@@ -3,7 +3,7 @@ import logging
 from asyncio import sleep
 from dataclasses import dataclass
 from random import randint
-from typing import AsyncIterable
+from typing import AsyncIterable, Optional
 
 from aio_pika import IncomingMessage
 
@@ -34,9 +34,20 @@ class ScriptProcessUseCase:
 
         return await self.process_script(sfc)
 
-    async def _get_target_chats(self, sfc: ScriptForCampaignModel) -> list[str]:  # TODO: Annotated
-        campaign = await self.campaign_use_case.get_campaign(campaign_id=sfc.campaign_id)
-        return campaign.chats
+    async def _get_target_chats(self, sfc: ScriptForCampaignModel) -> list[Optional[str]]:  # TODO: Annotated
+        # campaign = await self.campaign_use_case.get_campaign(campaign_id=sfc.campaign_id)
+        # return campaign.chats
+
+        bots = [await self.workers_use_case.get_by_username(value) for key, value in sfc.bots_mapping.items()]
+        logger.info(bots)
+        res = []
+        for bot in bots:
+            if not bot.chats:
+                continue
+
+            res.extend(bot.chats)
+        logger.info(res)
+        return res
 
     async def process_script(self, sfc: ScriptForCampaignModel):
         script_id, campaign_id = sfc.script_id, sfc.campaign_id  # TODO: refactor?
@@ -52,7 +63,7 @@ class ScriptProcessUseCase:
         target_chats = await self._get_target_chats(sfc)
 
         for chat in target_chats:
-            messages: AsyncIterable = self.scripts_use_case.start_script(script_id)
+            messages = self.scripts_use_case.start_script(script_id)
             bots_mapping = sfc.bots_mapping
             bots_mapping = {key: await self.workers_use_case.get(value) for key, value in bots_mapping.items()}
 

@@ -12,10 +12,10 @@ class BundlesUseCase(
 ):
     repository: BundlesRepositoryInterface
 
-    async def get_campaign(self, bundle_id: str) -> BundleModel:
+    async def get_bundle(self, bundle_id: str) -> BundleModel:
         return await self.repository.get(bundle_id)
 
-    async def get_campaigns(self) -> list[BundleModel]:
+    async def get_bundles(self) -> list[BundleModel]:
         return await self.repository.get_all()
 
     async def update(self, bundle_id: str, schema: BundleUpdateDTO) -> list[BundleModel]:

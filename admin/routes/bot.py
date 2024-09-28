@@ -175,6 +175,8 @@ async def get_bot(
     bot = await bots.get_bot(bot_id)
     campaigns_list = await campaigns.get_campaigns()
 
+    print(bot)
+
     return templates.TemplateResponse(
         request=request,
         name='bot.html',

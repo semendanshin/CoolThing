@@ -10,7 +10,7 @@
 
     <script>
         async function confirmDelete() {
-            if (confirm('Are you sure you want to delete this bot? This action cannot be undone.')) {
+            if (confirm('Are you sure you want to delete this? This action cannot be undone.')) {
                 let response = await fetch('{{ delete_url }}', {
                     method: 'DELETE'
                 });

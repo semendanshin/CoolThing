@@ -8,7 +8,6 @@ from datetime import datetime
 import aio_pika
 from aio_pika.abc import AbstractRobustConnection, ExchangeType
 from aio_pika.pool import Pool
-
 from domain.baseevent import BaseEvent
 from usecases.events import EventRepository
 
@@ -46,15 +45,7 @@ class RabbitMQEventRepository(EventRepository):
             return await connection.channel()
 
     async def publish(self, event: BaseEvent):
-
         async with self.channel_pool.acquire() as channel:
-            # await channel.default_exchange.publish(
-            #     aio_pika.Message(
-            #         body=json.dumps(event, cls=EnhancedJSONEncoder).encode(),
-            #     ),
-            #     routing_key=self.queue,
-            # )
-            # logger.debug(f"Published event: {event}")
             exchange = await channel.declare_exchange('campaign_exchange', ExchangeType.TOPIC)
             routing_key = f"{self.campaign_id}.parser"
             await exchange.publish(
@@ -63,6 +54,4 @@ class RabbitMQEventRepository(EventRepository):
                 ),
                 routing_key=routing_key,
             )
-
             logger.debug(f"Published event: {event}")
-

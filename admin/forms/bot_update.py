@@ -1,3 +1,5 @@
+import re
+
 from fastapi import Form, Path
 
 from domain.dto.worker import WorkerUpdateDTO
@@ -14,6 +16,7 @@ def update_worker_form(
         campaign_id: str | None = Form(default=None),
         role: str = Form(...),
         status: str = Form(default=""),
+        chats: str = Form(...),
 ) -> WorkerUpdateDTO:
     return WorkerUpdateDTO(
         id=id,
@@ -25,5 +28,6 @@ def update_worker_form(
         proxy=proxy,
         campaign_id=campaign_id,
         role=role,
-        status="active" if status.lower() == "on" else "stopped"
+        status="active" if status.lower() == "on" else "stopped",
+        chats=[chat for chat in re.split(r"\s*,\s*", chats)],
     )

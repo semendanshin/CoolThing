@@ -1,10 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'bundle.html' %}
 
-</body>
-</html>
+{% block form_title %}
+    Update Bundle - {{ bundle.name }}
+{% endblock %}
+
+{% block form_action %}
+    /bundles/{{ bundle.id }}/update
+{% endblock %}
+
+{% block bundle_name_value %}
+    {{ bundle.name }}
+{% endblock %}
+
+{% block selected_bots %}
+    {% for bot in bundle.bots %}
+        <div class="selected-bot-item">
+            {{ bot.username }}
+            <input type="hidden" name="selected_bots" value="{{ bot.username }}">
+        </div>
+    {% endfor %}
+{% endblock %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        try {
+            const response = await fetch('/bundles/{{ bundle.id }}/data');
+            const bundleData = await response.json();
+
+            // Populate bundle name and selected bots dynamically
+            document.getElementById('bundle-name').value = bundleData.name;
+
+            const selectedBotsContainer = document.getElementById('selected-bots');
+            bundleData.bots.forEach(bot => {
+                const botItem = document.createElement('div');
+                botItem.classList.add('selected-bot-item');
+                botItem.textContent = bot.username;
+
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'selected_bots';
+                hiddenInput.value = bot.username;
+
+                botItem.appendChild(hiddenInput);
+                selectedBotsContainer.appendChild(botItem);
+            });
+        } catch (error) {
+            console.error('Error fetching bundle data:', error);
+        }
+    });
+
+    document.querySelector('form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        try {
+            const response = await fetch(this.action, {
+                method: 'PUT',
+                body: formData
+            });
+            if (response.ok) {
+                alert('Bundle updated successfully');
+                window.location = '/bundles';
+            } else {
+                alert('Error updating bundle');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+</script>

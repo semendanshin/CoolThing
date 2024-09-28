@@ -1,7 +1,7 @@
 from abc import ABC
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Literal
 from uuid import uuid4, UUID
 
 
@@ -10,6 +10,7 @@ class Model(ABC):
     id: str = field(default_factory=uuid4)
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
+    deleted_at: Optional[datetime] = None
 
 
 @dataclass(kw_only=True)
@@ -26,6 +27,8 @@ class Worker(Model):
     username: str
     bio: Optional[str] = None
 
+    chats: Optional[list[str]] = None
+
 
 @dataclass(kw_only=True)
 class GPT(Model):
@@ -40,14 +43,17 @@ class GPT(Model):
 @dataclass(kw_only=True)
 class Campaign(Model):
     name: str
-    welcome_message: str
-    chats: list[str]
-    plus_keywords: list[str]
-    minus_keywords: list[str]
-    gpt_settings_id: str
+    welcome_message: str = None
+    chats: list[str] = None
+    plus_keywords: list[str] = None
+    minus_keywords: list[str] = None
+    gpt_settings_id: str = None
     scope: str
     chat_answer_wait_interval_seconds: str
-    new_lead_wait_interval_seconds: str
+    new_lead_wait_interval_seconds: str = None
+
+    enabled: Optional[bool] = None
+    type: Optional[Literal["Native integration", "Monitoring"]] = None
 
 
 @dataclass(kw_only=True)
@@ -91,3 +97,9 @@ class ScriptForCampaign(Model):
 
     class Settings:
         name = 'scripts_for_campaigns'
+
+
+@dataclass(kw_only=True)
+class Bundle(Model):
+    name: str
+    bots: list[Worker]
