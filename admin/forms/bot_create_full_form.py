@@ -15,7 +15,7 @@ def bot_create_full_form(
         status: str = Form(default=""),
         campaign_id: str = Form(default=None),
         bio: str = Form(None),
-        chats: str = Form(...),
+        chats: str = Form(default=""),
 ) -> WorkerCreateDTO:
     return WorkerCreateDTO(
         username=username,
