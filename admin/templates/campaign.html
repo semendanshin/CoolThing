@@ -216,7 +216,7 @@
             document.querySelector(".activate-script button").addEventListener("click", async function () {
                 let bots_mapping = {};
                 let usernamesSpans = document.querySelectorAll("#bot-selected-option");
-                for (let i = 0; i < botsCount - 1; i++) {
+                for (let i = 0; i < botsCount; i++) {
                     console.log(i, usernamesSpans[i]);
                     bots_mapping[(i + 1).toString()] = usernamesSpans[i].textContent;
                 }
