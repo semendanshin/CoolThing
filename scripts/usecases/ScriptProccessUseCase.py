@@ -46,6 +46,7 @@ class ScriptProcessUseCase:
                 continue
 
             res.extend(bot.chats)
+        res = list(set(res))
         logger.info(res)
         return res
 
