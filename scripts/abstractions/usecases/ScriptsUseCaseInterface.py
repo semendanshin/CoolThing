@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import AsyncIterable
+from typing import Iterable
 
 from domain.dto.script import ScriptUpdateDTO, ScriptCreateDTO
-from domain.models import ScriptForCampaign as ScriptForCampaignModel
+from domain.models import ScriptForCampaign as ScriptForCampaignModel, ScriptMessage
 
 
 class ScriptsUseCaseInterface(ABC):
@@ -27,7 +27,7 @@ class ScriptsUseCaseInterface(ABC):
         ...
 
     @abstractmethod
-    async def start_script(self, script_id: str) -> AsyncIterable:
+    async def start_script(self, script_id: str) -> Iterable[ScriptMessage]:
         ...
 
     @abstractmethod

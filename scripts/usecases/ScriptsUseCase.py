@@ -1,12 +1,12 @@
 import logging
 from dataclasses import dataclass
-from typing import AsyncIterable
+from typing import Iterable
 
 from abstractions.repositories.ScriptsForCampaignRepositoryInterface import ScriptsForCampaignRepositoryInterface
 from abstractions.repositories.ScriptsRepositoryInterface import ScriptsRepositoryInterface
 from abstractions.usecases.ScriptsUseCaseInterface import ScriptsUseCaseInterface
 from domain.dto.script import ScriptCreateDTO, ScriptUpdateDTO
-from domain.models import ScriptForCampaign as ScriptForCampaignModel
+from domain.models import ScriptForCampaign as ScriptForCampaignModel, ScriptMessage
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class ScriptsUseCase(
     async def delete_script(self, script_id: str):
         await self.scripts_repository.delete(obj_id=script_id)
 
-    async def start_script(self, script_id: str) -> AsyncIterable:
+    async def start_script(self, script_id: str) -> Iterable[ScriptMessage]:
         script = await self.scripts_repository.get(obj_id=script_id)
         for message in script.messages:
             yield message

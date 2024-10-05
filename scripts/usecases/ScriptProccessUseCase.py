@@ -35,9 +35,6 @@ class ScriptProcessUseCase:
         return await self.process_script(sfc)
 
     async def _get_target_chats(self, sfc: ScriptForCampaignModel) -> list[Optional[str]]:  # TODO: Annotated
-        # campaign = await self.campaign_use_case.get_campaign(campaign_id=sfc.campaign_id)
-        # return campaign.chats
-
         bots = [await self.workers_use_case.get_by_username(value) for key, value in sfc.bots_mapping.items()]
         logger.info(bots)
         res = []
@@ -64,11 +61,11 @@ class ScriptProcessUseCase:
         target_chats = await self._get_target_chats(sfc)
 
         for chat in target_chats:
-            messages = self.scripts_use_case.start_script(script_id)
+            messages = await self.scripts_use_case.start_script(script_id)
             bots_mapping = sfc.bots_mapping
             bots_mapping = {key: await self.workers_use_case.get(value) for key, value in bots_mapping.items()}
 
-            async for message in messages:
+            for message in messages:
                 await sleep(self._get_random_sleep())
                 await self.workers_use_case.send_message(
                     chat_id=chat,

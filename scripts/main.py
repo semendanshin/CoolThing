@@ -1,5 +1,7 @@
 import logging
 
+from aiormq import AMQPConnectionError
+
 from config import settings
 from infrastructure.mq import RabbitListener
 from infrastructure.repositories.beanie import init_db
@@ -76,7 +78,10 @@ async def main():
         callback=script_process_use_case.activate_new_script,
     )
 
-    await listener.start()
+    try:
+        await listener.start()
+    except AMQPConnectionError:
+        await listener.start()
 
     try:
         while True:
