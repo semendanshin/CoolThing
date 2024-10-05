@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from collections.abc import async_generator
 from typing import Iterable
 
 from domain.dto.script import ScriptUpdateDTO, ScriptCreateDTO
@@ -27,7 +28,7 @@ class ScriptsUseCaseInterface(ABC):
         ...
 
     @abstractmethod
-    async def start_script(self, script_id: str) -> Iterable[ScriptMessage]:
+    async def start_script(self, script_id: str) -> list[ScriptMessage]:
         ...
 
     @abstractmethod

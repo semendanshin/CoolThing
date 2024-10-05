@@ -38,12 +38,9 @@ class ScriptsUseCase(
     async def delete_script(self, script_id: str):
         await self.scripts_repository.delete(obj_id=script_id)
 
-    async def start_script(self, script_id: str) -> Iterable[ScriptMessage]:
+    async def start_script(self, script_id: str) -> list[ScriptMessage]:
         script = await self.scripts_repository.get(obj_id=script_id)
-        for message in script.messages:
-            yield message
-
-        logger.info(f"Script {script_id} done")
+        return script.messages
 
     async def get_bots_mapping(self, script_id: str, campaign_id: str):
         return (await self.scripts_for_campaign_repository.get_by_complex_id(script_id=script_id, campaign_id=campaign_id)).bots_mapping
