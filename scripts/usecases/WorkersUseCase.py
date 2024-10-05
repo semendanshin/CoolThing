@@ -18,7 +18,7 @@ class WorkersUseCase(WorkersUseCaseInterface):
     workers: WorkersRepositoryInterface
     messenger: TelegramMessagesRepositoryInterface
 
-    async def send_message(self, chat_id: str, bot_id: str, message: str):
+    async def send_message(self, chat_id: str, bot_id: str, message: str, reply_to: int):
         logger.info(bot_id)
         logger.info(chat_id)
         worker = await self.workers.get_by_username(username=bot_id)
@@ -29,6 +29,7 @@ class WorkersUseCase(WorkersUseCaseInterface):
             session_string=worker.session_string,
             chat_id=chat_id,
             text=message,
+            reply_to=reply_to,
         )
         logger.info(f"Message {message} from bot {bot_id} was sent to chat {chat_id}")
 

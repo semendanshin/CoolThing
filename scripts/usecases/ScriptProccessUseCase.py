@@ -65,15 +65,17 @@ class ScriptProcessUseCase:
             bots_mapping = sfc.bots_mapping
             bots_mapping = {key: await self.workers_use_case.get(value) for key, value in bots_mapping.items()}
 
+            last_message_id: Optional[int] = None
             for message in messages:
                 delay = self._get_random_sleep()
-                logger.info(delay)
                 await sleep(delay)
-                await self.workers_use_case.send_message(
+                new_message = await self.workers_use_case.send_message(
                     chat_id=chat,
                     bot_id=bots_mapping[str(message.bot_index)].id,  # TODO: resolve fucking types
                     message=message.text,
+                    reply_to=last_message_id,
                 )
+                last_message_id = new_message.id
                 logger.info(f"Message {message} sent to chat {chat}")
 
             logger.info(f"All messages from script {script_id} are sent to chat {chat}")

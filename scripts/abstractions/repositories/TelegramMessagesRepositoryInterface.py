@@ -12,5 +12,6 @@ class TelegramMessagesRepositoryInterface(
             session_string: str,
             chat_id: str,
             text: str,
+            reply_to: int,
     ) -> None:
         pass
