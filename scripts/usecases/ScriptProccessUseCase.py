@@ -66,7 +66,9 @@ class ScriptProcessUseCase:
             bots_mapping = {key: await self.workers_use_case.get(value) for key, value in bots_mapping.items()}
 
             for message in messages:
-                await sleep(self._get_random_sleep())
+                delay = self._get_random_sleep()
+                logger.info(delay)
+                await sleep(delay)
                 await self.workers_use_case.send_message(
                     chat_id=chat,
                     bot_id=bots_mapping[str(message.bot_index)].id,  # TODO: resolve fucking types
