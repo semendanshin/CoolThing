@@ -3,13 +3,13 @@ import logging
 from asyncio import sleep
 from dataclasses import dataclass
 from random import randint
-from typing import AsyncIterable, Optional
+from typing import Optional
 
 from aio_pika import IncomingMessage
 
-from abstractions.usecases.WorkersUseCaseInterface import WorkersUseCaseInterface
 from abstractions.usecases.CampaignsUseCaseInterface import CampaignsUseCaseInterface
 from abstractions.usecases.ScriptsUseCaseInterface import ScriptsUseCaseInterface
+from abstractions.usecases.WorkersUseCaseInterface import WorkersUseCaseInterface
 from domain.events.scripts import NewActiveScript
 from domain.models import ScriptForCampaign as ScriptForCampaignModel
 from usecases.exceptions import NoSuchCampaignError, NoSuchScriptError

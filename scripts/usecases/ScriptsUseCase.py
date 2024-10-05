@@ -1,6 +1,5 @@
 import logging
 from dataclasses import dataclass
-from typing import Iterable
 
 from abstractions.repositories.ScriptsForCampaignRepositoryInterface import ScriptsForCampaignRepositoryInterface
 from abstractions.repositories.ScriptsRepositoryInterface import ScriptsRepositoryInterface
@@ -43,7 +42,8 @@ class ScriptsUseCase(
         return script.messages
 
     async def get_bots_mapping(self, script_id: str, campaign_id: str):
-        return (await self.scripts_for_campaign_repository.get_by_complex_id(script_id=script_id, campaign_id=campaign_id)).bots_mapping
+        return (await self.scripts_for_campaign_repository.get_by_complex_id(script_id=script_id,
+                                                                             campaign_id=campaign_id)).bots_mapping
 
     async def get_active_script(self, sfc_id: str) -> ScriptForCampaignModel:
         return await self.scripts_for_campaign_repository.get(obj_id=sfc_id)

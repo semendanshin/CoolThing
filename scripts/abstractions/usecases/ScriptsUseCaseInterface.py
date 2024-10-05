@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-from collections.abc import async_generator
-from typing import Iterable
 
 from domain.dto.script import ScriptUpdateDTO, ScriptCreateDTO
 from domain.models import ScriptForCampaign as ScriptForCampaignModel, ScriptMessage
