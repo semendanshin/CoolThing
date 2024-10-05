@@ -15,3 +15,14 @@ bp:
 mn:
 	@echo "Creating network..."
 	docker network create --driver bridge $(NETWORK_NAME)
+
+gp:
+	git add .
+	git status
+	git commit -m "$(m)"
+	git push origin $(b)
+
+deploy:
+	docker compose stop
+	git pull origin $(b)
+	docker compose up --build -d
