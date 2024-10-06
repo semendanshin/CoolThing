@@ -34,6 +34,11 @@ class ScriptProcessUseCase:
 
         return await self.process_script(sfc)
 
+    async def _get_campaign_delay(self, campaign_id: str) -> tuple[int, int]:
+        campaign = await self.campaign_use_case.get_campaign(campaign_id)
+        delay_from, delay_to = map(int, campaign.chat_answer_wait_interval_seconds.split("-"))
+        return delay_from, delay_to
+
     async def _get_target_chats(self, sfc: ScriptForCampaignModel) -> list[Optional[str]]:  # TODO: Annotated
         bots = [await self.workers_use_case.get_by_username(value) for key, value in sfc.bots_mapping.items()]
         logger.info(bots)
@@ -67,7 +72,7 @@ class ScriptProcessUseCase:
 
             last_message_id: Optional[int] = None
             for message in messages:
-                delay = self._get_random_sleep()
+                delay = await self._get_random_sleep(campaign.id)
                 logger.info(delay)
                 await sleep(delay)
                 new_message_id = await self.workers_use_case.send_message(
@@ -82,8 +87,9 @@ class ScriptProcessUseCase:
             logger.info(f"All messages from script {script_id} are sent to chat {chat}")
         logger.info(f"All messages from script {script_id} are sent to all chats")
 
-    def _get_random_sleep(self):
-        return randint(self.typing_and_sending_sleep_from, self.typing_and_sending_sleep_to)
+    async def _get_random_sleep(self, campaign_id: str):
+        delays = await self._get_campaign_delay(campaign_id)
+        return randint(delays[0], delays[1])
 
     def execute(self):
         # active_scripts = await self.scripts_use_case
