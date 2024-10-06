@@ -68,6 +68,7 @@ class ScriptProcessUseCase:
             last_message_id: Optional[int] = None
             for message in messages:
                 delay = self._get_random_sleep()
+                logger.info(delay)
                 await sleep(delay)
                 new_message_id = await self.workers_use_case.send_message(
                     chat_id=chat,
