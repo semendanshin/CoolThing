@@ -12,6 +12,7 @@ from infrastructure.repositories.sqlalchemy.CampaignRepository import CampaignRe
 from infrastructure.repositories.sqlalchemy.WorkersRepository import SQLAlchemyWorkerRepository
 from infrastructure.repositories.telegram.TelethonTelegramMessageRepository import TelethonTelegramMessagesRepository
 from usecases.CampaignsUseCase import CampaignsUseCase
+from usecases.TemplateEngine import TemplateEngine
 from usecases.WorkersUseCase import WorkersUseCase
 from usecases.ScriptProccessUseCase import ScriptProcessUseCase
 from usecases.ScriptsUseCase import ScriptsUseCase
@@ -65,12 +66,15 @@ async def main():
         repository=campaigns_repo,
     )
 
+    template_engine = TemplateEngine(
+
+    )
+
     script_process_use_case = ScriptProcessUseCase(
         scripts_use_case=scripts_use_case,
         workers_use_case=workers_use_case,
         campaign_use_case=campaigns_use_case,
-        typing_and_sending_sleep_to=settings.delay.typing_and_sending_sleep_to,
-        typing_and_sending_sleep_from=settings.delay.typing_and_sending_sleep_from,
+        template_engine=template_engine,
     )
 
     listener = RabbitListener(

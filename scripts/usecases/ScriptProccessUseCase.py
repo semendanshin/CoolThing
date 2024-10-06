@@ -9,6 +9,7 @@ from aio_pika import IncomingMessage
 
 from abstractions.usecases.CampaignsUseCaseInterface import CampaignsUseCaseInterface
 from abstractions.usecases.ScriptsUseCaseInterface import ScriptsUseCaseInterface
+from abstractions.usecases.TemplateEngineInterface import TemplateEngineInterface
 from abstractions.usecases.WorkersUseCaseInterface import WorkersUseCaseInterface
 from domain.events.scripts import NewActiveScript
 from domain.models import ScriptForCampaign as ScriptForCampaignModel
@@ -23,8 +24,7 @@ class ScriptProcessUseCase:
     workers_use_case: WorkersUseCaseInterface
     campaign_use_case: CampaignsUseCaseInterface
 
-    typing_and_sending_sleep_from: int
-    typing_and_sending_sleep_to: int
+    template_engine: TemplateEngineInterface
 
     async def activate_new_script(self, message: IncomingMessage):
         event = NewActiveScript(**json.loads(message.body.decode()))
@@ -41,7 +41,6 @@ class ScriptProcessUseCase:
 
     async def _get_target_chats(self, sfc: ScriptForCampaignModel) -> list[Optional[str]]:  # TODO: Annotated
         bots = [await self.workers_use_case.get_by_username(value) for key, value in sfc.bots_mapping.items()]
-        logger.info(bots)
         res = []
         for bot in bots:
             if not bot.chats:
@@ -73,16 +72,17 @@ class ScriptProcessUseCase:
             last_message_id: Optional[int] = None
             for message in messages:
                 delay = await self._get_random_sleep(campaign.id)
-                logger.info(delay)
+                logger.info(f"delay: {delay}")
                 await sleep(delay)
+                text_to_send = await self.template_engine.process_template(message.text)
                 new_message_id = await self.workers_use_case.send_message(
                     chat_id=chat,
                     bot_id=bots_mapping[str(message.bot_index)].id,  # TODO: resolve fucking types
-                    message=message.text,
+                    message=text_to_send,
                     reply_to=last_message_id,
                 )
                 last_message_id = new_message_id
-                logger.info(f"Message {message} sent to chat {chat}")
+                logger.info(f"Message {text_to_send} sent to chat {chat}")
 
             logger.info(f"All messages from script {script_id} are sent to chat {chat}")
         logger.info(f"All messages from script {script_id} are sent to all chats")
@@ -90,7 +90,3 @@ class ScriptProcessUseCase:
     async def _get_random_sleep(self, campaign_id: str):
         delays = await self._get_campaign_delay(campaign_id)
         return randint(delays[0], delays[1])
-
-    def execute(self):
-        # active_scripts = await self.scripts_use_case
-        ...
