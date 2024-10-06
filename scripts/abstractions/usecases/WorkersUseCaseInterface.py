@@ -5,7 +5,7 @@ from domain.models import Worker
 
 class WorkersUseCaseInterface(ABC):
     @abstractmethod
-    async def send_message(self, chat_id: str, bot_id: str, message: str, reply_to: int):
+    async def send_message(self, chat_id: str, bot_id: str, message: str, reply_to: int) -> int:
         ...
 
     @abstractmethod

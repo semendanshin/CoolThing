@@ -13,5 +13,5 @@ class TelegramMessagesRepositoryInterface(
             chat_id: str,
             text: str,
             reply_to: int,
-    ) -> None:
+    ) -> int:
         pass

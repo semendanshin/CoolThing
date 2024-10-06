@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class TelethonTelegramMessagesRepository(
     TelegramMessagesRepositoryInterface,
 ):
-    async def send_message(self, app_id: str, app_hash: str, session_string: str, chat_id: str, text: str, reply_to: int) -> None:
+    async def send_message(self, app_id: str, app_hash: str, session_string: str, chat_id: str, text: str, reply_to: int) -> int:
         if not app_id or not app_hash or not session_string:
             raise ValueError("app_id, app_hash and session_string are required")
 
@@ -27,5 +27,6 @@ class TelethonTelegramMessagesRepository(
 
         )
         await client.connect()
-        await client.send_message(chat_id, text, reply_to=reply_to)
+        message = await client.send_message(chat_id, text, reply_to=reply_to)
         await client.disconnect()
+        return message.id
