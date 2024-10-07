@@ -6,6 +6,7 @@ from random import randint
 from typing import Optional
 
 from aio_pika import IncomingMessage
+from telethon.errors.rpcerrorlist import ChatWriteForbiddenError
 
 from abstractions.usecases.CampaignsUseCaseInterface import CampaignsUseCaseInterface
 from abstractions.usecases.ScriptsUseCaseInterface import ScriptsUseCaseInterface
@@ -70,22 +71,32 @@ class ScriptProcessUseCase:
             bots_mapping = {key: await self.workers_use_case.get(value) for key, value in bots_mapping.items()}
 
             last_message_id: Optional[int] = None
+            writable = True
             for message in messages:
                 delay = await self._get_random_sleep(campaign.id)
                 logger.info(f"delay: {delay}")
                 await sleep(delay)
                 text_to_send = await self.template_engine.process_template(message.text)
-                new_message_id = await self.workers_use_case.send_message(
-                    chat_id=chat,
-                    bot_id=bots_mapping[str(message.bot_index)].id,  # TODO: resolve fucking types
-                    message=text_to_send,
-                    reply_to=last_message_id,
-                )
-                last_message_id = new_message_id
-                logger.info(f"Message {text_to_send} sent to chat {chat}")
-
-            logger.info(f"All messages from script {script_id} are sent to chat {chat}")
+                worker_id = bots_mapping[str(message.bot_index)].id  # TODO: resolve fucking types
+                try:
+                    new_message_id = await self.workers_use_case.send_message(
+                        chat_id=chat,
+                        bot_id=worker_id,
+                        message=text_to_send,
+                        reply_to=last_message_id,
+                    )
+                    last_message_id = new_message_id
+                    logger.info(f"Message {text_to_send} sent to chat {chat}")
+                except ChatWriteForbiddenError as e:
+                    logger.error(
+                        f"There is an error sending message {text_to_send} from bot {worker_id} to {chat}: {type(e)}")
+                    writable = False
+                    break
+            if writable:
+                logger.info(f"All messages from script {script_id} are sent to chat {chat}")
         logger.info(f"All messages from script {script_id} are sent to all chats")
+
+        await self.scripts_use_case.sfc_done(sfc.id)
 
     async def _get_random_sleep(self, campaign_id: str):
         delays = await self._get_campaign_delay(campaign_id)

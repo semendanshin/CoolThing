@@ -15,6 +15,15 @@ class ScriptsForCampaignRepository(
     ScriptsForCampaignRepositoryInterface,
 ):
 
+    async def sfc_done(self, sfc_id: str) -> None:
+        sfc = await self.entity.find(
+            self.entity.id == sfc_id,
+        ).first_or_none()
+
+        if sfc:
+            sfc.done = True
+            await sfc.save()
+
     def entity_to_model(self, entity: ScriptForCampaign) -> ScriptForCampaignModel:
         return ScriptForCampaignModel(
             id=str(entity.id),
@@ -52,6 +61,7 @@ class ScriptsForCampaignRepository(
         res = await self.entity.find(
             self.entity.script_id == script_id,
             self.entity.campaign_id == campaign_id,
+            not self.entity.done,
         ).first_or_none()
 
         if res:

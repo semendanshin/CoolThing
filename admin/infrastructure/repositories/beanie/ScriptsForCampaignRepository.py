@@ -48,8 +48,9 @@ class ScriptsForCampaignRepository(
                 script_id=model.script_id,
                 campaign_id=model.campaign_id,
                 bots_mapping=model.bots_mapping,
+                done=False,
                 created_at=datetime.now(),
-                updated_at=datetime.now()
+                updated_at=datetime.now(),
             )
         raise TypeError("Unknown type to map into entity "
                         "(expected Union[`ScriptForCampaignModel`, `ScriptForCampaignCreateDTO`], "

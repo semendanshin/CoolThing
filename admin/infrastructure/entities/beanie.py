@@ -30,6 +30,8 @@ class ScriptForCampaign(Document):
     script_id: uuid.UUID
     campaign_id: uuid.UUID
     bots_mapping: dict[str, str]
+
+    done: bool
     created_at: datetime = datetime.now()
     updated_at: datetime = datetime.now()
 

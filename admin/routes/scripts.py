@@ -48,7 +48,10 @@ async def get_script_bots_count(
         script_id: str,
 ) -> int:
     script = await get_scripts_use_case().get_script(script_id)
-    return max([x.bot_index for x in script.messages])
+    print(script.messages)
+    res = max([x.bot_index for x in script.messages])
+    print(res)
+    return res
 
 
 @router.get("/{script_id}")
@@ -59,6 +62,7 @@ async def get_script(
 ):
     if script_id == 'bots-count':
         raise HTTPException(status_code=422, detail="It's not uuid, check your code")
+
     script = await get_scripts_use_case().get_script(script_id)
     messages_object_string = f"[{', '.join([json.dumps(x.__dict__) for x in script.messages])}]"
     print(messages_object_string)

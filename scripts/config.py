@@ -57,8 +57,8 @@ class DBSettings(BaseSettings):
 
 class Settings(BaseSettings):
     scripts_db: ScriptsDBSettings
-    delay: DelaySettings
-    scripts: ScriptsSettings
+    # delay: DelaySettings
+    # scripts: ScriptsSettings
     mq: MQSettings
     db: DBSettings
 

@@ -40,3 +40,7 @@ class ScriptsUseCaseInterface(ABC):
     @abstractmethod
     async def get_active_script(self, sfc_id: str) -> ScriptForCampaignModel:
         ...
+
+    @abstractmethod
+    async def sfc_done(self, sfc_id: str) -> None:
+        ...

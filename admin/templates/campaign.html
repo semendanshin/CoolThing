@@ -212,11 +212,12 @@
                 isTabSwitch = document.visibilityState === 'hidden';
             });
 
-            let botsCount, bots;
+            let scriptBotsCount, bots;
             document.querySelector(".activate-script button").addEventListener("click", async function () {
                 let bots_mapping = {};
                 let usernamesSpans = document.querySelectorAll("#bot-selected-option");
-                for (let i = 0; i < botsCount; i++) {
+                console.log(usernamesSpans, scriptBotsCount);
+                for (let i = 0; i < scriptBotsCount; i++) {
                     console.log(i, usernamesSpans[i]);
                     bots_mapping[(i + 1).toString()] = usernamesSpans[i].textContent;
                 }
@@ -259,7 +260,7 @@
                             return;
                         }
                     }
-                    var scriptBotsCount = Number.parseInt(await response.json());
+                    scriptBotsCount = Number.parseInt(await response.json());
                 }
                 let botEntryTemplate = document.getElementById("bot-entry-template").content
                 let botsMappingInputContainer = document.getElementById("bots-mapping-input-container");
@@ -282,7 +283,7 @@
                     }
                     bots = await response.json();
                 }
-                botsCount = bots.length;
+                let botsCount = bots.length;
                 if (!botsCount) return;
                 const botOptions = Array.from({length: botsCount}, (_, i) => `<div class="custom-select-option bot" data-value="${bots[i].username}">${bots[i].username}</div>`).join('');
                 let selectOptions = document.querySelectorAll("#bot-custom-select-options");
