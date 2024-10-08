@@ -80,7 +80,7 @@
         <div class="row">
             <label for="bot_chats" class="field-label">Chats</label>
             <textarea class="input-field" id="bot_chats"
-                      name="chats">{{ bot.chats | join(", ") }}</textarea>
+                      name="chats">{{ bot.chats | join("\n") | safe}}</textarea>
         </div>
 
         <div class="row">
