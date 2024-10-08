@@ -6,12 +6,21 @@ from abstractions.repositories.TelegramMessagesRepositoryInterface import Telegr
 from abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
 from abstractions.usecases.WorkersUseCaseInterface import WorkersUseCaseInterface
 from domain.models import Worker
+from infrastructure.repositories.telegram.exceptions import NoSuchWorkerException
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class WorkersUseCase(WorkersUseCaseInterface):
+    async def join_chat(self, worker_id: str, chat: str | int):
+        try:
+            worker = await self.get(worker_id)
+        except:
+            raise NoSuchWorkerException(f"No worker with id {worker_id}")
+
+        await self.messenger.join_chat(worker, chat)
+
     async def get_by_username(self, username: str) -> Worker:
         return await self.workers.get_by_username(username)
 

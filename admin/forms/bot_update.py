@@ -29,5 +29,5 @@ def update_worker_form(
         campaign_id=campaign_id,
         role=role,
         status="active" if status.lower() == "on" else "stopped",
-        chats=[chat for chat in re.split(r"\s*,\s*", chats)],
+        chats=[chat for chat in re.split(r"\s+", chats)],
     )

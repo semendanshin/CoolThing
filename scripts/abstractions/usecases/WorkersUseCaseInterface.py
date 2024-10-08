@@ -15,3 +15,7 @@ class WorkersUseCaseInterface(ABC):
     @abstractmethod
     async def get_by_username(self, username: str) -> Worker:
         ...
+
+    @abstractmethod
+    async def join_chat(self, worker_id: str, chat: str | int):
+        ...

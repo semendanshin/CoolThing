@@ -6,7 +6,6 @@ from random import randint
 from typing import Optional
 
 from aio_pika import IncomingMessage
-from telethon.errors.rpcerrorlist import ChatWriteForbiddenError
 
 from abstractions.usecases.CampaignsUseCaseInterface import CampaignsUseCaseInterface
 from abstractions.usecases.ScriptsUseCaseInterface import ScriptsUseCaseInterface
@@ -48,8 +47,19 @@ class ScriptProcessUseCase:
                 continue
 
             res.extend(bot.chats)
-        res = list(set(res))
-        logger.info(res)
+        target_chats = list(set(res))
+        # error = False
+        # for bot in bots:
+        #     for chat in target_chats:
+        #         try:
+        #             await self.workers_use_case.join_chat(worker_id=bot.id, chat=chat)
+        #         except ChatJoinError:
+        #             error = True
+        #             break
+        #     if error:
+        #         break
+
+        logger.info(target_chats)
         return res
 
     async def process_script(self, sfc: ScriptForCampaignModel):
@@ -89,7 +99,7 @@ class ScriptProcessUseCase:
                     logger.info(f"Message {text_to_send} sent to chat {chat}")
                 except Exception as e:  # ChatWriteForbiddenError
                     logger.error(
-                        f"There is an error sending message {text_to_send} from bot {worker_id} to {chat}: {type(e)}: {e}")
+                        f"There is an error sending message {text_to_send} from bot {worker_id} to {chat}: {type(e).__name__}: {e}")
                     writable = False
                     break
             if writable:

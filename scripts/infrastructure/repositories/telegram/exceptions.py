@@ -1,0 +1,6 @@
+class NoSuchWorkerException(Exception):
+    ...
+
+
+class ChatJoinError(Exception):
+    ...
