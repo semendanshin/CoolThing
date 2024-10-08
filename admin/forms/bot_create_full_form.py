@@ -27,5 +27,5 @@ def bot_create_full_form(
         status="active" if status.lower() == "on" else "stopped",
         campaign_id=campaign_id,
         bio=bio,
-        chats=[chat for chat in re.split(r"\s*,\s*", chats)],
+        chats=[chat for chat in re.split(r"\s+", chats)],
     )
