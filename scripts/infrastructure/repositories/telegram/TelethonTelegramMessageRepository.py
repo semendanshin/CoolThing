@@ -10,6 +10,8 @@ from domain.models import Worker
 from infrastructure.repositories.telegram.exceptions import ChatJoinError
 
 logger = logging.getLogger(__name__)
+client_logger = logger.getChild("client")
+client_logger.setLevel(logging.DEBUG)
 
 
 @dataclass
@@ -23,7 +25,7 @@ class TelethonTelegramMessagesRepository(
             session=StringSession(worker.session_string),
             api_id=int(worker.app_id),
             api_hash=worker.app_hash,
-            base_logger=logger,
+            base_logger=client_logger,
         )
 
         await client.connect()
@@ -44,15 +46,13 @@ class TelethonTelegramMessagesRepository(
         if not app_id or not app_hash or not session_string:
             raise ValueError("app_id, app_hash and session_string are required")
 
-        logger.info(session_string)
-
         client = Client(
             session=StringSession(session_string),
             api_id=int(app_id),
             api_hash=app_hash,
-            base_logger=logger,
-
+            base_logger=client_logger,
         )
+
         await client.connect()
         message = await client.send_message(chat_id, text, reply_to=reply_to)
         await client.disconnect()
