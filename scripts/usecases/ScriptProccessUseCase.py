@@ -63,6 +63,7 @@ class ScriptProcessUseCase:
         return res
 
     async def process_script(self, sfc: ScriptForCampaignModel):
+        logger.info(f"Processing script {sfc.id}")
         script_id, campaign_id = sfc.script_id, sfc.campaign_id  # TODO: refactor?
 
         campaign = await self.campaign_use_case.get_campaign(campaign_id)
@@ -74,8 +75,10 @@ class ScriptProcessUseCase:
             raise NoSuchScriptError(f'There is no script with id "{script_id}"')
 
         target_chats = await self._get_target_chats(sfc)
+        logger.info(f"Target chats: {target_chats}")
 
         for chat in target_chats:
+            logger.info(f"Working with chat {chat}")
             messages = await self.scripts_use_case.start_script(script_id)
             bots_mapping = sfc.bots_mapping
             bots_mapping = {key: await self.workers_use_case.get(value) for key, value in bots_mapping.items()}
@@ -103,6 +106,8 @@ class ScriptProcessUseCase:
                     break
             if writable:
                 logger.info(f"All messages from script {script_id} are sent to chat {chat}")
+            else:
+                logger.info(f"Skipped chat {chat}")
         logger.info(f"All messages from script {script_id} are sent to all chats")
 
         await self.scripts_use_case.sfc_done(sfc.id)
