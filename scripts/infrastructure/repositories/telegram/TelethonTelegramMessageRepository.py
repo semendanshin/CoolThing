@@ -13,9 +13,6 @@ logger = logging.getLogger(__name__)
 client_logger = logger.getChild("client")
 client_logger.setLevel(logging.DEBUG)
 
-client_logger = logging.getLogger("client_logger")
-client_logger.setLevel(logging.WARNING)
-
 
 @dataclass
 class TelethonTelegramMessagesRepository(
