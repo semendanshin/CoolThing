@@ -27,3 +27,5 @@ deploy:
 	docker compose stop
 	git pull origin $(b)
 	docker compose up --build -d
+	docker compose stop scripts
+	docker compose up --build scripts
