@@ -59,8 +59,8 @@ class ScriptProcessUseCase:
         #     if error:
         #         break
 
-        logger.info(f"Target chats: {target_chats}")
-        return res
+        # logger.info(f"Target chats: {target_chats}")
+        return target_chats
 
     async def process_script(self, sfc: ScriptForCampaignModel):
         logger.info(f"Processing script {sfc.id}")
@@ -74,7 +74,7 @@ class ScriptProcessUseCase:
         if not script:
             raise NoSuchScriptError(f'There is no script with id "{script_id}"')
 
-        target_chats = list(set(await self._get_target_chats(sfc)))
+        target_chats = await self._get_target_chats(sfc)
         logger.info(f"Target chats: {target_chats}")
 
         for chat in target_chats:
