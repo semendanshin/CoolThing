@@ -11,6 +11,9 @@ from infrastructure.repositories.telegram.exceptions import ChatJoinError
 
 logger = logging.getLogger(__name__)
 
+client_logger = logging.getLogger("client_logger")
+client_logger.setLevel(logging.WARNING)
+
 
 @dataclass
 class TelethonTelegramMessagesRepository(
