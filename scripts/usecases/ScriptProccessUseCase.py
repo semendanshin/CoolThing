@@ -74,7 +74,7 @@ class ScriptProcessUseCase:
         if not script:
             raise NoSuchScriptError(f'There is no script with id "{script_id}"')
 
-        target_chats = await self._get_target_chats(sfc)
+        target_chats = list(set(await self._get_target_chats(sfc)))
         logger.info(f"Target chats: {target_chats}")
 
         for chat in target_chats:
