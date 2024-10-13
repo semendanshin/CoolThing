@@ -59,7 +59,7 @@ class ScriptProcessUseCase:
         #     if error:
         #         break
 
-        logger.info(target_chats)
+        logger.info(f"Target chats: {target_chats}")
         return res
 
     async def process_script(self, sfc: ScriptForCampaignModel):
