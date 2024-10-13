@@ -11,7 +11,7 @@ from infrastructure.repositories.telegram.exceptions import ChatJoinError
 
 logger = logging.getLogger(__name__)
 client_logger = logger.getChild("client")
-client_logger.setLevel(logging.DEBUG)
+client_logger.setLevel(logging.ERROR)
 
 
 @dataclass
