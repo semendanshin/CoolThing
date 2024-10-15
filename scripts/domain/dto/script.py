@@ -33,6 +33,7 @@ class ScriptForCampaignCreateDTO:
     script_id: str
     campaign_id: str
     bots_mapping: dict[str, str]
+    done: bool = field(default=False)
 
 
 @dataclass(kw_only=True)

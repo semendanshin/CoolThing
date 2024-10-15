@@ -91,3 +91,5 @@ class ScriptForCampaign(Model):
     script_id: str
     campaign_id: str
     bots_mapping: dict[str, str]
+
+    done: bool

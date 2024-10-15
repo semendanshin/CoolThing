@@ -32,6 +32,10 @@ class ScriptProcessUseCase:
 
         sfc = await self.scripts_use_case.get_active_script(sfc_id=event.script_for_campaign_id)
 
+        if sfc.done:
+            logger.error(f"SFC {sfc.id} is done, skipping")
+            return
+
         return await self.process_script(sfc)
 
     async def _get_campaign_delay(self, campaign_id: str) -> tuple[int, int]:
@@ -89,9 +93,11 @@ class ScriptProcessUseCase:
                 delay = await self._get_random_sleep(campaign.id)
                 logger.info(f"delay: {delay}")
                 await sleep(delay)
+                logger.info(message.text)
                 text_to_send = await self.template_engine.process_template(message.text)
                 worker_id = bots_mapping[str(message.bot_index)].id  # TODO: resolve fucking types
                 try:
+                    # SlowModeWaitError: A wait of 3443 seconds is required before sending another message in this chat(caused by SendMessageRequest)
                     new_message_id = await self.workers_use_case.send_message(
                         chat_id=chat,
                         bot_id=worker_id,
@@ -101,7 +107,8 @@ class ScriptProcessUseCase:
                     last_message_id = new_message_id
                 except Exception as e:  # ChatWriteForbiddenError
                     logger.error(
-                        f"There is an error sending message {text_to_send} from bot {worker_id} to {chat}: {type(e).__name__}: {e}")
+                        f"There is an error sending message {text_to_send} from bot {worker_id} to {chat}: {type(e).__name__}: {e}"
+                    )
                     writable = False
                     break
             if writable:

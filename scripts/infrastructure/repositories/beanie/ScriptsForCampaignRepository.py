@@ -1,11 +1,14 @@
+import logging
 from datetime import datetime
 
 from abstractions.repositories.ScriptsForCampaignRepositoryInterface import ScriptsForCampaignRepositoryInterface
-from domain.models import ScriptForCampaign as ScriptForCampaignModel
 from domain.dto.script import ScriptForCampaignCreateDTO, ScriptForCampaignUpdateDTO
+from domain.models import ScriptForCampaign as ScriptForCampaignModel
 from infrastructure.entities import ScriptForCampaign
 from infrastructure.repositories.beanie.AbstractRepository import AbstractBeanieRepository
 from infrastructure.repositories.beanie.exceptions import NoSuchEntityException
+
+logger = logging.getLogger(__name__)
 
 
 class ScriptsForCampaignRepository(
@@ -16,13 +19,14 @@ class ScriptsForCampaignRepository(
 ):
 
     async def sfc_done(self, sfc_id: str) -> None:
-        sfc = await self.entity.find(
-            self.entity.id == sfc_id,
-        ).first_or_none()
+        sfc = await self.entity.get(sfc_id)
 
         if sfc:
             sfc.done = True
             await sfc.save()
+            return
+
+        logger.info(f"No sfc with id {sfc_id}")
 
     def entity_to_model(self, entity: ScriptForCampaign) -> ScriptForCampaignModel:
         return ScriptForCampaignModel(
@@ -32,6 +36,7 @@ class ScriptsForCampaignRepository(
             bots_mapping=entity.bots_mapping,
             created_at=entity.created_at,
             updated_at=entity.updated_at,
+            done=entity.done,
         )
 
     def model_to_entity(self, model: ScriptForCampaignCreateDTO | ScriptForCampaignModel) -> ScriptForCampaign:
@@ -43,6 +48,7 @@ class ScriptsForCampaignRepository(
                 bots_mapping=model.bots_mapping,
                 created_at=model.created_at,
                 updated_at=model.updated_at,
+                done=model.done,
             )
         if isinstance(model, ScriptForCampaignCreateDTO):
             return ScriptForCampaign(
@@ -51,7 +57,8 @@ class ScriptsForCampaignRepository(
                 campaign_id=model.campaign_id,
                 bots_mapping=model.bots_mapping,
                 created_at=datetime.now(),
-                updated_at=datetime.now()
+                updated_at=datetime.now(),
+                done=model.done,
             )
         raise TypeError("Unknown type to map into entity "
                         "(expected Union[`ScriptForCampaignModel`, `ScriptForCampaignCreateDTO`], "

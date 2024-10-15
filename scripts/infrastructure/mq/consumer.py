@@ -80,9 +80,12 @@ class RabbitListener:
 
                     async with queue.iterator() as queue_iter:
                         async for message in queue_iter:  # type: IncomingMessage
-                            async with message.process():
-                                logger.info(f"Message received: {message.body.decode()}")
-                                await self.callback(message)
+                            async with message.process(ignore_processed=True):
+                                try:
+                                    logger.info(f"Message received: {message.body.decode()}")
+                                    await self.callback(message)
+                                finally:
+                                    await message.ack()
             except Exception as e:
                 logger.error(f"Error consuming message: {e}\n{traceback.format_exc()}")
                 await asyncio.sleep(self.period)
