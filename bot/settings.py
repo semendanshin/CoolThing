@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Type, Tuple
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict, PydanticBaseSettingsSource, JsonConfigSettingsSource
 
 
@@ -14,6 +15,7 @@ class RabbitSettings(BaseSettings):
 
 class Settings(BaseSettings):
     tg_bot_token: str
+    tg_log_chats: list[int] = Field(default_factory=list)
     host: str
     rabbit: RabbitSettings
 

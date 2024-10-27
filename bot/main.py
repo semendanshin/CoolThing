@@ -1,12 +1,7 @@
-import json
-import signal
-
-from telegram import Update, InlineKeyboardButton, WebAppInfo, InlineKeyboardMarkup
-from telegram.ext import Application, ContextTypes, CommandHandler
-
-
 import asyncio
+import json
 import logging
+import signal
 from dataclasses import field, dataclass
 from typing import TypeVar, Callable, Coroutine, Any
 
@@ -14,6 +9,8 @@ import aio_pika
 from aio_pika import IncomingMessage
 from aio_pika.abc import AbstractRobustConnection, ExchangeType
 from aio_pika.pool import Pool
+from telegram import Update, InlineKeyboardButton, WebAppInfo, InlineKeyboardMarkup
+from telegram.ext import Application, ContextTypes, CommandHandler
 
 from domain.new_target_message import NewTargetMessage
 from settings import settings
@@ -141,22 +138,21 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-ADMIN_CHAT_ID = 848643556
-
-
 @dataclass
 class RabbitHandler:
     app: Application
+    log_chats: list[int]
 
     async def callback(self, message: IncomingMessage):
         event = NewTargetMessage(**json.loads(message.body.decode()))
         logger.info(f"Event received: {event}")
-        await self.app.bot.send_message(
-            chat_id=ADMIN_CHAT_ID,
-            text=f"New target message detected:\n@{event.username} in <i>{event.chat_id} by {event.worker_id} "
-                 f"(campaign: {event.campaign_id})</i>\nMessage:\n{event.message}",
-            parse_mode="HTML",
-        )
+        for chat_id in self.log_chats:
+            await self.app.bot.send_message(
+                chat_id=chat_id,
+                text=f"New target message detected:\n@{event.username} in <i>{event.chat_id} by {event.worker_id} "
+                     f"(campaign: {event.campaign_id})</i>\nMessage:\n{event.message}",
+                parse_mode="HTML",
+            )
 
 
 async def main():
@@ -169,7 +165,10 @@ async def main():
         )
     )
 
-    rabbit_handler = RabbitHandler(app=app)
+    rabbit_handler = RabbitHandler(
+        app=app,
+        log_chats=settings.log_chats,
+    )
 
     rmq_url = (f"amqp://{settings.rabbit.user}:{settings.rabbit.password}@"
                f"{settings.rabbit.host}:{settings.rabbit.port}/{settings.rabbit.vhost}")
