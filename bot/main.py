@@ -167,7 +167,7 @@ async def main():
 
     rabbit_handler = RabbitHandler(
         app=app,
-        log_chats=settings.log_chats,
+        log_chats=settings.tg_log_chats,
     )
 
     rmq_url = (f"amqp://{settings.rabbit.user}:{settings.rabbit.password}@"
