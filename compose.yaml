@@ -1,7 +1,9 @@
 include:
-  - ./database/db-compose.yaml
+  - database/db-compose.yaml
   - rabbit_mq/rabbit-compose.yaml
   - fluentd/fluentd-compose.yaml
+  - grafana/grafana-compose.yaml
+  - nginx/nginx-compose.yaml
 
 
 services:
@@ -58,7 +60,7 @@ services:
       context: ./admin
       dockerfile: Dockerfile
     container_name: cool_thing_admin
-    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080", "--log-config", "logging.json"]
 #      - ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080", "--root-path", "/admin"]
     restart: unless-stopped
     networks:
@@ -73,7 +75,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "8080:8080"
+      - "8081:8080"
     logging:
       driver: fluentd
       options:
