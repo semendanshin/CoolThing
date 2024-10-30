@@ -1,0 +1,30 @@
+services:
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml
+      - loki-data:/loki
+    networks:
+      - bridge
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    env_file:
+      - .env
+    volumes:
+      - ./provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./dashboards:/var/lib/grafana/dashboards
+    ports:
+      - "3000:3000"
+    networks:
+      - bridge
+
+
+volumes:
+    loki-data:
