@@ -8,3 +8,6 @@ services:
       - "8080:80"
     networks:
         - bridge
+    depends_on:
+      - admin
+      - grafana
