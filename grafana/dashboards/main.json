@@ -288,7 +288,7 @@
         "showLabels": false,
         "showTime": false,
         "sortOrder": "Descending",
-        "wrapLogMessage": false
+        "wrapLogMessage": true
       },
       "pluginVersion": "11.3.0",
       "targets": [
@@ -398,6 +398,6 @@
   "timezone": "browser",
   "title": "Logs",
   "uid": "de2cbwjx13qwwc",
-  "version": 21,
+  "version": 1,
   "weekStart": ""
 }
