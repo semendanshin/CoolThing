@@ -37,6 +37,7 @@ class ScriptsForCampaignRepository(
             created_at=entity.created_at,
             updated_at=entity.updated_at,
             done=entity.done,
+            stopped=entity.stopped,
         )
 
     def model_to_entity(self, model: ScriptForCampaignCreateDTO | ScriptForCampaignModel) -> ScriptForCampaign:

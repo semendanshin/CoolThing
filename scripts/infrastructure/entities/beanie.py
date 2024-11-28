@@ -34,6 +34,7 @@ class ScriptForCampaign(Document):
     updated_at: datetime
 
     done: bool
+    stopped: bool
 
     class Settings:
         name = 'scripts_for_campaigns'

@@ -1,0 +1,16 @@
+.stop-button {
+    border-color: var(--destructive-button-color);
+    border-radius: 4px;
+    border: none;
+    padding: 10px 20px;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 2px;
+    cursor: pointer;
+    transition: filter 0.5s ease;
+}
+
+.stop-button:hover {
+    background-color: var(--destructive-button-color);
+    color: white;
+}

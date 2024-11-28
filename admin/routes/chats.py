@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
 
 from abstractions.usecases import BotsUseCaseInterface
@@ -14,13 +13,12 @@ from dependencies.usecases.messages import get_messages_service
 from domain.dto.chat import UpdateAutoReplyDTO, SendMessageDTO
 from forms.auto_reply_update_from import auto_reply_update_form
 from forms.send_message_form import send_message_form
+from .common import templates
 
 router = APIRouter(
     prefix='/chats',
     tags=['Chats'],
 )
-
-templates = Jinja2Templates(directory='templates')
 
 
 @router.get("")

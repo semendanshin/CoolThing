@@ -1,23 +1,18 @@
-from dataclasses import asdict
 from typing import Any
 
 from fastapi import APIRouter, Depends, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
-from fastapi.exceptions import HTTPException
+from fastapi.responses import HTMLResponse
 
+from abstractions.usecases.BotsUseCaseInterface import BotsUseCaseInterface
 from abstractions.usecases.CampaingsUseCaseInterface import CampaignsUseCaseInterface
 from dependencies.usecases.bots import get_bots_usecase
-from abstractions.usecases.BotsUseCaseInterface import BotsUseCaseInterface
 from dependencies.usecases.campaign import get_campaigns_usecase
-from domain.models import Worker
+from .common import templates
 
 router = APIRouter(
     prefix='/bots',
     tags=['Bots'],
 )
-
-templates = Jinja2Templates(directory='templates')
 
 
 @router.get("")

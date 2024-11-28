@@ -2,7 +2,6 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
 
 from abstractions.usecases.BotsUseCaseInterface import BotsUseCaseInterface
 from abstractions.usecases.CampaingsUseCaseInterface import CampaignsUseCaseInterface
@@ -15,13 +14,12 @@ from forms.bot_connect_form import bot_connect_form
 from forms.bot_create_form import bot_create_form
 from forms.bot_create_full_form import bot_create_full_form
 from forms.bot_update import update_worker_form
+from .common import templates
 
 router = APIRouter(
     prefix='/bot',
     tags=['Bot'],
 )
-
-templates = Jinja2Templates(directory='templates')
 
 
 @router.get("/new")

@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, Field
 from typing import Optional
 
 from uuid import uuid4
@@ -40,3 +40,5 @@ class ScriptForCampaignUpdateDTO:
     script_id: str
     campaign_id: str
     bots_mapping: dict[str, str]
+
+    stopped: Optional[bool]

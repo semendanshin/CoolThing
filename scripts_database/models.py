@@ -29,6 +29,8 @@ class ScriptForCampaign(Document):
     campaign_id: uuid.UUID
     bots_mapping: dict[str, str]
 
+    stopped: bool = Field(default=False)
+
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
 

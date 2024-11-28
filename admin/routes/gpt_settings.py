@@ -1,20 +1,18 @@
 from fastapi import APIRouter, Depends
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
-from starlette.templating import Jinja2Templates
 
 from abstractions.usecases.GPTSettingsUseCaseInterface import GPTSettingsUseCaseInterface
 from dependencies.usecases.gpt_settings import get_gpt_settings_usecase
 from domain.dto.gpt import GPTUpdateDTO, GPTCreateDTO
 from forms.gpt_setting_create import create_gpt_setting_form
 from forms.gpt_setting_update import update_gpt_setting_form
+from .common import templates
 
 router = APIRouter(
     prefix="/gpt",
     tags=["gpt"],
 )
-
-templates = Jinja2Templates(directory='templates')
 
 
 @router.get("")

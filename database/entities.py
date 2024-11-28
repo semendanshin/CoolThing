@@ -32,7 +32,7 @@ class Worker(BaseEntity):
     app_hash: Mapped[str]
     session_string: Mapped[str]
     proxy: Mapped[Optional[str]]
-    campaign_id: Mapped[Optional[str]] = mapped_column(UUID(as_uuid=True), ForeignKey('campaigns.id'))
+    campaign_id: Mapped[Optional[str]] = mapped_column(UUID(as_uuid=True), ForeignKey('campaigns.id'), nullable=True)
     role: Mapped[str] = mapped_column(server_default='parser')
     status: Mapped[str] = mapped_column(server_default='stoped')
     username: Mapped[str]

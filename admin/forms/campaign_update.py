@@ -17,11 +17,18 @@ def update_campaign_form(
     scope: str = Form(...),
     campaign_chat_interval_start: int = Form(default=None),
     campaign_chat_interval_end: int = Form(default=None),
-    campaign_welcome_wait_start: int = Form(default=None),
-    campaign_welcome_wait_end: int = Form(default=None),
+    campaign_welcome_wait_start: Optional[str] = Form(default=None),
+    campaign_welcome_wait_end: Optional[str] = Form(default=None),
     enabled: bool = Form(default=False),
     type: Literal["Native integration", "Monitoring"] = Form(default=None),
 ) -> CampaignUpdateDTO:
+    if campaign_welcome_wait_start and campaign_welcome_wait_end:
+        try:
+            campaign_welcome_wait_start, campaign_welcome_wait_end = map(int, (campaign_welcome_wait_start, campaign_welcome_wait_end))
+        except ValueError:
+            campaign_welcome_wait_start, campaign_welcome_wait_end = None, None
+    else:
+        campaign_welcome_wait_start, campaign_welcome_wait_end = None, None
     return CampaignUpdateDTO(
         id=id,
         name=name,

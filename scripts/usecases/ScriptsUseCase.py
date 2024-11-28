@@ -52,3 +52,7 @@ class ScriptsUseCase(
 
     async def sfc_done(self, sfc_id: str) -> None:
         await self.scripts_for_campaign_repository.sfc_done(sfc_id)
+
+    async def get_sfc_stop_status(self, sfc_id: str) -> bool:
+        sfc = await self.scripts_for_campaign_repository.get(sfc_id)
+        return sfc.stopped

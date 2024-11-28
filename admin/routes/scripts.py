@@ -2,17 +2,17 @@ import json
 
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import RedirectResponse
-from fastapi.templating import Jinja2Templates
 
 from dependencies.usecases.scripts import get_scripts_use_case
 from domain.dto.script import ScriptCreateDTO, ScriptUpdateDTO, ScriptForCampaignCreateDTO
+from .active_scripts import router as asrouter
+from .common import templates
 
 router = APIRouter(
     prefix="/scripts",
     tags=["Scripts"],
 )
-
-templates = Jinja2Templates(directory='templates')
+router.include_router(asrouter)
 
 
 @router.get("")

@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 
 from abstractions.repositories.EventsRepositoryInterface import EventsRepositoryInterface
-from abstractions.usecases.EventsUseCaseInterface import EventsUseCaseInterface
-from domain.events import BaseEvent
+from abstractions.usecases.BrokerEventsUseCaseInterface import BrokerEventsUseCaseInterface
+from domain.events.broker import BaseEvent
 
 
 @dataclass
-class EventsUseCase(EventsUseCaseInterface):
+class BrokerEventsUseCase(BrokerEventsUseCaseInterface):
     event_repository: EventsRepositoryInterface
 
     async def publish(self, event: BaseEvent):

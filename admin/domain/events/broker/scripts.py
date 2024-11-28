@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from domain.events import BaseEvent
+from domain.events.broker import BaseEvent
 
 
 @dataclass(kw_only=True)

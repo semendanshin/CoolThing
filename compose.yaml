@@ -32,28 +32,28 @@ services:
       options:
         fluentd-address: 127.0.0.1:24224
         tag: watchdog
-  bot:
-    build:
-      context: ./bot
-      dockerfile: Dockerfile
-    container_name: cool_thing_bot
-    restart: unless-stopped
-    networks:
-      - bridge
-    volumes:
-      - ./bot/settings.json:/app/settings.json
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    depends_on:
-      fluentd:
-        condition: service_started
-      queue:
-        condition: service_healthy
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: 127.0.0.1:24224
-        tag: bot
+#  bot:
+#    build:
+#      context: ./bot
+#      dockerfile: Dockerfile
+#    container_name: cool_thing_bot
+#    restart: unless-stopped
+#    networks:
+#      - bridge
+#    volumes:
+#      - ./bot/settings.json:/app/settings.json
+#      - /etc/localtime:/etc/localtime:ro
+#      - /etc/timezone:/etc/timezone:ro
+#    depends_on:
+#      fluentd:
+#        condition: service_started
+#      queue:
+#        condition: service_healthy
+#    logging:
+#      driver: fluentd
+#      options:
+#        fluentd-address: 127.0.0.1:24224
+#        tag: bot
   scripts:
     build:
       context: ./scripts
@@ -102,6 +102,32 @@ services:
       options:
         fluentd-address: 127.0.0.1:24224
         tag: admin
+  notifier:
+    build:
+      context: ./notifier
+      dockerfile: Dockerfile
+    container_name: cool_thing_notifier
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+    restart: unless-stopped
+    networks:
+      - bridge
+    volumes:
+      - ./notifier/settings.json:/app/settings.json
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    depends_on:
+      fluentd:
+        condition: service_started
+      db:
+        condition: service_healthy
+    ports:
+      - "8085:8080"
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
+        tag: notifier
+
 
 networks:
   bridge:

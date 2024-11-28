@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 
-from domain.events import BaseEvent
+from domain.events.broker import BaseEvent
 
 
 class EventsRepositoryInterface(ABC):

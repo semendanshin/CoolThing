@@ -25,7 +25,7 @@ def bot_create_full_form(
         proxy=proxy,
         role=role,
         status="active" if status.lower() == "on" else "stopped",
-        campaign_id=campaign_id,
+        campaign_id=campaign_id if campaign_id else None,
         bio=bio,
         chats=[chat for chat in re.split(r"\s+", chats)],
     )

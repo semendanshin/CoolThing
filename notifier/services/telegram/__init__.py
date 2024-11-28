@@ -1,0 +1,1 @@
+from .notificator import TelegramNotificator

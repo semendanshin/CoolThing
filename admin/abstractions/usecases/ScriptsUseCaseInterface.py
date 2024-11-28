@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from domain.dto.script import ScriptUpdateDTO, ScriptCreateDTO, ScriptForCampaignCreateDTO
+from domain.models import ScriptForCampaign
 
 
 class ScriptsUseCaseInterface(ABC):
@@ -26,4 +27,12 @@ class ScriptsUseCaseInterface(ABC):
 
     @abstractmethod
     async def activate_script(self, script: ScriptForCampaignCreateDTO):
+        ...
+
+    @abstractmethod
+    async def stop_script(self, sfc_id: str) -> bool:
+        ...
+
+    @abstractmethod
+    async def get_active_scripts(self) -> list[ScriptForCampaign]:
         ...

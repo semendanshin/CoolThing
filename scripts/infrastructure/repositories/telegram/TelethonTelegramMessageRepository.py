@@ -1,5 +1,7 @@
 import logging
+import re
 from dataclasses import dataclass
+from typing import Optional
 
 from telethon import TelegramClient as Client
 from telethon.sessions import StringSession
@@ -41,8 +43,16 @@ class TelethonTelegramMessagesRepository(
                 f" {type(e).__name__}: {e}"
             )
 
-    async def send_message(self, app_id: str, app_hash: str, session_string: str, chat_id: str, text: str,
-                           reply_to: int) -> int:
+    async def send_message(
+            self,
+            app_id: str,
+            app_hash: str,
+            session_string: str,
+            chat_id: str,
+            text: str,
+            reply_to: int,
+            proxy: str,
+    ) -> int:
         if not app_id or not app_hash or not session_string:
             raise ValueError("app_id, app_hash and session_string are required")
 
@@ -51,9 +61,45 @@ class TelethonTelegramMessagesRepository(
             api_id=int(app_id),
             api_hash=app_hash,
             base_logger=client_logger,
+            proxy=self.parse_proxy(proxy),
         )
 
         await client.connect()
         message = await client.send_message(chat_id, text, reply_to=reply_to)
         await client.disconnect()
         return message.id
+
+    @staticmethod
+    def parse_proxy(proxy_string: Optional[str]) -> Optional[tuple]:
+        if not proxy_string:
+            return
+
+        # Regex to parse the proxy string
+        pattern = re.compile(
+            r"^(?P<protocol>http|socks5|socks4)://(?P<username>.+?):(?P<password>.+?)@(?P<host>.+?):(?P<port>\d+)$"
+        )
+        match = pattern.match(proxy_string)
+        if not match:
+            raise ValueError("Invalid proxy format")
+
+        # Extracting components
+        components = match.groupdict()
+        protocol = components["protocol"]
+        username = components["username"]
+        password = components["password"]
+        host = components["host"]
+        port = int(components["port"])
+
+        # Map protocol to PySocks format
+        proxy_type = {
+            "http": "HTTP",
+            "socks5": "SOCKS5",
+            "socks4": "SOCKS4"
+        }.get(protocol, None)
+
+        if not proxy_type:
+            raise ValueError("Unsupported proxy protocol")
+
+        # PySocks/Telethon-compatible format
+        proxy = (proxy_type, host, port, True, username, password)
+        return proxy

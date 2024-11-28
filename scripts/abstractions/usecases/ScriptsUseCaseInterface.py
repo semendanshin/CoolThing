@@ -44,3 +44,7 @@ class ScriptsUseCaseInterface(ABC):
     @abstractmethod
     async def sfc_done(self, sfc_id: str) -> None:
         ...
+
+    @abstractmethod
+    async def get_sfc_stop_status(self, sfc_id: str) -> bool:
+        ...

@@ -1,9 +1,9 @@
 import uuid
 from datetime import datetime
-from typing import Literal
+from typing import Literal, Optional
 
 from beanie import Document
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class Message(BaseModel):
@@ -31,7 +31,10 @@ class ScriptForCampaign(Document):
     campaign_id: uuid.UUID
     bots_mapping: dict[str, str]
 
-    done: bool
+    # defaults to False on app layer on creating
+    done: Optional[bool] = Field(default=False)
+    stopped: Optional[bool] = Field(default=True)
+
     created_at: datetime = datetime.now()
     updated_at: datetime = datetime.now()
 

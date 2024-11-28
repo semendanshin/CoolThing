@@ -37,6 +37,7 @@ class WorkersUseCase(WorkersUseCaseInterface):
             chat_id=chat_id,
             text=message,
             reply_to=reply_to,
+            proxy=worker.proxy,
         )
         logger.info(f"Message {message} from bot {bot_id} was sent to chat {chat_id} (reply to {reply_to})")
         return message_id

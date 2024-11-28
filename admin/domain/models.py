@@ -95,8 +95,8 @@ class ScriptForCampaign(Model):
     campaign_id: str
     bots_mapping: dict[str, str]
 
-    class Settings:
-        name = 'scripts_for_campaigns'
+    stopped: bool
+    done: bool
 
 
 @dataclass(kw_only=True)

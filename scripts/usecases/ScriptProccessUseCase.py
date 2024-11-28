@@ -93,6 +93,12 @@ class ScriptProcessUseCase:
                 delay = await self._get_random_sleep(campaign.id)
                 logger.info(f"delay: {delay}")
                 await sleep(delay)
+
+                # if stopped by admin
+                if await self.scripts_use_case.get_sfc_stop_status(sfc_id=sfc.id):
+                    logger.info(f"Active script {sfc.id} was stopped (script template {sfc.script_id})")
+                    return
+
                 logger.info(message.text)
                 text_to_send = await self.template_engine.process_template(message.text)
                 worker_id = bots_mapping[str(message.bot_index)].id  # TODO: resolve fucking types

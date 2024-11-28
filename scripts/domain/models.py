@@ -1,5 +1,5 @@
 from abc import ABC
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, Field
 from datetime import datetime
 from typing import Optional, Literal
 from uuid import uuid4
@@ -93,3 +93,4 @@ class ScriptForCampaign(Model):
     bots_mapping: dict[str, str]
 
     done: bool
+    stopped: bool
