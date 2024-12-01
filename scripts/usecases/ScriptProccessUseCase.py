@@ -113,7 +113,8 @@ class ScriptProcessUseCase:
                     last_message_id = new_message_id
                 except Exception as e:  # ChatWriteForbiddenError
                     logger.error(
-                        f"There is an error sending message {text_to_send} from bot {worker_id} to {chat}: {type(e).__name__}: {e}"
+                        f"There is an error sending message {text_to_send} from bot {worker_id} to {chat}: {type(e).__name__}: {e}",
+                        exc_info=True
                     )
                     writable = False
                     break

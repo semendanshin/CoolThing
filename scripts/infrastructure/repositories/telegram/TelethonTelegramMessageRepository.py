@@ -63,10 +63,14 @@ class TelethonTelegramMessagesRepository(
             base_logger=client_logger,
             proxy=self.parse_proxy(proxy),
         )
+        logger.info("Client instantiated")
 
         await client.connect()
+        logger.info("Client connected")
         message = await client.send_message(chat_id, text, reply_to=reply_to)
+        logger.info('Message sent')
         await client.disconnect()
+        logger.info("Client disconnected")
         return message.id
 
     @staticmethod

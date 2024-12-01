@@ -30,6 +30,7 @@ class WorkersUseCase(WorkersUseCaseInterface):
     async def send_message(self, chat_id: str, bot_id: str, message: str, reply_to: int) -> int:
         logger.info(f'Sending message "{message}" from bot {bot_id} to chat {chat_id} (reply to {reply_to})')
         worker = await self.workers.get_by_username(username=bot_id)
+        logger.info(f'Got worker info {worker.id}')
         message_id = await self.messenger.send_message(
             app_id=worker.app_id,
             app_hash=worker.app_hash,
