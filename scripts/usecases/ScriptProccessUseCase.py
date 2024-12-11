@@ -51,7 +51,7 @@ class ScriptProcessUseCase:
                 continue
 
             res.extend(bot.chats)
-        target_chats = list(set(res))
+        # target_chats = list(set(res))  # TODO: for test, uncomment later
         # error = False
         # for bot in bots:
         #     for chat in target_chats:
@@ -64,7 +64,7 @@ class ScriptProcessUseCase:
         #         break
 
         # logger.info(f"Target chats: {target_chats}")
-        return target_chats
+        return res
 
     async def process_script(self, sfc: ScriptForCampaignModel):
         logger.info(f"Processing script {sfc.id}")
