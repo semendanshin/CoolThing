@@ -88,7 +88,7 @@ services:
       - bridge
     volumes:
 #      - ./scripts_watcher/settings.json:/app/settings.json
-      - /etc/localtime:/etc/localtime:ro
+#      - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     depends_on:
       fluentd:

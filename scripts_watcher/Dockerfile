@@ -25,7 +25,6 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 USER appuser
 
-
 COPY . .
 
 ENTRYPOINT ["python", "main.py"]
