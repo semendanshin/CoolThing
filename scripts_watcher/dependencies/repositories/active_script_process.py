@@ -1,0 +1,6 @@
+from abstractions.repositories.active_script_process import ActiveScriptProcessRepositoryInterface
+from infrastructure.repositories.beanie.active_script_process import ActiveScriptProcessRepository
+
+
+def get_active_script_process_repository() -> ActiveScriptProcessRepositoryInterface:
+    return ActiveScriptProcessRepository()

@@ -1,0 +1,1 @@
+mongosh --authenticationDatabase admin -u user -p pass

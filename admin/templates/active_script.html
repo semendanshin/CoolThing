@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% block title %}Active Script Details{% endblock %}
+
+{% block head %}
+    <link href="/static/floating-button.css" rel="stylesheet">
+    <link href="/static/common.css" rel="stylesheet">
+    <link href="/static/custom-select.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <h1>Active Script: {{ process_id }}</h1>
+
+    <div class="horizontal-container">
+        <!-- Refresh Interval Dropdown -->
+        <div class="custom-select-wrapper">
+            <div class="custom-select" id="intervalSelect" tabindex="0">
+                <span>Fetch Interval: 5s</span>
+                <span>▼</span>
+            </div>
+            <div class="custom-select-options" id="intervalOptions">
+                <div class="custom-select-option active" data-value="5000">5 seconds</div>
+                <div class="custom-select-option" data-value="10000">10 seconds</div>
+                <div class="custom-select-option" data-value="15000">15 seconds</div>
+                <div class="custom-select-option" data-value="30000">30 seconds</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="scriptStatus" class="overall-status-container">
+        <!-- Overall script status dynamically injected here -->
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+        <!-- Chat Details Rendered Dynamically -->
+    </div>
+
+
+    <!-- Floating Buttons -->
+    <a class="floating-button" onclick="fetchScriptDetails()">Refresh Now</a>
+    <a class="floating-button stop-button" onclick="confirmStop()">Stop Script</a>
+
+    <!-- Stop Confirmation Popup -->
+    <div id="stopPopup" class="popup hidden">
+        <div class="popup-content">
+            <p>Are you sure you want to stop this script?</p>
+            <div class="horizontal-container">
+                <button class="button" onclick="stopScript()">Yes</button>
+                <button class="button" onclick="closePopup()">No</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        let fetchInterval = 5000;
+        let fetchTimer;
+
+        // Dropdown Logic
+        document.querySelector("#intervalSelect").addEventListener("click", () => {
+            document.getElementById("intervalOptions").classList.toggle("active");
+        });
+
+        document.querySelectorAll(".custom-select-option").forEach(option => {
+            option.addEventListener("click", (e) => {
+                document.querySelectorAll(".custom-select-option").forEach(o => o.classList.remove("active"));
+                e.target.classList.add("active");
+                fetchInterval = parseInt(e.target.dataset.value);
+                document.querySelector("#intervalSelect span:first-child").innerText = `Fetch Interval: ${e.target.innerText}`;
+                document.getElementById("intervalOptions").classList.remove("active");
+                resetFetchTimer();
+            });
+        });
+
+        // Fetch Script Details
+        async function fetchScriptDetails() {
+            const container = document.getElementById("chatContainer");
+            const scriptStatusElement = document.getElementById("scriptStatus");
+
+            // Store the open details state
+            const openChats = Array.from(container.querySelectorAll("details[open]"))
+                .map(details => details.dataset.chatLink);
+
+            const response = await fetch("/scripts/active/{{ process.id }}/entity");
+            const data = await response.json();
+
+            container.innerHTML = ""; // Clear previous content
+
+            let overallStatus = "Success"; // Default overall status
+
+            data.process.forEach(chat => {
+                const totalMessages = chat.messages.length;
+                const sentMessages = chat.messages.filter(msg => msg.sent_at).length;
+                const pendingMessages = totalMessages - sentMessages;
+
+                // Determine chat status
+                let chatStatus = "Success";
+                if (chat.is_successful === false) {
+                    chatStatus = "Failed";
+                    overallStatus = "Failed"; // If any chat fails, script fails
+                } else if (chat.is_successful === null) {
+                    chatStatus = "In Progress";
+                    if (overallStatus === "Success") overallStatus = "In Progress"; // Lower overall status
+                }
+
+                // Create chat container
+                const details = document.createElement("details");
+                details.dataset.chatLink = chat.chat_link;
+                if (openChats.includes(chat.chat_link)) {
+                    details.open = true;
+                }
+
+                const summary = document.createElement("summary");
+                summary.innerHTML = `
+            <strong>Chat:</strong> <a href="${chat.chat_link}" target="_blank">${chat.chat_link}</a>
+            <span class="badge ${getStatusClass(chatStatus)}">${chatStatus}</span>
+            <small class="metadata">
+                Total Messages: ${totalMessages} | Sent: ${sentMessages} | Pending: ${pendingMessages}
+            </small>
+        `;
+                details.appendChild(summary);
+
+                const messages = document.createElement("ul");
+                chat.messages.forEach(message => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                <span>${message.text}</span>
+                ${message.sent_at ? `<span class="badge success">Sent at ${formatDate(message.sent_at)}</span>` :
+                        `<span class="badge pending">${message.will_be_sent ? "Pending" : "Skipped"}</span>`}
+            `;
+                    messages.appendChild(li);
+                });
+
+                details.appendChild(messages);
+                container.appendChild(details);
+            });
+
+            // Update overall script status
+            scriptStatusElement.innerHTML = `
+        Overall Status: <span class="badge large ${getStatusClass(overallStatus)}">${overallStatus}</span>
+    `;
+        }
+
+        function getStatusClass(status) {
+            switch (status) {
+                case "Success":
+                    return "success";
+                case "Failed":
+                    return "failed";
+                case "In Progress":
+                    return "in-progress";
+                default:
+                    return "pending";
+            }
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleString();
+        }
+
+
+        // Helper Functions
+        function getStatusText(isSuccessful) {
+            if (isSuccessful === null) return "In Progress";
+            return isSuccessful ? "Success" : "Failed";
+        }
+
+
+        // Timer Logic
+        function resetFetchTimer() {
+            clearInterval(fetchTimer);
+            fetchTimer = setInterval(fetchScriptDetails, fetchInterval);
+            fetchScriptDetails();
+        }
+
+        // Stop Confirmation Popup
+        function confirmStop() {
+            document.getElementById("stopPopup").classList.remove("hidden");
+        }
+
+        function closePopup() {
+            document.getElementById("stopPopup").classList.add("hidden");
+        }
+
+        async function stopScript() {
+            closePopup();
+            const response = await fetch("/scripts/active/{{ process.sfc_id }}/stop", {method: "POST"});
+            if (response.ok) {
+                alert("Script stopped successfully.");
+                fetchScriptDetails();
+            } else {
+                alert("Failed to stop the script.");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            resetFetchTimer();
+        });
+    </script>
+{% endblock %}

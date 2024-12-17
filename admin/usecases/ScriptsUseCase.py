@@ -1,23 +1,35 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from abstractions.repositories.ScriptsForCampaignRepositoryInterface import ScriptsForCampaignRepositoryInterface
 from abstractions.repositories.ScriptsRepositoryInterface import ScriptsRepositoryInterface
+from abstractions.repositories.active_script_process import ActiveScriptProcessRepositoryInterface
 from abstractions.usecases.BrokerEventsUseCaseInterface import BrokerEventsUseCaseInterface
 from abstractions.usecases.ScriptsUseCaseInterface import ScriptsUseCaseInterface
 from domain.dto.script import ScriptCreateDTO, ScriptUpdateDTO, ScriptForCampaignCreateDTO
 from domain.events.broker.scripts import NewActiveScript
-from domain.models import ScriptForCampaign
+from domain.models import ScriptForCampaign, ActiveScriptProcess
 
 
 @dataclass
 class ScriptsUseCase(
     ScriptsUseCaseInterface,
 ):
+    async def get_sfc(self, sfc_id: str) -> ScriptForCampaign:
+        return await self.scripts_for_campaign_repository.get(sfc_id)
+
+    async def get_active_script(self, process_id: str) -> ActiveScriptProcess:
+        return await self.script_process_repository.get(obj_id=process_id)
+
+    async def get_active_script_by_sfc(self, sfc_id: str) -> ActiveScriptProcess:
+        return await self.script_process_repository.get_by_sfc(sfc_id)
+
     async def get_active_scripts(self) -> list[ScriptForCampaign]:
         return await self.scripts_for_campaign_repository.get_all()
 
     scripts_repository: ScriptsRepositoryInterface
     scripts_for_campaign_repository: ScriptsForCampaignRepositoryInterface
+    script_process_repository: ActiveScriptProcessRepositoryInterface
     events_use_case: BrokerEventsUseCaseInterface
 
     async def get_scripts(self):

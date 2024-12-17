@@ -71,11 +71,33 @@ services:
         condition: service_started
       queue:
         condition: service_healthy
+      scripts-watcher:
+        condition: service_started
     logging:
       driver: fluentd
       options:
         fluentd-address: 127.0.0.1:24224
         tag: scripts
+  scripts-watcher:
+    build:
+      context: ./scripts_watcher
+      dockerfile: Dockerfile
+    container_name: cool_thing_scripts_watcher
+    restart: unless-stopped
+    networks:
+      - bridge
+    volumes:
+#      - ./scripts_watcher/settings.json:/app/settings.json
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    depends_on:
+      fluentd:
+        condition: service_started
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
+        tag: scripts-watcher
   admin:
     build:
       context: ./admin

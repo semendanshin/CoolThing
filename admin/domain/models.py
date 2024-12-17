@@ -2,7 +2,9 @@ from abc import ABC
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional, Literal
-from uuid import uuid4, UUID
+from uuid import uuid4
+
+from pydantic import BaseModel, ConfigDict
 
 
 @dataclass
@@ -97,6 +99,35 @@ class ScriptForCampaign(Model):
 
     stopped: bool
     done: bool
+
+
+class MessageProcess(BaseModel):
+    id: str
+    text: str
+    bot_id: str
+
+    sent_at: Optional[datetime] = None
+    will_be_sent: bool = True
+
+
+class ChatProcess(BaseModel):
+    chat_link: str
+    messages: list[MessageProcess] = None
+
+    processed_at: Optional[datetime] = None
+    is_successful: Optional[bool] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+@dataclass(kw_only=True)
+class ActiveScriptProcess(Model):
+    sfc_id: str
+    target_chats: Optional[list[str]] = None
+    process: Optional[list[ChatProcess]]
+
+    processed_at: Optional[datetime] = None
+    is_successful: Optional[bool] = None
 
 
 @dataclass(kw_only=True)

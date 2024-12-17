@@ -16,6 +16,7 @@ from usecases.TemplateEngine import TemplateEngine
 from usecases.WorkersUseCase import WorkersUseCase
 from usecases.ScriptProccessUseCase import ScriptProcessUseCase
 from usecases.ScriptsUseCase import ScriptsUseCase
+from usecases.watcher import Watcher
 
 logging.basicConfig(
     level=logging.INFO,
@@ -70,11 +71,21 @@ async def main():
 
     )
 
+    watcher = Watcher(
+        base_url=settings.watcher.base_url,
+        new_activation_endpoint=settings.watcher.new_activation_endpoint,
+        target_chats_endpoint=settings.watcher.target_chats_endpoint,
+        script_status_endpoint=settings.watcher.script_status_endpoint,
+        chat_status_endpoint=settings.watcher.chat_status_endpoint,
+        message_status_endpoint=settings.watcher.message_status_endpoint,
+    )
+
     script_process_use_case = ScriptProcessUseCase(
         scripts_use_case=scripts_use_case,
         workers_use_case=workers_use_case,
         campaign_use_case=campaigns_use_case,
         template_engine=template_engine,
+        watcher=watcher,
     )
 
     listener = RabbitListener(

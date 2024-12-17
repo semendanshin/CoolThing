@@ -83,7 +83,7 @@
     </thead>
     <tbody>
         {% for active_script in active_scripts %}
-        <tr data-sfc-id="{{ active_script.id }}"
+        <tr data-sfc-id="{{ active_script.id }}" onclick="window.location = '/scripts/active/{{ active_script.id }}'"
             data-script-id="{{ active_script.script_id }}"
             data-campaign-id="{{ active_script.campaign_id }}"
             data-script-name="{{ scripts_dict[active_script.script_id] }}"

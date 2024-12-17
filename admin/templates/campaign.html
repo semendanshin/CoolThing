@@ -213,7 +213,8 @@
             });
 
             let scriptBotsCount, bots;
-            document.querySelector(".activate-script button").addEventListener("click", async function () {
+            document.querySelector(".activate-script button").addEventListener("click", async function (event) {
+                event.preventDefault();
                 let bots_mapping = {};
                 let usernamesSpans = document.querySelectorAll("#bot-selected-option");
                 console.log(usernamesSpans, scriptBotsCount);

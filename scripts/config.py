@@ -1,6 +1,6 @@
 from pathlib import Path
-from urllib.parse import quote_plus
 from typing import Type, Tuple
+from urllib.parse import quote_plus
 
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict, PydanticBaseSettingsSource, JsonConfigSettingsSource
@@ -55,12 +55,22 @@ class DBSettings(BaseSettings):
         return f"postgresql+asyncpg://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/{self.name}"
 
 
+class WatcherSettings(BaseSettings):
+    base_url: str
+    new_activation_endpoint: str
+    target_chats_endpoint: str
+    script_status_endpoint: str
+    chat_status_endpoint: str
+    message_status_endpoint: str
+
+
 class Settings(BaseSettings):
     scripts_db: ScriptsDBSettings
     # delay: DelaySettings
     # scripts: ScriptsSettings
     mq: MQSettings
     db: DBSettings
+    watcher: WatcherSettings
 
     debug: bool = True
 
@@ -80,6 +90,5 @@ class Settings(BaseSettings):
             file_secret_settings: PydanticBaseSettingsSource,
     ) -> Tuple[PydanticBaseSettingsSource, ...]:
         return (JsonConfigSettingsSource(settings_cls),)
-
 
 settings = Settings()

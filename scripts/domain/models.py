@@ -1,5 +1,5 @@
 from abc import ABC
-from dataclasses import dataclass, field, Field
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional, Literal
 from uuid import uuid4
@@ -7,7 +7,7 @@ from uuid import uuid4
 
 @dataclass
 class Model(ABC):
-    id: str = field(default_factory=uuid4)
+    id: str = field(default_factory=lambda: str(uuid4()))
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
 
@@ -94,3 +94,32 @@ class ScriptForCampaign(Model):
 
     done: bool
     stopped: bool
+
+
+@dataclass(kw_only=True)
+class MessageProcess:
+    id: str
+    text: str
+    bot_id: str
+
+    sent_at: Optional[datetime] = None
+    will_be_sent: bool = True
+
+
+@dataclass(kw_only=True)
+class ChatProcess:
+    chat_link: str
+    messages: list[MessageProcess]
+
+    processed_at: Optional[datetime] = None
+    is_successful: Optional[bool] = None
+
+
+@dataclass(kw_only=True)
+class ActiveScriptProcess(Model):
+    sfc_id: str
+    target_chats: list[str]
+    process: list[ChatProcess]
+
+    processed_at: Optional[datetime] = None
+    is_successful: Optional[bool] = None
