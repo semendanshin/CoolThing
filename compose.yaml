@@ -90,6 +90,8 @@ services:
 #      - ./scripts_watcher/settings.json:/app/settings.json
 #      - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    environment:
+      TZ: "Europe/Moscow"
     depends_on:
       fluentd:
         condition: service_started
