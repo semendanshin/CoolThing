@@ -96,8 +96,21 @@
                 // Determine chat status
                 let chatStatus = "Success";
                 if (chat.is_successful === false) {
-                    chatStatus = "Failed";
-                    overallStatus = "Failed"; // If any chat fails, script fails
+                    if ((
+                        (chat) => {
+                            let hasFailedMessage = false;
+                            for (const message in chat.messages) {
+                                if (!message.will_be_sent) {
+                                    hasFailedMessage = true;
+                                    break;
+                                }
+                            }
+                            return hasFailedMessage;
+                        }
+                    )()) {
+                        chatStatus = "Failed";
+                        overallStatus = "Failed"; // If any chat fails, script fails
+                    }
                 } else if (chat.is_successful === null) {
                     chatStatus = "In Progress";
                     if (overallStatus === "Success") overallStatus = "In Progress"; // Lower overall status
