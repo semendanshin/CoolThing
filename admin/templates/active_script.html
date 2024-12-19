@@ -92,7 +92,7 @@
                 const totalMessages = chat.messages.length;
                 const sentMessages = chat.messages.filter(msg => msg.sent_at).length;
                 const failedMessages = chat.messages.filter(msg => !msg.will_be_sent).length;
-                const pendingMessages = totalMessages - (sentMessages - failedMessages);
+                const pendingMessages = totalMessages - (sentMessages + failedMessages);
 
                 // Determine chat status
                 const getChatStatus = () => {
@@ -127,7 +127,7 @@
             <strong>Chat:</strong> <a href="${chat.chat_link}" target="_blank">${chat.chat_link}</a>
             <span class="badge ${getStatusClass(chatStatus)}">${chatStatus}</span>
             <small class="metadata">
-                Total Messages: ${totalMessages} | Sent: ${sentMessages} | Pending: ${pendingMessages}
+                Total Messages: ${totalMessages} | Sent: ${sentMessages} | Failed: ${failedMessages} | Pending: ${pendingMessages}
             </small>
         `;
                 details.appendChild(summary);
