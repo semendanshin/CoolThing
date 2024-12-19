@@ -91,25 +91,21 @@
             data.process.forEach(chat => {
                 const totalMessages = chat.messages.length;
                 const sentMessages = chat.messages.filter(msg => msg.sent_at).length;
-                const pendingMessages = totalMessages - sentMessages;
+                const failedMessages = chat.messages.filter(msg => !msg.will_be_sent).length;
+                const pendingMessages = totalMessages - (sentMessages - failedMessages);
 
                 // Determine chat status
-                const getChatStatus = (chat) => {
-                    let hasFailedMessage = false;
-                    let hasPendingMessage = false;
-                    for (const message in chat.messages) {
-                        if (!message.will_be_sent) {
-                            hasFailedMessage = true;
-                            break;
-                        }
-                        if (!message.sent_at) {
-                            hasPendingMessage = true;
-                            break
-                        }
+                const getChatStatus = () => {
+                    if (sentMessages === totalMessages) {
+                        return "Success";
                     }
-                    return hasFailedMessage ? "Failed" : (hasPendingMessage ? "In Progress" : "Success");
+                    if (failedMessages) {
+                        return "Failed";
+                    }
+                    return "In Progress";
                 };
-                const chatStatus = getChatStatus(chat);
+
+                const chatStatus = getChatStatus();
                 switch (chatStatus) {
                     case 'In Progress':
                         overallStatus = 'In Progress';
