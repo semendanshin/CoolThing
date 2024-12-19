@@ -38,7 +38,7 @@ class Watcher(WatcherInterface):
 
             process_id = response.content.decode()
 
-            print(process_id)
+            # print(process_id)
             return process_id
 
     async def _report(self, report: BaseModel, endpoint: str) -> dict:

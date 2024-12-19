@@ -123,10 +123,11 @@
                 const messages = document.createElement("ul");
                 chat.messages.forEach(message => {
                     const li = document.createElement("li");
+                    const status = message.will_be_sent ? "Pending" : "Failed";
                     li.innerHTML = `
                 <span>${message.text}</span>
                 ${message.sent_at ? `<span class="badge success">Sent at ${formatDate(message.sent_at)}</span>` :
-                        `<span class="badge pending">${message.will_be_sent ? "Pending" : "Skipped"}</span>`}
+                        `<span class="badge ${status.toLowerCase()}">${status}</span>`}
             `;
                     messages.appendChild(li);
                 });
