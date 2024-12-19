@@ -94,26 +94,29 @@
                 const pendingMessages = totalMessages - sentMessages;
 
                 // Determine chat status
-                let chatStatus = "Success";
-                if (chat.is_successful === false) {
-                    if ((
-                        (chat) => {
-                            let hasFailedMessage = false;
-                            for (const message in chat.messages) {
-                                if (!message.will_be_sent) {
-                                    hasFailedMessage = true;
-                                    break;
-                                }
-                            }
-                            return hasFailedMessage;
+                const getChatStatus = (chat) => {
+                    let hasFailedMessage = false;
+                    let hasPendingMessage = false;
+                    for (const message in chat.messages) {
+                        if (!message.will_be_sent) {
+                            hasFailedMessage = true;
+                            break;
                         }
-                    )(chat)) {
-                        chatStatus = "Failed";
-                        overallStatus = "Failed"; // If any chat fails, script fails
+                        if (!message.sent_at) {
+                            hasPendingMessage = true;
+                            break
+                        }
                     }
-                } else if (chat.is_successful === null) {
-                    chatStatus = "In Progress";
-                    if (overallStatus === "Success") overallStatus = "In Progress"; // Lower overall status
+                    return hasFailedMessage ? "Failed" : (hasPendingMessage ? "In Progress" : "Success");
+                };
+                const chatStatus = getChatStatus(chat);
+                switch (chatStatus) {
+                    case 'In Progress':
+                        overallStatus = 'In Progress';
+                        break
+                    case 'Failed':
+                        overallStatus = 'Failed';
+                        break
                 }
 
                 // Create chat container
