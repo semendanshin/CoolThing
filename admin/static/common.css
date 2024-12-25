@@ -99,6 +99,10 @@
     background-color: #17a2b8; /* Cyan */
 }
 
+.badge.partial {
+    background-color: #df7620;
+}
+
 .metadata {
     display: block;
     font-size: 12px;
@@ -123,19 +127,6 @@
 .badge.large {
     font-size: 16px;
     padding: 10px 15px;
-}
-
-/* Badge Colors */
-.badge.success {
-    background-color: #28a745;
-}
-
-.badge.failed {
-    background-color: #dc3545;
-}
-
-.badge.in-progress {
-    background-color: #17a2b8;
 }
 
 .chat-container {

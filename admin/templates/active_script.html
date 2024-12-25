@@ -99,8 +99,11 @@
                     if (sentMessages === totalMessages) {
                         return "Success";
                     }
-                    if (failedMessages) {
+                    if (failedMessages === totalMessages) {
                         return "Failed";
+                    }
+                    if (failedMessages) {
+                        return "Partial"
                     }
                     return "In Progress";
                 };
@@ -110,7 +113,7 @@
                     case 'In Progress':
                         overallStatus = 'In Progress';
                         break
-                    case 'Failed':
+                    case 'Failed' || 'Partial':
                         overallStatus = 'Failed';
                         break
                 }
@@ -160,6 +163,8 @@
                     return "success";
                 case "Failed":
                     return "failed";
+                case 'Partial':
+                    return 'partial';
                 case "In Progress":
                     return "in-progress";
                 default:
