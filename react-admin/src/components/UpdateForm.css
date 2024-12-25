@@ -1,0 +1,106 @@
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--secondary-color);
+    border-radius: var(--field-border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.form-container p {
+    margin-top: 5px;
+    text-align: left;
+}
+
+.form-header-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+}
+
+.form-header {
+    flex: 1 1 auto;
+}
+
+.row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--field-margin);
+    padding: 10px;
+}
+
+.splitted-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.splitted-row-element {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Field Label Styles */
+.field-label {
+    font-weight: var(--label-font-weight);
+    margin-bottom: 5px;
+}
+
+.sub-field-label {
+    font-weight: normal;
+    font-size: 14px;
+}
+
+
+.required::after {
+    content: " *";
+    color: red;
+}
+
+.submit-button {
+    background-color: var(--submit-button-background);
+    color: var(--submit-button-color);
+    border: none;
+    border-radius: var(--field-border-radius);
+    padding: var(--field-padding);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: var(--submit-button-hover-background);
+}
+:root {
+    --delete-button-size: 20px;
+}
+
+.delete-button {
+    width: var(--delete-button-size);
+    height: var(--delete-button-size);
+    border: none;
+    padding: 10px 20px;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 2px;
+    cursor: pointer;
+    transition: filter 0.5s ease;
+    filter: invert(14%) sepia(15%) saturate(2389%) hue-rotate(221deg) brightness(92%) contrast(83%);
+}
+
+.delete-button:hover {
+    filter: invert(13%) sepia(68%) saturate(4261%) hue-rotate(352deg) brightness(92%) contrast(119%);
+}
+
+.delete-button-svg {
+    width: var(--delete-button-size);
+    height: var(--delete-button-size);
+}
+
+.delete-button-container {
+    flex: 0 1 var(--delete-button-size);
+    padding: 10px;
+}

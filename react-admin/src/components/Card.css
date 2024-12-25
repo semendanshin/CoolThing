@@ -1,0 +1,60 @@
+html {
+    --card-background: var(--secondary-color);
+    --card-padding: 20px;
+    --card-margin: 10px;
+    --card-border-radius: 10px;
+    --card-box-shadow: var(--box-shadow);
+    --card-hover-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    --card-min-width: 300px;
+    --card-max-width: 320px;
+    --title-color: var(--primary-color);
+}
+
+/* Campaign Card Styling */
+.item-card {
+    background-color: var(--card-background);
+    padding: var(--campaign-card-padding);
+    margin: var(--campaign-card-margin);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-box-shadow);
+    width: 100%;
+    min-width: var(--card-max-width);
+    max-width: var(--card-max-width);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.item-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--card-hover-box-shadow);
+}
+
+.item-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--title-color);
+}
+
+.item-card p {
+    margin-bottom: 10px;
+    color: var(--text-color);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
+    word-wrap: break-word;
+}
+
+.item-card p:last-child {
+    margin-bottom: 0;
+}
+
+/* Responsive Design for Campaign Cards */
+@media (max-width: 768px) {
+    .item-card {
+        width: 100%;
+        margin: 10px 0;
+    }
+}

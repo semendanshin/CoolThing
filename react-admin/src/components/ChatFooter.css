@@ -1,0 +1,45 @@
+.input-area {
+    display: flex;
+    align-items: stretch;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: var(--tertiary-color);
+    border-radius: var(--border-radius);
+}
+
+.input-area label {
+    display: flex;
+    flex: 1;
+}
+
+.input-area input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: var(--border-radius);
+    margin-right: 10px;
+    background-color: var(--input-background);
+    color: var(--text-color);
+}
+
+.input-area button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--submit-button-background);
+    color: var(--secondary-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Button Hover Effect If Button Is Not Disabled */
+.input-area button:hover:not(:disabled) {
+    background-color: var(--submit-button-hover-background);
+    box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+.input-area button:disabled,
+button[disabled] {
+    background-color: grey;
+    cursor: not-allowed;
+}

@@ -1,0 +1,5 @@
+textarea.input-field {
+    resize: vertical; /* Allows vertical resizing only */
+    overflow-y: auto; /* Adds vertical scrollbar when needed */
+    word-wrap: break-word
+}

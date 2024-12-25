@@ -1,0 +1,16 @@
+html {
+    --campaign-card-margin: 10px;
+    --campaign-card-padding: 20px;
+}
+
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--campaign-card-margin);
+    padding: var(--campaign-card-padding);
+}
+
+.cards-container a {
+    text-decoration: none;
+}

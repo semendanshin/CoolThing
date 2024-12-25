@@ -1,0 +1,51 @@
+.chat-header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 0 10px 0;
+}
+
+.header-text {
+    font-size: 1.2em;
+}
+
+.header-auto-reply-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Добавьте стили для кнопки "Назад" */
+.back-button {
+    text-decoration: none;
+    display: none;
+    align-items: center;
+    padding: 5px 25px;
+    justify-content: center;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.back-button i {
+    font-size: 1.2em;
+}
+
+
+.back-button:hover {
+    background-color: var(--primary-color);
+    box-shadow: var(--box-shadow);
+}
+
+@media (max-width: 768px) {
+    .header-hide {
+        display: none;
+    }
+
+    .back-button {
+        display: flex;
+    }
+}

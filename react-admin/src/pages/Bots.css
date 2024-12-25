@@ -1,0 +1,14 @@
+html {
+    --status-up-color: #4CAF50;
+    --status-down-color: #F44336;
+}
+
+.status-up {
+    color: var(--status-up-color);
+    font-weight: bold;
+}
+
+.status-down {
+    color: var(--status-down-color);
+    font-weight: bold;
+}

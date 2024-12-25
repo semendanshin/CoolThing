@@ -1,0 +1,72 @@
+html {
+    --status-online: green;
+    --status-offline: red;
+}
+
+.chat-item {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: var(--input-background);
+    box-shadow: var(--box-shadow);
+    padding: 10px;
+    border-radius: 5px;
+    color: var(--text-color);
+    position: relative;
+    transition: background-color 0.3s ease;
+}
+
+.chat-item:hover {
+    background-color: var(--field-background);
+}
+
+.chat-item-content {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 25px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-grow: 1;
+}
+
+.chat-item-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.chat-item-message {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.chat-item .bot-name {
+    font-weight: bold;
+}
+
+.chat-item .user-name {
+    margin-left: 10px;
+}
+
+.chat-item .last-message {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.chat-item .status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 10px;
+}
+
+.chat-item .status.online {
+    background-color: var(--status-online);
+}
+
+.chat-item .status.offline {
+    background-color: var(--status-offline);
+}

@@ -1,0 +1,9 @@
+
+
+.content {
+    padding: var(--padding);
+    padding-top: calc(var(--nav-bar-height) + var(--padding));
+    height: 100dvh;
+    width: min(100%, 1800px);
+    margin: 0 auto;
+}
