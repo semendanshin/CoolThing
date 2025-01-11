@@ -42,7 +42,7 @@ class BotBannedNotification(Notification):
 class ChatSkippedNotification(Notification):
     type: NotificationType = Field(default=NotificationType.CHAT_SKIPPED)
 
-    chat_id: int
+    chat_id: str
     sfc_id: UUID
     on_message: str
     reason: str
