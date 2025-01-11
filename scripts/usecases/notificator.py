@@ -60,7 +60,7 @@ class Notificator(NotificatorInterface):
     async def chat_skipped(self, sfc_id: str, chat_link: str, on_message: str = None, reason: str = None) -> None:
         report = ChatSkippedNotification(
             sfc_id=sfc_id,
-            chat_link=chat_link,
+            chat_id=chat_link,
             on_message=on_message,
             reason=reason,
             created_by=self.service,
