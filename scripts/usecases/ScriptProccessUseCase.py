@@ -144,10 +144,17 @@ class ScriptProcessUseCase:
                 await self.report_successful_chat(chat_link=chat)
             else:
                 logger.info(f"Skipped chat {chat}")
+                reason_exc = sys.exc_info().__class__
+                if isinstance(reason_exc, tuple):
+                    reason = str(reason_exc[0])
+                elif isinstance(reason_exc, type):
+                    reason = reason_exc.__name__
+                else:
+                    reason = "Unknown"
                 await self.report_failed_chat(
                     chat_link=chat,
                     on_message=message.text,
-                    reason=' '.join(map(str, sys.exc_info().__class__)),
+                    reason=reason,
                 )
 
         logger.info(f"All messages from script {script_id} are sent to all chats")
