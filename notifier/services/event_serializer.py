@@ -17,7 +17,7 @@ class EventSerializer(EventSerializerInterface):
         time_format = "%H:%M:%S %d.%m.%Y"
 
         def strftime(dt: datetime) -> str:
-            return time.strftime(time_format)
+            return dt.time().strftime(time_format)
 
         match event.type:
             case EventType.BOT_BANNED:

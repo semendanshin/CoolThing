@@ -95,19 +95,22 @@ def event_factory(data: dict) -> Event:
 
     match event_type:
         case EventType.BOT_BANNED.value:
-            print('ban')
+            logger.info('ban')
             return BotBannedEvent(**data)
         case EventType.CHAT_SKIPPED.value:
-            print('skip')
+            logger.info('skip')
             return ChatSkippedEvent(**data)
         case EventType.SCRIPT_CRASHED.value:
-            print('script crash')
+            logger.info('script crash')
             return ScriptCrashEvent(**data)
         case EventType.SERVICE_CRASHED.value:
+            logger.info('service crashed')
             return ServiceCrashedEvent(**data)
         case EventType.SCRIPT_STARTED.value:
+            logger.info('script started')
             return ScriptStartedEvent(**data)
         case EventType.SCRIPT_FINISHED.value:
+            logger.info('script finished')
             return ScriptFinishedEvent(**data)
         case _:
             logger.warning(f'unknown event type: {data}')

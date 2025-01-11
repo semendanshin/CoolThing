@@ -1,21 +1,24 @@
 import logging
+from uuid import UUID
 
 from aiormq import AMQPConnectionError
 
 from config import settings
+from domain.reports.notifier import Service
 from infrastructure.mq import RabbitListener
 from infrastructure.repositories.beanie import init_db
-from infrastructure.repositories.sqlalchemy import session_maker
 from infrastructure.repositories.beanie.ScriptsForCampaignRepository import ScriptsForCampaignRepository
 from infrastructure.repositories.beanie.ScriptsRepository import ScriptsRepository
+from infrastructure.repositories.sqlalchemy import session_maker
 from infrastructure.repositories.sqlalchemy.CampaignRepository import CampaignRepository
 from infrastructure.repositories.sqlalchemy.WorkersRepository import SQLAlchemyWorkerRepository
 from infrastructure.repositories.telegram.TelethonTelegramMessageRepository import TelethonTelegramMessagesRepository
 from usecases.CampaignsUseCase import CampaignsUseCase
-from usecases.TemplateEngine import TemplateEngine
-from usecases.WorkersUseCase import WorkersUseCase
 from usecases.ScriptProccessUseCase import ScriptProcessUseCase
 from usecases.ScriptsUseCase import ScriptsUseCase
+from usecases.TemplateEngine import TemplateEngine
+from usecases.WorkersUseCase import WorkersUseCase
+from usecases.notificator import Notificator
 from usecases.watcher import Watcher
 
 logging.basicConfig(
@@ -37,6 +40,17 @@ async def main():
     # scheduler = AsyncIOScheduler()
 
     await setup()
+
+    service_identity = Service(
+        id=UUID('7931b22f-7f3c-482a-9961-558be2069b04'),
+        name='scripts',
+        tags=['Script', 'Process']
+    )
+
+    notificator = Notificator(
+        service=service_identity,
+        base_url=settings.notifier.base_url,
+    )
 
     scripts_repo = ScriptsRepository()
     scripts_for_campaign_repo = ScriptsForCampaignRepository()
@@ -78,6 +92,7 @@ async def main():
         script_status_endpoint=settings.watcher.script_status_endpoint,
         chat_status_endpoint=settings.watcher.chat_status_endpoint,
         message_status_endpoint=settings.watcher.message_status_endpoint,
+        notificator=notificator,
     )
 
     script_process_use_case = ScriptProcessUseCase(
@@ -96,12 +111,19 @@ async def main():
     try:
         await listener.start()
     except AMQPConnectionError:
+        await asyncio.sleep(5)
         await listener.start()
 
     try:
         while True:
             await asyncio.sleep(1)
     except KeyboardInterrupt:
+        await listener.stop()
+    except Exception as e:
+        logger.error("Unhandled exception occurred", exc_info=True)
+
+
+    finally:
         await listener.stop()
 
 

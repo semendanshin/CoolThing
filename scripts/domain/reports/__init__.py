@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class SetTargetChatsRequest(BaseModel):
@@ -25,3 +25,6 @@ class SetChatStatusRequest(BaseModel):
     process_id: str
     chat_link: str
     is_successful: bool
+
+    on_message: Optional[str] = Field(default=None, exclude=True)
+    reason: Optional[str] = Field(default=None, exclude=True)

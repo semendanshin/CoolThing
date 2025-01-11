@@ -64,6 +64,10 @@ class WatcherSettings(BaseSettings):
     message_status_endpoint: str
 
 
+class NotifierSettings(BaseSettings):
+    base_url: str
+
+
 class Settings(BaseSettings):
     scripts_db: ScriptsDBSettings
     # delay: DelaySettings
@@ -71,6 +75,7 @@ class Settings(BaseSettings):
     mq: MQSettings
     db: DBSettings
     watcher: WatcherSettings
+    notifier: NotifierSettings
 
     debug: bool = True
 
@@ -90,5 +95,6 @@ class Settings(BaseSettings):
             file_secret_settings: PydanticBaseSettingsSource,
     ) -> Tuple[PydanticBaseSettingsSource, ...]:
         return (JsonConfigSettingsSource(settings_cls),)
+
 
 settings = Settings()

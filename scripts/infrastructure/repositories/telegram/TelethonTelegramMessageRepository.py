@@ -9,7 +9,7 @@ from telethon.tl.functions.channels import JoinChannelRequest
 
 from abstractions.repositories.TelegramMessagesRepositoryInterface import TelegramMessagesRepositoryInterface
 from domain.models import Worker
-from infrastructure.repositories.telegram.exceptions import ChatJoinError
+from infrastructure.repositories.telegram.exceptions import ChatJoinError, UnhandlableError
 
 logger = logging.getLogger(__name__)
 client_logger = logger.getChild("client")
@@ -52,6 +52,7 @@ class TelethonTelegramMessagesRepository(
             text: str,
             reply_to: int,
             proxy: str,
+            retry: int = 0,
     ) -> int:
         if not app_id or not app_hash or not session_string:
             raise ValueError("app_id, app_hash and session_string are required")
@@ -62,16 +63,36 @@ class TelethonTelegramMessagesRepository(
             api_hash=app_hash,
             base_logger=client_logger,
             proxy=self.parse_proxy(proxy),
+            auto_reconnect=False,
         )
-        logger.info("Client instantiated")
+        logger.info(f"Client instantiated, client id is {id(client)}")
 
-        await client.connect()
-        logger.info("Client connected")
-        message = await client.send_message(chat_id, text, reply_to=reply_to)
-        logger.info('Message sent')
-        await client.disconnect()
-        logger.info("Client disconnected")
-        return message.id
+        try:
+            await client.connect()
+            logger.info("Client connected")
+
+            message = await client.send_message(chat_id, text, reply_to=reply_to)
+            logger.info('Message sent')
+
+            await client.disconnect()
+            logger.info("Client disconnected")
+            return message.id
+        except RuntimeError as e:
+            await client.disconnect()
+            if retry > 5:
+                logger.error("Cannot connect to Telegram")
+                raise UnhandlableError from e
+
+            return await self.send_message(
+                app_id=app_id,
+                app_hash=app_hash,
+                session_string=app_hash,
+                chat_id=chat_id,
+                text=text,
+                reply_to=reply_to,
+                proxy=proxy,
+                retry=retry + 1,
+            )
 
     @staticmethod
     def parse_proxy(proxy_string: Optional[str]) -> Optional[tuple]:

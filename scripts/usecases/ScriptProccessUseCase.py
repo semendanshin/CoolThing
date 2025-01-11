@@ -1,5 +1,6 @@
 import json
 import logging
+import sys
 from asyncio import sleep
 from dataclasses import dataclass, field
 from random import randint
@@ -143,7 +144,11 @@ class ScriptProcessUseCase:
                 await self.report_successful_chat(chat_link=chat)
             else:
                 logger.info(f"Skipped chat {chat}")
-                await self.report_failed_chat(chat_link=chat)
+                await self.report_failed_chat(
+                    chat_link=chat,
+                    on_message=message.text,
+                    reason=sys.exc_info().__class__,
+                )
 
         logger.info(f"All messages from script {script_id} are sent to all chats")
         await self._report_script(success=successful_processed)
@@ -214,14 +219,16 @@ class ScriptProcessUseCase:
     async def report_successful_chat(self, chat_link: str):
         await self._report_chat(chat_link=chat_link, successful=True)
 
-    async def report_failed_chat(self, chat_link: str):
-        await self._report_chat(chat_link=chat_link, successful=False)
+    async def report_failed_chat(self, chat_link: str, on_message: str, reason: str):
+        await self._report_chat(chat_link=chat_link, successful=False, on_message=on_message, reason=reason)
 
-    async def _report_chat(self, chat_link: str, successful: bool):
+    async def _report_chat(self, chat_link: str, successful: bool, on_message: str = None, reason: str = None):
         report = SetChatStatusRequest(
             process_id=self.process_id,
             chat_link=chat_link,
             is_successful=successful,
+            on_message=on_message,
+            reason=reason,
         )
 
         await self.watcher.report_chat_status(
