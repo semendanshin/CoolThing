@@ -147,7 +147,7 @@ class ScriptProcessUseCase:
                 await self.report_failed_chat(
                     chat_link=chat,
                     on_message=message.text,
-                    reason=sys.exc_info().__class__,
+                    reason=' '.join(map(str, sys.exc_info().__class__)),
                 )
 
         logger.info(f"All messages from script {script_id} are sent to all chats")
