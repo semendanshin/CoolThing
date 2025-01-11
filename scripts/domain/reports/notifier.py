@@ -4,12 +4,12 @@ from enum import Enum
 from typing import Optional, Union
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 logger = logging.getLogger(__name__)
 
 
-class NotificationType(Enum):
+class NotificationType(str, Enum):
     SCRIPT_CRASHED = 'script-crash'
     SERVICE_CRASHED = 'service-crash'
     CHAT_SKIPPED = 'chat-skip'
@@ -26,7 +26,7 @@ class Service(BaseModel):
 
 
 class Notification(BaseModel):
-    id: UUID = Field(default_factory=uuid4)
+    id: UUID = Field(default_factory=uuid4, )
     type: NotificationType
     created_by: Service
     created_at: datetime = Field(default_factory=datetime.now)

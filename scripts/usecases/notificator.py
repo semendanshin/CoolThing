@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from datetime import datetime
@@ -8,6 +9,7 @@ from abstractions.usecases.notificator import NotificatorInterface
 from domain.reports.notifier import Service, ScriptStartedNotification, Notification, ScriptFinishedNotification, \
     ChatSkippedNotification
 
+logger = logging.getLogger(__name__)
 
 @dataclass
 class Notificator(NotificatorInterface):
@@ -24,16 +26,23 @@ class Notificator(NotificatorInterface):
 
     async def notify(self, notification: Notification) -> None:
         async with self._get_client() as client:
+            data = notification.model_dump_json()
+            logger.info(data)
+            # data['id'] = str(notification.id)
+            # data['type'] = notification.type.value
+            # data['created_at'] = str(notification.created_at)
+            # data['created_by']['id'] = str(notification.created_by.id)
+            logger.info(data)
             await client.post(
                 url=self.events_endpoint,
-                json=notification.model_dump_json(),
+                data=data,
             )
 
     async def script_started(self, sfc_id: str, target_chats: list[str]) -> None:
         report = ScriptStartedNotification(
             sfc_id=sfc_id,
             chats=target_chats,
-            service=self.service,
+            created_by=self.service,
         )
 
         await self.notify(report)
@@ -43,7 +52,7 @@ class Notificator(NotificatorInterface):
             sfc_id=sfc_id,
             finished_at=datetime.now(),
             problems=problems if problems else [],
-            service=self.service,
+            created_by=self.service,
         )
 
         await self.notify(report)
@@ -54,7 +63,7 @@ class Notificator(NotificatorInterface):
             chat_link=chat_link,
             on_message=on_message,
             reason=reason,
-            service=self.service,
+            created_by=self.service,
         )
 
         await self.notify(report)
