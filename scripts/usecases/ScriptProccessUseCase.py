@@ -7,6 +7,9 @@ from random import randint
 from typing import Optional
 
 from aio_pika import IncomingMessage
+from telethon.errors import (ChatWriteForbiddenError, SlowModeWaitError, ChatRestrictedError, ChannelPrivateError,
+                             ForbiddenError, ChatAdminRequiredError, ChatGuestSendForbiddenError, PhoneNumberBannedError,
+                             UserBannedInChannelError)
 
 from abstractions.usecases.CampaignsUseCaseInterface import CampaignsUseCaseInterface
 from abstractions.usecases.ScriptsUseCaseInterface import ScriptsUseCaseInterface
@@ -97,6 +100,7 @@ class ScriptProcessUseCase:
 
             last_message_id: Optional[int] = None
             writable = True
+            reason_of_fail = None
             for message in messages:
                 delay = await self._get_random_sleep(campaign.id)
                 logger.info(f"delay: {delay}")
@@ -111,7 +115,6 @@ class ScriptProcessUseCase:
                 text_to_send = await self.template_engine.process_template(message.text)
                 worker_id = bots_mapping[str(message.bot_index)].id  # TODO: resolve fucking types
                 try:
-                    # SlowModeWaitError: A wait of 3443 seconds is required before sending another message in this chat(caused by SendMessageRequest)
                     new_message_id = await self.workers_use_case.send_message(
                         chat_id=chat,
                         bot_id=worker_id,
@@ -119,12 +122,13 @@ class ScriptProcessUseCase:
                         reply_to=last_message_id,
                     )
                     last_message_id = new_message_id
-                except Exception as e:  # ChatWriteForbiddenError
+                except Exception as e:
                     logger.error(
                         f"There is an error sending message {text_to_send} from bot {worker_id} to {chat}: {type(e).__name__}: {e}",
                         exc_info=True
                     )
                     writable = False
+                    reason_of_fail = e
                     successful_processed = False
                     await self.report_failed_message(
                         chat_link=chat,
@@ -144,13 +148,25 @@ class ScriptProcessUseCase:
                 await self.report_successful_chat(chat_link=chat)
             else:
                 logger.info(f"Skipped chat {chat}")
-                reason_exc = sys.exc_info().__class__
-                if isinstance(reason_exc, tuple):
-                    reason = str(reason_exc[0])
-                elif isinstance(reason_exc, type):
-                    reason = reason_exc.__name__
+                if isinstance(reason_of_fail, ChatWriteForbiddenError) or isinstance(reason_of_fail, ForbiddenError):
+                    reason = 'Нельзя писать в чат'
+                elif isinstance(reason_of_fail, ValueError) and chat.split('/')[-1].isdigit():
+                    reason = 'Некорректная ссылка на чат'
+                elif isinstance(reason_of_fail, ChannelPrivateError):
+                    reason = "Приватный чат, в который бот не добавлен, либо бан"
+                elif isinstance(reason_of_fail, ChatAdminRequiredError):
+                    reason = 'Запрещенные слова, ссылка устарела или несуществующий чат'
+                elif isinstance(reason_of_fail, ChatGuestSendForbiddenError):
+                    reason = 'Бот не добавлен в чат (чат является дискуссионным, т.е. для комментариев в канале)'
+                elif isinstance(reason_of_fail, SlowModeWaitError):
+                    reason = 'В чате включен медленный режим'
+                elif isinstance(reason_of_fail, PhoneNumberBannedError):
+                    reason = ('Номер телефона забанен в Telegram.'
+                              'Если это первый бан для аккаунта, его снимут через несколько дней.')
+                elif isinstance(reason_of_fail, UserBannedInChannelError):
+                    reason = 'Этот аккаунт не может отправлять сообщения в группы/каналы'
                 else:
-                    reason = "Unknown"
+                    reason = f'Неизвестная ошибка ({type(reason_of_fail)})'
                 await self.report_failed_chat(
                     chat_link=chat,
                     on_message=message.text,

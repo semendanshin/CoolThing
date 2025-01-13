@@ -17,8 +17,7 @@ mn:
 	docker network create --driver bridge $(NETWORK_NAME)
 
 gp:
-	cd $(s)
-	git add .
+	git add $(s)
 	git status
 	git commit -m "$(m)"
 	git push origin $(b)
