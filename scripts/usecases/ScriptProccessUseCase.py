@@ -93,6 +93,9 @@ class ScriptProcessUseCase:
         successful_processed = True
 
         for chat in target_chats:
+            if not chat:
+                continue
+
             logger.info(f"Working with chat {chat}")
             messages = await self.scripts_use_case.start_script(script_id)
             bots_mapping = sfc.bots_mapping

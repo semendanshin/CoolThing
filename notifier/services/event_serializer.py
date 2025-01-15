@@ -28,16 +28,16 @@ class EventSerializer(EventSerializerInterface):
                 active_script = await self.active_scripts.get(str(event.sfc_id))  # TODO: bad, need consistent types
                 message = f'Чат {event.chat_id} пропущен во время выполнения сценария {active_script.script_id}, ' \
                           f'запущенного в {strftime(active_script.created_at)}. ' \
-                          f'Сообщение: {event.on_message}, причина: {event.reason}'
+                          f'Сообщение: {event.on_message}\nПричина: {event.reason}'
 
             case EventType.SCRIPT_CRASHED:
                 active_script = await self.active_scripts.get(str(event.sfc_id))  # TODO: bad, need consistent types
                 message = f'Сценарий {active_script.script_id}, запущенный в {strftime(active_script.created_at)} упал в чате {event.chat_id}. ' \
-                          f'Сообщение: {event.on_message}, причина: {event.reason}'
+                          f'Сообщение: {event.on_message}\nПричина: {event.reason}'
 
             case EventType.SERVICE_CRASHED:
                 message = f'**КРИТИЧЕСКАЯ ОШИБКА**\n\nСервис {event.service.name} аварийно остановлен в {strftime(event.created_at)}.' \
-                          f'Причина: {event.reason}'
+                          f'\nПричина: {event.reason}'
 
             case EventType.SCRIPT_STARTED:
                 active_script = await self.active_scripts.get(str(event.sfc_id))  # TODO: bad, need consistent types
