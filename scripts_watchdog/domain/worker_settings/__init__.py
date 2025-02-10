@@ -44,6 +44,7 @@ class WorkerSettings(BaseModel):
         print(data)
         data['scripts_db']['password'] = self.scripts_db.password.get_secret_value()
         data['db']['password'] = self.db.password.get_secret_value()
+        data['script_to_perform']['created_at'] = self.script_to_perform.created_at.isoformat()
         return data
 
 
