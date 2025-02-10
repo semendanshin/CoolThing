@@ -68,6 +68,10 @@ class NotifierSettings(BaseSettings):
     base_url: str
 
 
+class WatchdogSettings(BaseSettings):
+    root_config_path: Path
+
+
 class Settings(BaseSettings):
     scripts_db: ScriptsDBSettings
     # delay: DelaySettings
@@ -76,6 +80,8 @@ class Settings(BaseSettings):
     db: DBSettings
     watcher: WatcherSettings
     notifier: NotifierSettings
+
+    watchdog: WatchdogSettings
 
     debug: bool = True
 
