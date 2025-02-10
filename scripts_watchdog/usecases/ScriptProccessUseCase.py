@@ -1,14 +1,14 @@
 import json
 import logging
+import sys
 from asyncio import sleep
 from dataclasses import dataclass, field
 from random import randint
 from typing import Optional
 
 from aio_pika import IncomingMessage
-from telethon.errors import (ChatWriteForbiddenError, SlowModeWaitError, ChannelPrivateError,
-                             ForbiddenError, ChatAdminRequiredError, ChatGuestSendForbiddenError,
-                             PhoneNumberBannedError,
+from telethon.errors import (ChatWriteForbiddenError, SlowModeWaitError, ChatRestrictedError, ChannelPrivateError,
+                             ForbiddenError, ChatAdminRequiredError, ChatGuestSendForbiddenError, PhoneNumberBannedError,
                              UserBannedInChannelError)
 
 from abstractions.usecases.CampaignsUseCaseInterface import CampaignsUseCaseInterface

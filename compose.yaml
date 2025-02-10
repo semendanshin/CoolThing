@@ -54,16 +54,40 @@ services:
 #      options:
 #        fluentd-address: 127.0.0.1:24224
 #        tag: bot
-  scripts:
+#  scripts:
+#    build:
+#      context: ./scripts
+#      dockerfile: Dockerfile
+#    container_name: cool_thing_scripts
+#    restart: unless-stopped
+#    networks:
+#      - bridge
+#    volumes:
+#      - ./scripts/settings.json:/app/settings.json
+#      - /etc/localtime:/etc/localtime:ro
+#      - /etc/timezone:/etc/timezone:ro
+#    depends_on:
+#      fluentd:
+#        condition: service_started
+#      queue:
+#        condition: service_healthy
+#      scripts-watcher:
+#        condition: service_started
+#    logging:
+#      driver: fluentd
+#      options:
+#        fluentd-address: 127.0.0.1:24224
+#        tag: scripts
+  scripts-watchdog:
     build:
-      context: ./scripts
+      context: ./scripts_watchdog
       dockerfile: Dockerfile
-    container_name: cool_thing_scripts
+    container_name: cool_thing_scripts_watchdog
     restart: unless-stopped
     networks:
       - bridge
     volumes:
-      - ./scripts/settings.json:/app/settings.json
+      - ./scripts_watchdog/settings.json:/app/settings.json
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     depends_on:
@@ -71,13 +95,11 @@ services:
         condition: service_started
       queue:
         condition: service_healthy
-      scripts-watcher:
-        condition: service_started
     logging:
       driver: fluentd
       options:
         fluentd-address: 127.0.0.1:24224
-        tag: scripts
+        tag: scripts-watchdog
   scripts-watcher:
     build:
       context: ./scripts_watcher
@@ -126,31 +148,31 @@ services:
       options:
         fluentd-address: 127.0.0.1:24224
         tag: admin
-  notifier:
-    build:
-      context: ./notifier
-      dockerfile: Dockerfile
-    container_name: cool_thing_notifier
-    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
-    restart: unless-stopped
-    networks:
-      - bridge
-    volumes:
-      - ./notifier/settings.json:/app/settings.json
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    depends_on:
-      fluentd:
-        condition: service_started
-      db:
-        condition: service_healthy
-    ports:
-      - "8085:8080"
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: 127.0.0.1:24224
-        tag: notifier
+#  notifier:
+#    build:
+#      context: ./notifier
+#      dockerfile: Dockerfile
+#    container_name: cool_thing_notifier
+#    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+#    restart: unless-stopped
+#    networks:
+#      - bridge
+#    volumes:
+#      - ./notifier/settings.json:/app/settings.json
+#      - /etc/localtime:/etc/localtime:ro
+#      - /etc/timezone:/etc/timezone:ro
+#    depends_on:
+#      fluentd:
+#        condition: service_started
+#      db:
+#        condition: service_healthy
+#    ports:
+#      - "8085:8080"
+#    logging:
+#      driver: fluentd
+#      options:
+#        fluentd-address: 127.0.0.1:24224
+#        tag: notifier
 
 
 networks:

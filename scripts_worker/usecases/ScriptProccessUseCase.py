@@ -1,14 +1,14 @@
 import json
 import logging
+import sys
 from asyncio import sleep
 from dataclasses import dataclass, field
 from random import randint
 from typing import Optional
 
 from aio_pika import IncomingMessage
-from telethon.errors import (ChatWriteForbiddenError, SlowModeWaitError, ChannelPrivateError,
-                             ForbiddenError, ChatAdminRequiredError, ChatGuestSendForbiddenError,
-                             PhoneNumberBannedError,
+from telethon.errors import (ChatWriteForbiddenError, SlowModeWaitError, ChatRestrictedError, ChannelPrivateError,
+                             ForbiddenError, ChatAdminRequiredError, ChatGuestSendForbiddenError, PhoneNumberBannedError,
                              UserBannedInChannelError)
 
 from abstractions.usecases.CampaignsUseCaseInterface import CampaignsUseCaseInterface
@@ -37,8 +37,7 @@ class ScriptProcessUseCase:
     process_id: str = ''
     process: list[ChatProcess] = field(default_factory=list)
 
-    async def activate_new_script(self, message: IncomingMessage):
-        event = NewActiveScript(**json.loads(message.body.decode()))
+    async def activate_new_script(self, event: NewActiveScript):
         logger.info(f"New script activating request received: {event}")
 
         sfc = await self.scripts_use_case.get_active_script(sfc_id=event.script_for_campaign_id)
@@ -47,7 +46,7 @@ class ScriptProcessUseCase:
             logger.error(f"SFC {sfc.id} is done, skipping")
             return
 
-        return await self.process_script(sfc)
+        await self.process_script(sfc)
 
     async def _get_campaign_delay(self, campaign_id: str) -> tuple[int, int]:
         campaign = await self.campaign_use_case.get_campaign(campaign_id)
