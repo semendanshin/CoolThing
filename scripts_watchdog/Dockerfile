@@ -22,7 +22,7 @@ RUN adduser \
 
 RUN chown appuser:appuser ./tmp
 
-RUN chown appuser:appuser /var/run/docker.sock
+RUN groupadd -g 999 docker && usermod -aG docker appuser
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
