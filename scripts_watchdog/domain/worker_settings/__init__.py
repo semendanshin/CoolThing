@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 from settings import ScriptsDBSettings, MQSettings, DBSettings, WatcherSettings, NotifierSettings
 
@@ -10,6 +10,8 @@ class ScriptToPerform(BaseModel):
     id: str
     script_for_campaign_id: str
     created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class WorkerSettings(BaseModel):
