@@ -9,26 +9,26 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-ARG UID=10001
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    appuser && \
-    mkdir -p ./tmp
-
-RUN chown appuser:appuser ./tmp
-
-RUN groupadd -g 999 docker && usermod -aG docker appuser
+#ARG UID=10001
+#RUN adduser \
+#    --disabled-password \
+#    --gecos "" \
+#    --home "/nonexistent" \
+#    --shell "/sbin/nologin" \
+#    --no-create-home \
+#    --uid "${UID}" \
+#    appuser && \
+#    mkdir -p ./tmp
+#
+#RUN chown appuser:appuser ./tmp
+#
+#RUN groupadd -g 999 docker && usermod -aG docker appuser
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
     python -m pip install -r requirements.txt
 
-USER appuser
+#USER appuser
 
 # Copy the source code into the container.
 COPY . .
