@@ -11,13 +11,12 @@ from aio_pika import IncomingMessage
 from abstractions.repositories.container_manager import ContainerManagerInterface
 from abstractions.usecases.ScriptsUseCaseInterface import ScriptsUseCaseInterface
 from domain.events.scripts import NewActiveScript
-from domain.models import ScriptForCampaign
 from domain.worker_settings import WorkerSettings, ScriptToPerform
-from settings import MQSettings, DBSettings, settings
+from settings import settings
 
 logger = getLogger(__name__)
 
-WORKER_IMAGE = "tg-groups-manager"
+WORKER_IMAGE = "tg-scripts-worker"
 
 
 @dataclass
@@ -105,7 +104,8 @@ class ScriptWorkerManager:
         try:
             worker_container.config_path.unlink()
         except Exception as e:
-            logger.error(f"Error while removing config file {worker_container.config_path}: {e}\n{traceback.format_exc()}")
+            logger.error(
+                f"Error while removing config file {worker_container.config_path}: {e}\n{traceback.format_exc()}")
         del self._containers_settings_hashes[worker_id]
 
     async def cleanup(self):
@@ -131,5 +131,3 @@ class ScriptWorkerManager:
         dto = ScriptToPerform.model_validate(event)
         settings = self._make_worker_settings(dto)
         await self.start_worker(settings)
-
-
