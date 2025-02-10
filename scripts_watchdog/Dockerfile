@@ -17,10 +17,9 @@ RUN adduser \
     --shell "/sbin/nologin" \
     --no-create-home \
     --uid "${UID}" \
-    appuser  && \
-    mkdir -p /app/tmp && \
-    chown appuser:appuser /app/tmp
-
+    appuser && \
+    mkdir -p ./tmp && \
+    chown appuser:appuser ./tmp
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
