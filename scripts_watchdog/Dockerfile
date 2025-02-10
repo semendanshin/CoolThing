@@ -17,13 +17,14 @@ RUN adduser \
     --shell "/sbin/nologin" \
     --no-create-home \
     --uid "${UID}" \
-    appuser
+    appuser  && \
+    mkdir -p /app/tmp && \
+    chown appuser:appuser /app/tmp
+
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
     python -m pip install -r requirements.txt
-
-RUN mkdir -p /app/tmp && chown appuser:appuser /app/tmp
 
 USER appuser
 
