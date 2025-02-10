@@ -25,6 +25,8 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 USER appuser
 
+RUN mkdir -p /app/tmp && chown appuser:appuser /app/tmp
+
 # Copy the source code into the container.
 COPY . .
 
