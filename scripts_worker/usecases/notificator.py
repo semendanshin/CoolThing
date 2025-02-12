@@ -11,6 +11,7 @@ from domain.reports.notifier import Service, ScriptStartedNotification, Notifica
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class Notificator(NotificatorInterface):
     service: Service

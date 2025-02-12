@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
-from typing import Annotated
+from typing import Annotated, Optional
 
 from httpx import AsyncClient
 from pydantic import BaseModel, parse_obj_as
@@ -51,21 +51,26 @@ class Watcher(WatcherInterface):
             # print(process_id)
             return process_id
 
-    async def _report(self, report: BaseModel, endpoint: str) -> dict:
+    async def _report(self, report: BaseModel, endpoint: str, fail_silent: bool = True) -> Optional[dict]:
         async with self._get_client() as client:  # type: AsyncClient
             response = await client.post(
                 url=endpoint,
                 json=report.model_dump(),
             )
 
-            response.raise_for_status()
+            if not fail_silent:
+                response.raise_for_status()
 
-            return response.json()
+            try:
+                return response.json()
+            except:
+                ...
 
     async def report_target_chats(self, report: SetTargetChatsRequest) -> list[ChatProcess]:
         res = await self._report(
             report=report,
             endpoint=self.target_chats_endpoint,
+            fail_silent=False,
         )
 
         res = parse_obj_as(list[ChatProcess], res)
