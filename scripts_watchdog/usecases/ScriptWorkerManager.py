@@ -67,7 +67,7 @@ class ScriptWorkerManager:
         )
 
     async def settings_to_file(self, settings: WorkerSettings) -> Path:
-        filename = f"{settings.id}.{str(uuid.uuid4())}.json"
+        filename = f"{settings.script_to_perform.script_for_campaign_id}.{str(uuid.uuid4())}.json"
         file_path = self.tmp_config_dir / filename
 
         if isinstance(settings, WorkerSettings):
@@ -88,7 +88,7 @@ class ScriptWorkerManager:
         settings_file = await self.settings_to_file(worker_settings)
 
         await self.container_manager.start_container(
-            worker_id=worker_settings.id,
+            worker_id=worker_settings.script_to_perform.script_for_campaign_id,
             image=WORKER_IMAGE,
             config_path=settings_file
         )
