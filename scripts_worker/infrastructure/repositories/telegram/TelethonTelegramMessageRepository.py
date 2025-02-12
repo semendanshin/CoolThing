@@ -1,5 +1,6 @@
 import logging
 import re
+from asyncio import IncompleteReadError
 from dataclasses import dataclass
 from typing import Optional
 
@@ -77,8 +78,12 @@ class TelethonTelegramMessagesRepository(
             await client.disconnect()
             logger.info("Client disconnected")
             return message.id
-        except RuntimeError as e:
-            await client.disconnect()
+        except (RuntimeError, IncompleteReadError) as e:
+            try:
+                await client.disconnect()
+            except:
+                pass
+
             if retry > 5:
                 logger.error("Cannot connect to Telegram")
                 raise UnhandlableError from e
