@@ -40,7 +40,7 @@
         const messagesObjectString = '{{ messages_object | safe }}';
         console.log(messagesObjectString);
 
-        var existingMessages = JSON.parse(messagesObjectString);
+        var existingMessages = JSON.parse(JSON.stringify(messagesObjectString));
         console.log(existingMessages)
 
         document.addEventListener("DOMContentLoaded", function () {
