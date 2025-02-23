@@ -64,7 +64,7 @@ async def get_script(
         raise HTTPException(status_code=422, detail="It's not uuid, check your code")
 
     script = await get_scripts_use_case().get_script(script_id)
-    messages_object_string = f"[{', '.join([json.dumps(x.__dict__) for x in script.messages])}]"
+    messages_object_string = json.dumps([x.__dict__ for x in script.messages])
     print(messages_object_string)
     return templates.TemplateResponse(
         request=request,
