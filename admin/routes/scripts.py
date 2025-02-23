@@ -65,7 +65,7 @@ async def get_script(
 
     script = await get_scripts_use_case().get_script(script_id)
     messages_object_string = json.dumps([x.__dict__ for x in script.messages])
-    messages_object_string = messages_object_string.replace('`', r'\`')
+    # messages_object_string = messages_object_string.replace('`', r'\`')
     print(messages_object_string)
     return templates.TemplateResponse(
         request=request,
