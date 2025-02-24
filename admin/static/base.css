@@ -26,6 +26,7 @@
     --submit-button-hover-background: #8cb4a3;
     --nav-bar-height: 45px;
     --padding: 20px;
+    --destructive-button-color: #bb1111
 }
 
 html, body {

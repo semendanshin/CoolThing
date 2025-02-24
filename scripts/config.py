@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Type, Tuple
+from urllib.parse import quote_plus
 
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict, PydanticBaseSettingsSource, JsonConfigSettingsSource
@@ -12,9 +13,13 @@ class ScriptsDBSettings(BaseSettings):
     port: int
     name: str
 
+    def __post_init__(self):
+        self.password = SecretStr(quote_plus(self.password.get_secret_value()))
+        self.user = quote_plus(self.user)
+
     @property
     def url(self):
-        return f"mongodb://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/"
+        return f"mongodb://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/{self.name}?authSource=admin&directConnection=true"
 
 
 class DelaySettings(BaseSettings):
@@ -50,12 +55,27 @@ class DBSettings(BaseSettings):
         return f"postgresql+asyncpg://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/{self.name}"
 
 
+class WatcherSettings(BaseSettings):
+    base_url: str
+    new_activation_endpoint: str
+    target_chats_endpoint: str
+    script_status_endpoint: str
+    chat_status_endpoint: str
+    message_status_endpoint: str
+
+
+class NotifierSettings(BaseSettings):
+    base_url: str
+
+
 class Settings(BaseSettings):
     scripts_db: ScriptsDBSettings
-    delay: DelaySettings
-    scripts: ScriptsSettings
+    # delay: DelaySettings
+    # scripts: ScriptsSettings
     mq: MQSettings
     db: DBSettings
+    watcher: WatcherSettings
+    notifier: NotifierSettings
 
     debug: bool = True
 

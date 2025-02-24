@@ -1,8 +1,10 @@
 from abc import ABC
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional
-from uuid import uuid4, UUID
+from typing import Optional, Literal
+from uuid import uuid4
+
+from pydantic import BaseModel, ConfigDict
 
 
 @dataclass
@@ -10,6 +12,7 @@ class Model(ABC):
     id: str = field(default_factory=uuid4)
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
+    deleted_at: Optional[datetime] = None
 
 
 @dataclass(kw_only=True)
@@ -26,9 +29,12 @@ class Worker(Model):
     username: str
     bio: Optional[str] = None
 
+    chats: Optional[list[str]] = None
+
 
 @dataclass(kw_only=True)
 class GPT(Model):
+    name: str
     model: str
     token: str
     proxy: str
@@ -38,14 +44,18 @@ class GPT(Model):
 
 @dataclass(kw_only=True)
 class Campaign(Model):
-    welcome_message: str
-    chats: list[str]
-    plus_keywords: list[str]
-    minus_keywords: list[str]
-    gpt_settings_id: str
+    name: str
+    welcome_message: str = None
+    chats: list[str] = None
+    plus_keywords: list[str] = None
+    minus_keywords: list[str] = None
+    gpt_settings_id: str = None
     scope: str
     chat_answer_wait_interval_seconds: str
-    new_lead_wait_interval_seconds: str
+    new_lead_wait_interval_seconds: str = None
+
+    enabled: Optional[bool] = None
+    type: Optional[Literal["Native integration", "Monitoring"]] = None
 
 
 @dataclass(kw_only=True)
@@ -87,5 +97,40 @@ class ScriptForCampaign(Model):
     campaign_id: str
     bots_mapping: dict[str, str]
 
-    class Settings:
-        name = 'scripts_for_campaigns'
+    stopped: bool
+    done: bool
+
+
+class MessageProcess(BaseModel):
+    id: str
+    text: str
+    bot_id: str
+
+    sent_at: Optional[datetime] = None
+    will_be_sent: bool = True
+
+
+class ChatProcess(BaseModel):
+    chat_link: str
+    messages: list[MessageProcess] = None
+
+    processed_at: Optional[datetime] = None
+    is_successful: Optional[bool] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+@dataclass(kw_only=True)
+class ActiveScriptProcess(Model):
+    sfc_id: str
+    target_chats: Optional[list[str]] = None
+    process: Optional[list[ChatProcess]]
+
+    processed_at: Optional[datetime] = None
+    is_successful: Optional[bool] = None
+
+
+@dataclass(kw_only=True)
+class Bundle(Model):
+    name: str
+    bots: list[Worker]

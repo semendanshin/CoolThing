@@ -37,7 +37,7 @@
             });
         });
 
-        const messagesObjectString = `{{ messages_object | safe }}`;
+        const messagesObjectString = '{{ messages_object | safe }}';
         console.log(messagesObjectString);
 
         var existingMessages = JSON.parse(messagesObjectString);
@@ -92,11 +92,9 @@
                 var data = {id, name, type, messages};
 
                 console.log("Saving script:", data);
-                // Here you would send the data to the server, e.g., via fetch API
-
                 try {
 
-                    var response = await fetch('http://localhost:8080/scripts/{{ script.id }}', {
+                    var response = await fetch('/scripts/{{ script.id }}', {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',

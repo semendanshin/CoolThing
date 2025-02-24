@@ -9,6 +9,10 @@ from abstractions.helpers.message import TelegramClientWrapper
 
 @dataclass
 class TelethonTelegramClientWrapper(TelegramClientWrapper):
+    async def get_username_by_chat_id(self, chat_id: int) -> str:
+        chat = await self.app.get_entity(chat_id)
+        return chat.username
+
     app: TelegramClient
 
     async def get_chat_id(self, username: str) -> int:

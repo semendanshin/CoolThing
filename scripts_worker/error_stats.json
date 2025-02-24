@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "date": "24.12.2024",
+    "marked_failed_at": "13:24",
+    "last_succeeded_message_at": "13:17",
+    "script_started_at": "0:35",
+    "failed_chat": "https://t.me/chat_ozon_wb",
+    "failed_bot": ""
+  }
+]

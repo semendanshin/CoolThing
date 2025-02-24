@@ -1,20 +1,36 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from abstractions.repositories.ScriptsForCampaignRepositoryInterface import ScriptsForCampaignRepositoryInterface
 from abstractions.repositories.ScriptsRepositoryInterface import ScriptsRepositoryInterface
-from abstractions.usecases.EventsUseCaseInterface import EventsUseCaseInterface
+from abstractions.repositories.active_script_process import ActiveScriptProcessRepositoryInterface
+from abstractions.usecases.BrokerEventsUseCaseInterface import BrokerEventsUseCaseInterface
 from abstractions.usecases.ScriptsUseCaseInterface import ScriptsUseCaseInterface
 from domain.dto.script import ScriptCreateDTO, ScriptUpdateDTO, ScriptForCampaignCreateDTO
-from domain.events.scripts import NewActiveScript
+from domain.events.broker.scripts import NewActiveScript
+from domain.models import ScriptForCampaign, ActiveScriptProcess
 
 
 @dataclass
 class ScriptsUseCase(
     ScriptsUseCaseInterface,
 ):
+    async def get_sfc(self, sfc_id: str) -> ScriptForCampaign:
+        return await self.scripts_for_campaign_repository.get(sfc_id)
+
+    async def get_active_script(self, process_id: str) -> ActiveScriptProcess:
+        return await self.script_process_repository.get(obj_id=process_id)
+
+    async def get_active_script_by_sfc(self, sfc_id: str) -> ActiveScriptProcess:
+        return await self.script_process_repository.get_by_sfc(sfc_id)
+
+    async def get_active_scripts(self) -> list[ScriptForCampaign]:
+        return await self.scripts_for_campaign_repository.get_all()
+
     scripts_repository: ScriptsRepositoryInterface
     scripts_for_campaign_repository: ScriptsForCampaignRepositoryInterface
-    events_use_case: EventsUseCaseInterface
+    script_process_repository: ActiveScriptProcessRepositoryInterface
+    events_use_case: BrokerEventsUseCaseInterface
 
     async def get_scripts(self):
         scripts = await self.scripts_repository.get_all()
@@ -41,3 +57,6 @@ class ScriptsUseCase(
         await self.events_use_case.publish(event)
         print(script.__dict__)
         print(event.__dict__)
+
+    async def stop_script(self, sfc_id: str) -> bool:
+        return await self.scripts_for_campaign_repository.stop_active_script(sfc_id=sfc_id)

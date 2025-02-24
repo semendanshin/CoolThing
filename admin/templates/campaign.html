@@ -12,34 +12,38 @@
     campaign
 {% endblock %}
 
+{% block inner_head %}
+    <link rel="stylesheet" href="/static/campaign.css">
+    <link rel="stylesheet" href="/static/filters.css">
+{% endblock %}
+
 {% block fields %}
     <form action="/campaigns/{{ campaign.id }}" method="post">
         <div class="row">
-            <label for="campaign_scope" class="field-label">Scope</label>
-            <input class="input-field" id="campaign_scope" name="campaign_scope" value="{{ campaign.scope }}">
+            <label for="campaign_name" class="field-label required">Name</label>
+            <input class="input-field" id="campaign_name" name="campaign_name" value="{{ campaign.name }}">
         </div>
         <div class="row">
-            <label for="campaign_welcome_message" class="field-label">Welcome Message</label>
-            <textarea class="input-field" id="campaign_welcome_message"
-                      name="campaign_welcome_message">{{ campaign.welcome_message }}</textarea>
+            <label for="campaign_scope" class="field-label required">Scope</label>
+            <input class="input-field" id="campaign_scope" name="scope" value="{{ campaign.scope }}">
         </div>
         <div class="row">
-            <label for="campaign_chats" class="field-label">Chats</label>
-            <textarea class="input-field" id="campaign_chats"
-                      name="campaign_chats">{{ campaign.chats | join(", ") }}</textarea>
+            <input type="hidden" id="selected-campaign-type" name="type" value="{{ campaign.type }}">
+            <label for="campaign_type" class="field-label required">Type</label>
+            <div class="custom-select-wrapper">
+                <div class="custom-select" tabindex="0" id="custom-select-type">
+                    <span id="type-selected-option" class="selected-option">{{ campaign.type | capitalize }}</span>
+                    <span>&#9660;</span>
+                </div>
+                <div class="custom-select-options" id="custom-select-options-type">
+                    <div class="custom-select-option type" data-value="native integration">Native integration</div>
+                    <div class="custom-select-option type" data-value="monitoring">Monitoring</div>
+                </div>
+            </div>
         </div>
-        <div class="row">
-            <label for="campaign_plus_keywords" class="field-label">Plus Keywords</label>
-            <textarea class="input-field" id="campaign_plus_keywords"
-                      name="campaign_plus_keywords">{{ campaign.plus_keywords | join(", ") }}</textarea>
-        </div>
-        <div class="row">
-            <label for="campaign_minus_keywords" class="field-label">Minus Keywords</label>
-            <textarea class="input-field" id="campaign_minus_keywords"
-                      name="campaign_minus_keywords">{{ campaign.minus_keywords | join(", ") }}</textarea>
-        </div>
-        {% set campaign_chat_interval_start, campaign_chat_interval_end = campaign.chat_answer_wait_interval_seconds.split("-") %}
-        {% set campaign_welcome_wait_start, campaign_welcome_wait_end = campaign.new_lead_wait_interval_seconds.split("-") %}
+        {% if campaign.chat_answer_wait_interval_seconds %}
+            {% set campaign_chat_interval_start, campaign_chat_interval_end = campaign.chat_answer_wait_interval_seconds.split("-") %}
+        {% endif %}
         <div class="row">
             <label class="field-label">In-chat answer delay interval (seconds)</label>
             <div class="splitted-row">
@@ -58,91 +62,283 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <label class="field-label">Welcome message delay interval (seconds)</label>
-            <div class="splitted-row">
-                <div class="splitted-row-element">
-                    <label for="campaign_welcome_wait_start" class="field-label sub-field-label">from:</label>
-                    <input type="number" class="input-field" id="campaign_welcome_wait_start"
-                           name="campaign_welcome_wait_start" value="{{ campaign_welcome_wait_start }}">
-                </div>
-                <div class="splitted-row-element">
-                    <label for="campaign_welcome_wait_end" class="field-label sub-field-label">to:</label>
-                    <input type="number" class="input-field" id="campaign_welcome_wait_end"
-                           name="campaign_welcome_wait_end" value="{{ campaign_welcome_wait_end }}">
+        <div class="monitoring-fields" data-type="Monitoring">
+            {% if campaign.new_lead_wait_interval_seconds %}
+                {% set campaign_welcome_wait_start, campaign_welcome_wait_end = campaign.new_lead_wait_interval_seconds.split("-") %}
+            {% endif %}
+            <div class="row">
+                <label class="field-label">Welcome message delay interval (seconds)</label>
+                <div class="splitted-row">
+                    <div class="splitted-row-element">
+                        <label for="campaign_welcome_wait_start" class="field-label sub-field-label">from:</label>
+                        <input type="number" class="input-field" id="campaign_welcome_wait_start"
+                               name="campaign_welcome_wait_start" value="{{ campaign_welcome_wait_start }}">
+                    </div>
+                    <div class="splitted-row-element">
+                        <label for="campaign_welcome_wait_end" class="field-label sub-field-label">to:</label>
+                        <input type="number" class="input-field" id="campaign_welcome_wait_end"
+                               name="campaign_welcome_wait_end" value="{{ campaign_welcome_wait_end }}">
+                    </div>
                 </div>
             </div>
+            <div class="row">
+                <label for="campaign_welcome_message" class="field-label">Welcome Message</label>
+                <textarea class="input-field" id="campaign_welcome_message"
+                          name="campaign_welcome_message">{{ campaign.welcome_message }}</textarea>
+            </div>
+            <div class="row">
+                <label for="campaign_chats" class="field-label">Chats</label>
+                <textarea class="input-field" id="campaign_chats"
+                          name="campaign_chats">{{ campaign.chats | join(", ") }}</textarea>
+            </div>
+            <div class="row">
+                <label for="campaign_plus_keywords" class="field-label">Plus Keywords</label>
+                <textarea class="input-field" id="campaign_plus_keywords"
+                          name="campaign_plus_keywords">{{ campaign.plus_keywords | join(", ") }}</textarea>
+            </div>
+            <div class="row">
+                <label for="campaign_minus_keywords" class="field-label">Minus Keywords</label>
+                <textarea class="input-field" id="campaign_minus_keywords"
+                          name="campaign_minus_keywords">{{ campaign.minus_keywords | join(", ") }}</textarea>
+            </div>
+            <div class="row">
+                <label for="campaign_gpt_settings_id" class="field-label">GPT Settings</label>
+                <select class="select-field" id="campaign_gpt_settings_id" name="campaign_gpt_settings_id">
+                    {% for gpt_setting in gpt_settings %}
+                        <option value="{{ gpt_setting.id }}"
+                                {% if gpt_setting.id == campaign.gpt_settings_id %}selected{% endif %}>
+                            {{ gpt_setting.id }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
-        <div class="row">
-            <label for="campaign_gpt_settings_id" class="field-label">GPT Settings</label>
-            <select class="select-field" id="campaign_gpt_settings_id" name="campaign_gpt_settings_id">
-                {% for gpt_setting in gpt_settings %}
-                    <option value="{{ gpt_setting.id }}"
-                            {% if gpt_setting.id== campaign.gpt_settings_id %}selected{% endif %}>
-                        {{ gpt_setting.id }}
-                    </option>
-                {% endfor %}
-            </select>
+
+        <div class="integration-fields" data-type="Native integration">
+            <div class="activate-script">
+                {#                <h3>Activate Script</h3>#}
+                {#                <br>#}
+                <p>Enter the script ID</p>
+                <input type="text" id="script-id" placeholder="script ID">
+                <br>
+                <p>Enter the bots mapping</p>
+                <div id="bots-mapping-input-container">
+
+                </div>
+                <br>
+                <button>Activate Script</button>
+            </div>
+            {#            <div class="row">#}
+            {#                <label for="chats-count">Number of chats:</label>#}
+            {#                <p id="chats-count"></p>#}
+            {#            </div>#}
         </div>
         <div class="row">
             <input type="submit" value="Save Changes" class="submit-button">
         </div>
     </form>
-    <div class="activate-script">
-        <h3>Activate Script</h3>
-        <br>
-        <p>Enter the script ID</p>
-        <input type="text" id="script-id" placeholder="script ID">
-        <br>
-        <p>Enter the bots mapping</p>
-        <div class="bots-mapping-input">
 
+    <template id="bot-entry-template">
+        <div class="bot-entry-container">
+            <div class="bot-index-container">
+                <p id="bot-index"></p>
+            </div>
+            <div class="bot-username-container">
+                <div class="custom-select-wrapper">
+                    <div class="custom-select" tabindex="0" id="bot-custom-select">
+                        <span id="bot-selected-option" class="selected-option">No bot selected</span>
+                        <span>&#9660;</span>
+                    </div>
+                    <div class="custom-select-options" id="bot-custom-select-options">
+                        {# Options will be inserted by js #}
+                    </div>
+                </div>
+            </div>
         </div>
-        <input type="text" id="bots-mapping" placeholder="bots mapping">
-        <br>
-        <button>Activate Script</button>
-    </div>
+    </template>
+
     <script>
+        function mapListenersToSelects() {
+            const customSelects = document.querySelectorAll('.custom-select-wrapper');
+            customSelects.forEach(selectWrapper => {
+                const select = selectWrapper.querySelector('.custom-select');
+                const options = selectWrapper.querySelector('.custom-select-options');
+
+                select.addEventListener('click', function () {
+                    console.log(select);
+                    options.classList.toggle('active');
+                });
+
+                options.querySelectorAll('.custom-select-option').forEach(option => {
+                    option.addEventListener('click', function () {
+                        const selectedOption = select.querySelector('span');
+                        selectedOption.textContent = this.textContent;
+                        options.classList.remove('active');
+                        let event = new Event("optionSelected");
+                        event.optionType = 'type' ? 'type' in option.classList : 'bot'
+                        document.dispatchEvent(event);
+                    });
+                });
+            });
+
+            document.addEventListener('click', function (e) {
+                customSelects.forEach(selectWrapper => {
+                    const select = selectWrapper.querySelector('.custom-select');
+                    const options = selectWrapper.querySelector('.custom-select-options');
+                    if (!select.contains(e.target)) {
+                        options.classList.remove('active');
+                    }
+                });
+            });
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
-            document.querySelector(".activate-script button").addEventListener("click", async function () {
+            const hiddenInput = document.getElementById("selected-campaign-type");
+
+            document.addEventListener("optionSelected", function (e) {
+                if (e.optionType === 'bot') {
+                    return;
+                }
+                hiddenInput.value = document.getElementById("type-selected-option").textContent;
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            mapListenersToSelects();
+            let isTabSwitch = false;
+
+            // Detect when the user switches tabs or windows
+            document.addEventListener('visibilitychange', function () {
+                isTabSwitch = document.visibilityState === 'hidden';
+            });
+
+            let scriptBotsCount, bots;
+            document.querySelector(".activate-script button").addEventListener("click", async function (event) {
+                event.preventDefault();
+                let bots_mapping = {};
+                let usernamesSpans = document.querySelectorAll("#bot-selected-option");
+                console.log(usernamesSpans, scriptBotsCount);
+                for (let i = 0; i < scriptBotsCount; i++) {
+                    console.log(i, usernamesSpans[i]);
+                    bots_mapping[(i + 1).toString()] = usernamesSpans[i].textContent;
+                }
+                let body = JSON.stringify({
+                    script_id: document.querySelector(".activate-script input#script-id").value,
+                    campaign_id: "{{ campaign.id }}",
+                    bots_mapping: bots_mapping
+                })
                 let response = await fetch("/scripts/activate", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({
-                        script_id: document.querySelector(".activate-script input#script-id").value,
-                        campaign_id: "{{ campaign.id }}",
-                        bots_mapping: JSON.parse(document.querySelector(".activate-script input#bots-mapping").value),
-                    }),
+                    body: body
                 });
 
                 if (response.ok) {
                     alert("Script activated successfully");
                 } else {
                     alert("Failed to activate script");
-                    console.log(response.json())
+                    console.log(await response.json())
+                    console.log(body);
                 }
             });
-        });
 
-        document.addEventListener("DOMContentLoaded", async function () {
-            var scriptIdInput = document.querySelector(".activate-script input#script-id");
+            let scriptIdInput = document.querySelector(".activate-script input#script-id");
             scriptIdInput.onblur = async function () {
-                var scriptId = scriptIdInput.value;
-
-                var response = await fetch(`/scripts/bots-count/${scriptId}`, {
-                        method: 'GET'
-                    }
-                )
-
-                if (!response.ok) {
-                    alert("Error while retrieving script");
+                if (isTabSwitch) {
                     return;
                 }
-                var botsCount = response.then((x) => {Number.parseInt(x)});
-                console.log(botsCount);
+                let scriptId = scriptIdInput.value;
+                {
+                    let response = await fetch(`/scripts/bots-count/${scriptId}`, {
+                            method: 'GET'
+                        }
+                    )
+                    if (!response.ok) {
+                        if (response.status !== 422) {
+                            alert("Error while retrieving script");
+                            return;
+                        }
+                    }
+                    scriptBotsCount = Number.parseInt(await response.json());
+                }
+                let botEntryTemplate = document.getElementById("bot-entry-template").content
+                let botsMappingInputContainer = document.getElementById("bots-mapping-input-container");
+
+                botsMappingInputContainer.textContent = '';
+
+                for (let i = 1; i <= scriptBotsCount; i++) {
+                    let newMessage = document.importNode(botEntryTemplate, true);
+                    newMessage.getElementById("bot-index").innerText = i.toString();
+                    botsMappingInputContainer.appendChild(newMessage);
+                }
+                {
+                    let response = await fetch(`/bots/entities`, {
+                            method: 'GET'
+                        }
+                    )
+                    if (!response.ok) {
+                        alert("Error while retrieving bots");
+                        return;
+                    }
+                    bots = await response.json();
+                }
+                let botsCount = bots.length;
+                if (!botsCount) return;
+                const botOptions = Array.from({length: botsCount}, (_, i) => `<div class="custom-select-option bot" data-value="${bots[i].username}">${bots[i].username}</div>`).join('');
+                let selectOptions = document.querySelectorAll("#bot-custom-select-options");
+                selectOptions.forEach(select => {
+                    select.insertAdjacentHTML("afterbegin", botOptions);  // optionsInserted
+                });
+
+                mapListenersToSelects();
+
+
+                {#document.addEventListener("optionSelected", function () {#}
+                {#    console.log("selected");#}
+                {#    const selects = document.querySelectorAll(".bot-username-container .custom-select-wrapper");#}
+                {#    let selectedChats = [];#}
+                {#    document.querySelectorAll("#bot-custom-select").forEach(select => {#}
+                {#        let username = select.querySelector("#bot-selected-option").innerText;#}
+                {#        if (username === "No bot selected") {#}
+                {#            return;#}
+                {#        }#}
+                {#        console.log(username, bots, bots.find(x => x.username === username), bots.find(x => x.username === username).chats)#}
+                {#        selectedChats.concat(bots.find(x => x.username === username).chats);#}
+                {#        console.log(selectedChats);#}
+                {#        console.log(bots, selectedChats);#}
+                {#        document.querySelector("#chats-count").innerHTML = [...new Set(selectedChats)].length.toString();#}
+                {#    });#}
+                {# }); #}
+            };
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            function toggleFields() {
+                const selectedType = document.getElementById('type-selected-option').textContent.trim().toLowerCase();
+                const monitoringFields = document.querySelectorAll('[data-type="Monitoring"]');
+                const integrationFields = document.querySelectorAll('[data-type="Native integration"]');
+
+                monitoringFields.forEach(field => {
+                    field.style.display = selectedType === 'monitoring' ? 'block' : 'none';
+                });
+
+                integrationFields.forEach(field => {
+                    field.style.display = selectedType === 'native integration' ? 'block' : 'none';
+                });
             }
+
+            // On page load, set the visibility based on the initial value
+            toggleFields();
+
+            // Add event listener to detect type change
+            document.addEventListener('optionSelected', function (e) {
+                if (e.optionType === 'bot') {
+                    return;
+                }
+                toggleFields();
+            });
         });
     </script>
 {% endblock %}

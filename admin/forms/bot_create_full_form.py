@@ -1,3 +1,5 @@
+import re
+
 from fastapi import Form
 
 from domain.dto.worker import WorkerCreateDTO
@@ -13,6 +15,7 @@ def bot_create_full_form(
         status: str = Form(default=""),
         campaign_id: str = Form(default=None),
         bio: str = Form(None),
+        chats: str = Form(default=""),
 ) -> WorkerCreateDTO:
     return WorkerCreateDTO(
         username=username,
@@ -22,6 +25,7 @@ def bot_create_full_form(
         proxy=proxy,
         role=role,
         status="active" if status.lower() == "on" else "stopped",
-        campaign_id=campaign_id,
+        campaign_id=campaign_id if campaign_id else None,
         bio=bio,
+        chats=[chat for chat in re.split(r"\s+", chats)],
     )

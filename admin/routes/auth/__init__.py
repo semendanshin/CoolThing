@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends
 from starlette.requests import Request
-from starlette.responses import RedirectResponse, JSONResponse
+from starlette.responses import JSONResponse
 from starlette.templating import Jinja2Templates
 
 from abstractions.usecases.AuthUseCaseInterface import AuthUseCaseInterface

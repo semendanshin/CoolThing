@@ -9,7 +9,7 @@ import aio_pika
 from aio_pika.abc import AbstractRobustConnection, ExchangeType
 from aio_pika.pool import Pool
 
-from domain.events import BaseEvent
+from domain.events.broker import BaseEvent
 from abstractions.repositories.EventsRepositoryInterface import EventsRepositoryInterface
 
 logger = logging.getLogger(__name__)

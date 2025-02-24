@@ -1,0 +1,23 @@
+.bot-entry-container {
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+    padding: 15px;
+}
+
+.bot-index-container {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-content: center;
+}
+
+.bot-index-container p {
+    height: min-content;
+}
+
+.bot-username-container {
+    width: 80%;
+}
+

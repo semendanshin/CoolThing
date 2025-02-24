@@ -5,6 +5,7 @@ from domain.dto.gpt import GPTUpdateDTO
 
 def update_gpt_setting_form(
     id: str = Path(..., alias="gpt_id"),
+    name: str = Form(...),
     model: str = Form(default=""),
     token: str = Form(default=""),
     proxy: str = Form(default=""),
@@ -13,6 +14,7 @@ def update_gpt_setting_form(
 ) -> GPTUpdateDTO:
     return GPTUpdateDTO(
         id=id,
+        name=name,
         model=model,
         assistant=assistant,
         token=token,

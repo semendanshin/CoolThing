@@ -73,6 +73,12 @@ Bot overview
         </div>
 
         <div class="row">
+            <label for="bot_chats" class="field-label">Chats</label>
+            <textarea class="input-field" id="bot_chats"
+                      name="chats"></textarea>
+        </div>
+
+        <div class="row">
             <label for="role" class="field-label required">Role</label>
             <select class="select-field" id="role" name="role">
                 <option value="manager" {% if bot.role=='manager' %}selected{% endif %}>Manager</option>

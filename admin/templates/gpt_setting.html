@@ -15,7 +15,11 @@
 {% block fields %}
     <form action="/gpt/{{ gpt_setting.id }}" method="post">
         <div class="row">
-            <label for="model" class="field-label">Model</label>
+            <label for="name" class="field-label required">Name</label>
+            <input class="input-field" id="name" name="name" value="{{ gpt_setting.name }}">
+        </div>
+        <div class="row">
+            <label for="model" class="field-label required">Model</label>
             <input class="input-field" id="model" name="model" value="{{ gpt_setting.model }}">
         </div>
         <div class="row">

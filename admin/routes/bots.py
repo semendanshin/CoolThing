@@ -1,19 +1,18 @@
-from fastapi import APIRouter, Depends, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
-from fastapi.exceptions import HTTPException
+from typing import Any
 
+from fastapi import APIRouter, Depends, Request
+from fastapi.responses import HTMLResponse
+
+from abstractions.usecases.BotsUseCaseInterface import BotsUseCaseInterface
 from abstractions.usecases.CampaingsUseCaseInterface import CampaignsUseCaseInterface
 from dependencies.usecases.bots import get_bots_usecase
-from abstractions.usecases.BotsUseCaseInterface import BotsUseCaseInterface
 from dependencies.usecases.campaign import get_campaigns_usecase
+from .common import templates
 
 router = APIRouter(
     prefix='/bots',
     tags=['Bots'],
 )
-
-templates = Jinja2Templates(directory='templates')
 
 
 @router.get("")
@@ -39,3 +38,16 @@ async def get_bots(
             'campaigns': campaigns,
         }
     )
+
+
+@router.get("/entities")
+async def get_bots_entities(
+        bots: BotsUseCaseInterface = Depends(get_bots_usecase),
+) -> list[dict[str, Any]]:
+    usernames = [
+        {
+            "username": x.username if x.username else "",
+            "chats": x.chats if x.chats else [],
+        } for x in await bots.get_all_bots()]
+    print(usernames)
+    return usernames

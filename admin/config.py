@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Type, Tuple
+from urllib.parse import quote_plus
 
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict, PydanticBaseSettingsSource, JsonConfigSettingsSource
@@ -24,9 +25,13 @@ class ScriptsDBSettings(BaseSettings):
     port: int
     name: str
 
+    def __post_init__(self):
+        self.password = SecretStr(quote_plus(self.password.get_secret_value()))
+        self.user = quote_plus(self.user)
+
     @property
     def url(self):
-        return f"mongodb://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/"
+        return f"mongodb://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/{self.name}?authSource=admin&directConnection=true"
 
 
 class AuthSettings(BaseSettings):

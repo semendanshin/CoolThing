@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
-from starlette.templating import Jinja2Templates
 
 from abstractions.usecases.CampaingsUseCaseInterface import CampaignsUseCaseInterface
 from abstractions.usecases.GPTSettingsUseCaseInterface import GPTSettingsUseCaseInterface
@@ -10,13 +9,12 @@ from dependencies.usecases.gpt_settings import get_gpt_settings_usecase
 from domain.dto.campaign import CampaignUpdateDTO, CampaignCreateDTO
 from forms.campaign_create import create_campaign_form
 from forms.campaign_update import update_campaign_form
+from .common import templates
 
 router = APIRouter(
     prefix="/campaigns",
     tags=["campaigns"],
 )
-
-templates = Jinja2Templates(directory='templates')
 
 
 @router.get("")

@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Active Scripts{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/custom-select.css">
+    <link rel="stylesheet" href="/static/filters.css">
+    <link rel="stylesheet" href="/static/active_scripts.css">
+    <!-- Include any additional CSS if needed -->
+{% endblock %}
+
+{% block content %}
+<h1>Active Scripts</h1>
+
+<!-- Filters Section -->
+<div class="filters-container">
+    <div class="filters">
+        <!-- Script Filter -->
+        <div class="filter">
+            <label for="scriptFilter">Script:</label>
+            <div class="custom-select-wrapper" id="scriptFilter">
+                <div class="custom-select">
+                    <span>All Scripts</span>
+                    <span>&#9660;</span>
+                </div>
+                <div class="custom-select-options">
+                    <div class="custom-select-option" data-value="">All Scripts</div>
+                    {% for script_id, script_name in scripts_dict.items() %}
+                    <div class="custom-select-option" data-value="{{ script_id }}">{{ script_name }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Campaign Filter -->
+        <div class="filter">
+            <label for="campaignFilter">Campaign:</label>
+            <div class="custom-select-wrapper" id="campaignFilter">
+                <div class="custom-select">
+                    <span>All Campaigns</span>
+                    <span>&#9660;</span>
+                </div>
+                <div class="custom-select-options">
+                    <div class="custom-select-option" data-value="">All Campaigns</div>
+                    {% for campaign_id, campaign_name in campaigns_dict.items() %}
+                    <div class="custom-select-option" data-value="{{ campaign_id }}">{{ campaign_name }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="filter">
+            <label for="statusFilter">Status:</label>
+            <div class="custom-select-wrapper" id="statusFilter">
+                <div class="custom-select">
+                    <span>All Statuses</span>
+                    <span>&#9660;</span>
+                </div>
+                <div class="custom-select-options">
+                    <div class="custom-select-option" data-value="">All Statuses</div>
+                    <div class="custom-select-option" data-value="running">Running</div>
+                    <div class="custom-select-option" data-value="stopped">Stopped</div>
+                    <div class="custom-select-option" data-value="done">Done</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Active Scripts Table -->
+<table id="activeScriptsTable">
+    <thead>
+        <tr>
+            <th data-sort="sfc-id">SFC ID</th>
+            <th data-sort="script-name">Script Name</th>
+            <th data-sort="campaign-name">Campaign Name</th>
+            <th data-sort="created-at">Created At</th>
+            <th data-sort="status">Status</th>
+            <th data-sort="bots-involved">Bots Involved</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for active_script in active_scripts %}
+        <tr data-sfc-id="{{ active_script.id }}" onclick="window.location = '/scripts/active/{{ active_script.id }}'"
+            data-script-id="{{ active_script.script_id }}"
+            data-campaign-id="{{ active_script.campaign_id }}"
+            data-script-name="{{ scripts_dict[active_script.script_id] }}"
+            data-campaign-name="{{ campaigns_dict[active_script.campaign_id] }}"
+            data-created-at="{{ active_script.created_at.isoformat() }}"
+            data-status="{% if active_script.done %}done{% elif active_script.stopped %}stopped{% else %}running{% endif %}"
+            data-bots-involved="{{ active_script.bots_mapping | length }}">
+            <td>{{ active_script.id }}</td>
+            <td>{{ scripts_dict[active_script.script_id] }}</td>
+            <td>{{ campaigns_dict[active_script.campaign_id] }}</td>
+            <td>{{ active_script.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>
+                {% if active_script.done %}
+                    Done
+                {% elif active_script.stopped %}
+                    Stopped
+                {% else %}
+                    Running
+                {% endif %}
+            </td>
+            <td>
+                {{ active_script.bots_mapping | length }}
+            </td>
+            <td>
+                {% if not active_script.stopped and not active_script.done %}
+                <button class="stop-button" data-sfc-id="{{ active_script.id }}">Stop</button>
+                {% else %}
+                <span>N/A</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/scripts/custom-select.js"></script>
+<script src="/static/scripts/active_scripts.js"></script>
+{% endblock %}

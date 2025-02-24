@@ -7,7 +7,7 @@ from random import randint
 
 from abstractions.helpers.message import TelegramClientWrapper
 from abstractions.repositories import UOWInterface
-from abstractions.repositories.chat import ChatRepositoryInterface
+from abstractions.repositories.chat import ChatRepositoryInterface, ChatCreateDTO
 from abstractions.repositories.gpt import GPTRepositoryInterface
 from abstractions.repositories.message import MessageRepositoryInterface, MessageCreateDTO
 
@@ -28,6 +28,7 @@ class GPTUseCase:
     typing_and_sending_sleep_to: int
 
     batching_sleep: int
+    worker_id: str
 
     waiting_for_new_messages: dict[
         int, datetime
@@ -52,7 +53,13 @@ class GPTUseCase:
 
         if not chat:
             logger.info(f"Chat not found: {telegram_chat_id}")
-            return
+            chat = ChatCreateDTO(
+                telegram_chat_id=telegram_chat_id,
+                worker_id=self.worker_id,
+                username=await self.message_helper.get_username_by_chat_id(telegram_chat_id),
+                auto_reply=False,
+            )
+            chat = await self.chats_repo.create(chat)
 
         # if we are batching messages now, that means that we already opened a transaction.
         # So we can just add messages to the transaction and commit it later

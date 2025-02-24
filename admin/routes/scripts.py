@@ -1,19 +1,18 @@
 import json
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import RedirectResponse
-from fastapi.templating import Jinja2Templates
 
 from dependencies.usecases.scripts import get_scripts_use_case
 from domain.dto.script import ScriptCreateDTO, ScriptUpdateDTO, ScriptForCampaignCreateDTO
-from domain.models import Script as ScriptModel
+from .active_scripts import router as asrouter
+from .common import templates
 
 router = APIRouter(
     prefix="/scripts",
     tags=["Scripts"],
 )
-
-templates = Jinja2Templates(directory='templates')
+router.include_router(asrouter)
 
 
 @router.get("")
@@ -37,11 +36,22 @@ async def get_create_script(
 ):
     return templates.TemplateResponse(
         request=request,
-        name='script.html',
+        name='new_script.html',
         context={
 
         }
     )
+
+
+@router.get("/bots-count/{script_id}")
+async def get_script_bots_count(
+        script_id: str,
+) -> int:
+    script = await get_scripts_use_case().get_script(script_id)
+    print(script.messages)
+    res = max([x.bot_index for x in script.messages])
+    print(res)
+    return res
 
 
 @router.get("/{script_id}")
@@ -50,8 +60,12 @@ async def get_script(
         request: Request,
         # scripts: ScriptsUseCaseInterface = Depends(get_scripts_use_case),
 ):
+    if script_id == 'bots-count':
+        raise HTTPException(status_code=422, detail="It's not uuid, check your code")
+
     script = await get_scripts_use_case().get_script(script_id)
-    messages_object_string = f"[{', '.join([json.dumps(x.__dict__) for x in script.messages])}]"
+    messages_object_string = json.dumps([x.__dict__ for x in script.messages])
+    messages_object_string = messages_object_string.replace(r'\n', r'\\n')
     print(messages_object_string)
     return templates.TemplateResponse(
         request=request,
@@ -62,14 +76,6 @@ async def get_script(
             'messages_object': messages_object_string,
         }
     )
-
-
-@router.get("/bots-count/{script_id}")
-async def get_script_entity(
-        script_id: str,
-) -> int:
-    script = await get_scripts_use_case().get_script(script_id)
-    return len(set([x.bot_index for x in script.messages]))
 
 
 @router.post("")

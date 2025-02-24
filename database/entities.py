@@ -1,11 +1,10 @@
 import uuid
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Literal
 
-from sqlalchemy import String, Boolean, ForeignKey, BigInteger, func, TIMESTAMP
+from sqlalchemy import ForeignKey, BigInteger, func, TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID, JSONB
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, declarative_base, relationship
 
 Base = declarative_base()
 
@@ -14,9 +13,10 @@ class BaseEntity(Base):
     __abstract__ = True
 
     id: Mapped[str] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    created_at: Mapped[datetime] = mapped_column(TIMESTAMP, nullable=False, server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(TIMESTAMP, nullable=False, server_default=func.now(), onupdate=func.current_timestamp())
-    deleted_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, nullable=True, index=True, server_default=None)
+    created_at: Mapped[datetime] = mapped_column(TIMESTAMP, server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(TIMESTAMP, server_default=func.now(),
+                                                 onupdate=func.current_timestamp())
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, index=True, server_default=None)
 
     def soft_delete(self):
         self.deleted_at = datetime.now()
@@ -28,65 +28,82 @@ class BaseEntity(Base):
 class Worker(BaseEntity):
     __tablename__ = 'workers'
 
-    app_id: Mapped[str] = mapped_column(String, nullable=False)
-    app_hash: Mapped[str] = mapped_column(String, nullable=False)
-    session_string: Mapped[str] = mapped_column(String, nullable=False)
-    proxy: Mapped[str] = mapped_column(String, nullable=True)
-    campaign_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('campaigns.id'), nullable=True)
-    role: Mapped[str] = mapped_column(String, nullable=False, server_default='parser')
-    status: Mapped[str] = mapped_column(String, nullable=False, server_default='stoped')
-    username: Mapped[str] = mapped_column(String, nullable=False)
-    bio: Mapped[str] = mapped_column(String, nullable=True)
+    app_id: Mapped[str]
+    app_hash: Mapped[str]
+    session_string: Mapped[str]
+    proxy: Mapped[Optional[str]]
+    campaign_id: Mapped[Optional[str]] = mapped_column(UUID(as_uuid=True), ForeignKey('campaigns.id'), nullable=True)
+    role: Mapped[str] = mapped_column(server_default='parser')
+    status: Mapped[str] = mapped_column(server_default='stoped')
+    username: Mapped[str]
+    bio: Mapped[Optional[str]]
+
+    chats: Mapped[Optional[list[str]]] = mapped_column(JSONB)
 
 
 class GPT(BaseEntity):
     __tablename__ = 'gpt_settings'
 
-    model: Mapped[str] = mapped_column(String, nullable=False)
-    assistant: Mapped[str] = mapped_column(String, nullable=True)
-    token: Mapped[str] = mapped_column(String, nullable=False)
-    service_prompt: Mapped[str] = mapped_column(String, nullable=True)
-    proxy: Mapped[str] = mapped_column(String, nullable=True)
+    name: Mapped[str]
+    model: Mapped[str]
+    assistant: Mapped[Optional[str]]
+    token: Mapped[str]
+    service_prompt: Mapped[Optional[str]]
+    proxy: Mapped[Optional[str]]
 
 
 class Campaign(BaseEntity):
     __tablename__ = 'campaigns'
 
-    welcome_message: Mapped[str] = mapped_column(String, nullable=False)
-    chats: Mapped[list[str]] = mapped_column(JSONB, nullable=False)
-    plus_keywords: Mapped[list[str]] = mapped_column(JSONB, nullable=False)
-    minus_keywords: Mapped[list[str]] = mapped_column(JSONB, nullable=False)
-    gpt_settings_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('gpt_settings.id'), nullable=False)
-    scope: Mapped[str] = mapped_column(String, nullable=False)
-    new_lead_wait_interval_seconds: Mapped[str] = mapped_column(String, nullable=False, server_default='180-300')
-    chat_answer_wait_interval_seconds: Mapped[str] = mapped_column(String, nullable=False, server_default='15-30')
+    # TODO: review nullability
+    name: Mapped[str]
+    scope: Mapped[str]
+    enabled: Mapped[Optional[bool]]
+    type: Mapped[Optional[Literal["Native integration", "Monitoring"]]]
+    new_lead_wait_interval_seconds: Mapped[Optional[str]] = mapped_column(server_default='180-300')
+    chat_answer_wait_interval_seconds: Mapped[Optional[str]] = mapped_column(server_default='15-30')
+
+    # only monitoring
+    welcome_message: Mapped[Optional[str]]
+    chats: Mapped[Optional[list[str]]] = mapped_column(JSONB)
+    plus_keywords: Mapped[Optional[list[str]]] = mapped_column(JSONB)
+    minus_keywords: Mapped[Optional[list[str]]] = mapped_column(JSONB)
+    gpt_settings_id: Mapped[Optional[str]] = mapped_column(UUID(as_uuid=True), ForeignKey('gpt_settings.id'))
 
 
 class Chat(BaseEntity):
     __tablename__ = 'chats'
 
-    campaign_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('campaigns.id'), nullable=False)
-    worker_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('workers.id'), nullable=False)
-    telegram_chat_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
-    username: Mapped[str] = mapped_column(String, nullable=False)
-    status: Mapped[str] = mapped_column(String, nullable=False)
-    lead_message: Mapped[str] = mapped_column(String, nullable=False)
-    lead_chat_id: Mapped[str] = mapped_column(String, nullable=False)
-    auto_reply: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default='true')
+    campaign_id: Mapped[Optional[str]] = mapped_column(UUID(as_uuid=True), ForeignKey('campaigns.id'))
+    worker_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('workers.id'))
+    telegram_chat_id: Mapped[int] = mapped_column(BigInteger)
+    username: Mapped[Optional[str]]
+    status: Mapped[Optional[str]]
+    lead_message: Mapped[Optional[str]]
+    lead_chat_id: Mapped[Optional[str]]
+    auto_reply: Mapped[bool] = mapped_column(server_default='true')
 
 
 class Message(BaseEntity):
     __tablename__ = 'messages'
 
-    chat_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('chats.id'), nullable=False)
-    text: Mapped[str] = mapped_column(String, nullable=False)
-    is_outgoing: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    chat_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey('chats.id'))
+    text: Mapped[str]
+    is_outgoing: Mapped[bool]
 
 
-class Script(BaseEntity):
-    __tablename__ = 'scripts'
+class BotBundle(BaseEntity):
+    __tablename__ = 'bots_bundles'
 
     name: Mapped[str]
-    type: Mapped[str]
-    bots_count: Mapped[int]
-    messages: Mapped[dict[int, str]] = mapped_column(JSONB)
+    bots: Mapped[list[Worker]] = relationship(
+        'Worker',
+        secondary='bots_bundles_mappings',
+    )
+
+
+class BotBundleMapping(BaseEntity):
+    __tablename__ = 'bots_bundles_mappings'
+
+    bot_id: Mapped[UUID] = mapped_column(ForeignKey('workers.id'))
+    bundle_id: Mapped[UUID] = mapped_column(ForeignKey('bots_bundles.id'))

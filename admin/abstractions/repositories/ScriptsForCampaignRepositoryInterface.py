@@ -11,4 +11,6 @@ class ScriptsForCampaignRepositoryInterface(
     ],
     ABC,
 ):
-    ...
+    @abstractmethod
+    async def stop_active_script(self, sfc_id: str) -> bool:
+        ...

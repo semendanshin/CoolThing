@@ -108,7 +108,7 @@
             {% for campaign in campaigns %}
                 <a href="/campaigns/{{ campaign.id }}">
                     <div class="item-card" data-scope="{{ campaign.scope }}" data-gpt-settings-id="{{ campaign.gpt_settings_id }}">
-                        <h3>{{ campaign.id }}</h3>
+                        <h3>{{ campaign.name }}</h3>
                         <p><strong>Scope:</strong> {{ campaign.scope }}</p>
                         <p><strong>Welcome Message:</strong> {{ campaign.welcome_message }}</p>
                         <p><strong>Chats:</strong> {% if campaign.chats %}{{ campaign.chats | join(", ") }}{% else %}No chats{% endif %}</p>

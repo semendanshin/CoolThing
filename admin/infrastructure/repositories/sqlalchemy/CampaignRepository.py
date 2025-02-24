@@ -14,6 +14,7 @@ class CampaignRepository(
     def entity_to_model(self, entity: Campaign) -> CampaignModel:
         return CampaignModel(
             id=str(entity.id),
+            name=entity.name,
             welcome_message=entity.welcome_message,
             chats=entity.chats,
             plus_keywords=entity.plus_keywords,
@@ -22,11 +23,14 @@ class CampaignRepository(
             scope=entity.scope,
             new_lead_wait_interval_seconds=entity.new_lead_wait_interval_seconds,
             chat_answer_wait_interval_seconds=entity.chat_answer_wait_interval_seconds,
+            enabled=entity.enabled,
+            type=entity.type,
         )
 
     def model_to_entity(self, model: CampaignModel) -> Campaign:
         return Campaign(
             id=model.id,
+            name=model.name,
             welcome_message=model.welcome_message,
             chats=model.chats,
             plus_keywords=model.plus_keywords,
@@ -35,4 +39,6 @@ class CampaignRepository(
             scope=model.scope,
             new_lead_wait_interval_seconds=model.new_lead_wait_interval_seconds,
             chat_answer_wait_interval_seconds=model.chat_answer_wait_interval_seconds,
+            enabled=model.enabled,
+            type=model.type,
         )

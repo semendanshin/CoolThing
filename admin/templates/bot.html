@@ -30,7 +30,8 @@
 
         <div class="row">
             <label for="bio" class="field-label">Bio</label>
-            <textarea class="input-field" id="bio" name="bio">{% if bot.bio != None %}{{ bot.bio }}{% endif %}</textarea>
+            <textarea class="input-field" id="bio" name="bio">{% if bot.bio != None %}
+                {{ bot.bio }}{% endif %}</textarea>
         </div>
 
         <div class="row">
@@ -74,6 +75,12 @@
                 <option value="manager" {% if bot.role == 'manager' %}selected{% endif %}>Manager</option>
                 <option value="parser" {% if bot.role == 'parser' %}selected{% endif %}>Parser</option>
             </select>
+        </div>
+
+        <div class="row">
+            <label for="bot_chats" class="field-label">Chats</label>
+            <textarea class="input-field" id="bot_chats"
+                      name="chats">{{ bot.chats | join("\n") | safe}}</textarea>
         </div>
 
         <div class="row">

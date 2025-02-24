@@ -1,8 +1,8 @@
 include:
-  - ./database/db-compose.yaml
+  - ./database/db-compose-side.yaml
   - rabbit_mq/rabbit-compose.yaml
   - fluentd/fluentd-compose.yaml
-  - scripts_database/scripts-db-compose.yaml
+#  - scripts_database/scripts-db-compose.yaml
 
 
 services:
@@ -32,18 +32,66 @@ services:
       options:
         fluentd-address: 127.0.0.1:24224
         tag: watchdog
-  bot:
+#  bot:
+#    build:
+#      context: ./bot
+#      dockerfile: Dockerfile
+#    container_name: cool_thing_bot
+#    restart: unless-stopped
+#    networks:
+#      - bridge
+#    volumes:
+#      - ./bot/settings.json:/app/settings.json
+#      - /etc/localtime:/etc/localtime:ro
+#      - /etc/timezone:/etc/timezone:ro
+#    depends_on:
+#      fluentd:
+#        condition: service_started
+#      queue:
+#        condition: service_healthy
+#    logging:
+#      driver: fluentd
+#      options:
+#        fluentd-address: 127.0.0.1:24224
+#        tag: bot
+#  scripts:
+#    build:
+#      context: ./scripts
+#      dockerfile: Dockerfile
+#    container_name: cool_thing_scripts
+#    restart: unless-stopped
+#    networks:
+#      - bridge
+#    volumes:
+#      - ./scripts/settings.json:/app/settings.json
+#      - /etc/localtime:/etc/localtime:ro
+#      - /etc/timezone:/etc/timezone:ro
+#    depends_on:
+#      fluentd:
+#        condition: service_started
+#      queue:
+#        condition: service_healthy
+#      scripts-watcher:
+#        condition: service_started
+#    logging:
+#      driver: fluentd
+#      options:
+#        fluentd-address: 127.0.0.1:24224
+#        tag: scripts
+  scripts-watchdog:
     build:
-      context: ./bot
+      context: ./scripts_watchdog
       dockerfile: Dockerfile
-    container_name: cool_thing_bot
+    container_name: cool_thing_scripts_watchdog
     restart: unless-stopped
     networks:
       - bridge
     volumes:
-      - ./bot/settings.json:/app/settings.json
+      - ./scripts_watchdog/settings.json:/app/settings.json
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts_watchdog/tmp:/app/tmp
     depends_on:
       fluentd:
         condition: service_started
@@ -53,7 +101,29 @@ services:
       driver: fluentd
       options:
         fluentd-address: 127.0.0.1:24224
-        tag: bot
+        tag: scripts-watchdog
+  scripts-watcher:
+    build:
+      context: ./scripts_watcher
+      dockerfile: Dockerfile
+    container_name: cool_thing_scripts_watcher
+    restart: unless-stopped
+    networks:
+      - bridge
+    volumes:
+#      - ./scripts_watcher/settings.json:/app/settings.json
+#      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      TZ: "Europe/Moscow"
+    depends_on:
+      fluentd:
+        condition: service_started
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
+        tag: scripts-watcher
   admin:
     build:
       context: ./admin
@@ -80,6 +150,32 @@ services:
       options:
         fluentd-address: 127.0.0.1:24224
         tag: admin
+  notifier:
+    build:
+      context: ./notifier
+      dockerfile: Dockerfile
+    container_name: cool_thing_notifier
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+    restart: unless-stopped
+    networks:
+      - bridge
+    volumes:
+      - ./notifier/settings.json:/app/settings.json
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    depends_on:
+      fluentd:
+        condition: service_started
+      db:
+        condition: service_healthy
+    ports:
+      - "8085:8080"
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 127.0.0.1:24224
+        tag: notifier
+
 
 networks:
   bridge:

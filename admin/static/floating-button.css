@@ -19,3 +19,12 @@
 .floating-button:hover {
     background-color: var(--hover-color);
 }
+
+.floating-button.stop-button {
+    bottom: 70px; /* Adjust position for second button */
+    background-color: #bb1111;
+}
+
+.floating-button.stop-button:hover {
+    background-color: #e64e4e;
+}

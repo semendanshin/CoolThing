@@ -57,6 +57,7 @@ class SQLAlchemyWorkerRepository(
             status=entity.status,
             username=entity.username,
             bio=entity.bio,
+            chats=entity.chats,
         )
 
     def model_to_entity(self, model: WorkerModel) -> Worker:
@@ -71,4 +72,5 @@ class SQLAlchemyWorkerRepository(
             status=model.status,
             username=model.username,
             bio=model.bio,
+            chats=model.chats,
         )

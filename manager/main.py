@@ -116,6 +116,7 @@ async def main():
         typing_and_sending_sleep_from=settings.batch.typing_and_sending_sleep_from,
         typing_and_sending_sleep_to=settings.batch.typing_and_sending_sleep_to,
         batching_sleep=settings.batch.batching_sleep,
+        worker_id=settings.app.id,
     )
 
     target_message_use_case = TargetMessageEventHandler(
