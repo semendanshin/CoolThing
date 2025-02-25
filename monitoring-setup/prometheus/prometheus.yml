@@ -16,7 +16,7 @@ scrape_configs:
   # cAdvisor на хосте, порт 8080
   - job_name: 'cadvisor'
     static_configs:
-      - targets: ['localhost:8080']
+      - targets: ['localhost:8081']
 
   # PostgreSQL Exporter (в bridge) => порт 9187 проброшен на хост => localhost:9187
   - job_name: 'postgres_exporter'

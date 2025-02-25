@@ -38,6 +38,8 @@ services:
     container_name: cadvisor
     network_mode: "host"
     privileged: true  # Чтобы видеть cgroup/метрики Docker
+    command:
+      - "--port=8081"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
