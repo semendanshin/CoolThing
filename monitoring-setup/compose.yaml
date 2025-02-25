@@ -5,10 +5,13 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
-    network_mode: "host"         # Используем сеть хоста
+#    network_mode: "host"         # Используем сеть хоста
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
+    networks:
+      - host
+      - monitoring
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -24,7 +27,9 @@ services:
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
-    network_mode: "host"
+#    network_mode: "host"
+    networks:
+      - host
     # pid: host  # При необходимости для дополнительных метрик /proc/1
     # privileged: true # Обычно не нужно, попробуйте без
     # ports: не нужны в host-сети
@@ -36,8 +41,10 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
-    network_mode: "host"
+#    network_mode: "host"
     privileged: true  # Чтобы видеть cgroup/метрики Docker
+    networks:
+      - host
     command:
       - "--port=8081"
     volumes:
