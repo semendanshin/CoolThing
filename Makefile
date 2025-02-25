@@ -22,6 +22,10 @@ mn:
 	@echo "Creating network..."
 	docker network create --driver bridge $(NETWORK_NAME)
 
+mmn:
+	@echo "Creating monitoring network..."
+	docker network create --driver bridge monitoring
+
 gp:
 	git add $(s)
 	git status

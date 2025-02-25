@@ -2,36 +2,37 @@ include:
   - ./database/db-compose-side.yaml
   - rabbit_mq/rabbit-compose.yaml
   - fluentd/fluentd-compose.yaml
-#  - scripts_database/scripts-db-compose.yaml
+  - scripts_database/scripts-db-compose.yaml
+  - monitoring-setup/compose.yaml
 
 
 services:
-  watchdog:
-    build:
-      context: ./watchdog
-      dockerfile: Dockerfile
-    container_name: cool_thing_watchdog
-    restart: unless-stopped
-    networks:
-      - bridge
-    volumes:
-      - ./watchdog/tmp:/app/tmp
-      - ./watchdog/settings.json:/app/settings.json
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/localtime:/etc/localtime:ro
-    depends_on:
-      fluentd:
-        condition: service_started
-      db:
-        condition: service_healthy
-      queue:
-        condition: service_healthy
-    stop_grace_period: 2m
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: 127.0.0.1:24224
-        tag: watchdog
+#  watchdog:
+#    build:
+#      context: ./watchdog
+#      dockerfile: Dockerfile
+#    container_name: cool_thing_watchdog
+#    restart: unless-stopped
+#    networks:
+#      - bridge
+#    volumes:
+#      - ./watchdog/tmp:/app/tmp
+#      - ./watchdog/settings.json:/app/settings.json
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - /etc/localtime:/etc/localtime:ro
+#    depends_on:
+#      fluentd:
+#        condition: service_started
+#      db:
+#        condition: service_healthy
+#      queue:
+#        condition: service_healthy
+#    stop_grace_period: 2m
+#    logging:
+#      driver: fluentd
+#      options:
+#        fluentd-address: 127.0.0.1:24224
+#        tag: watchdog
 #  bot:
 #    build:
 #      context: ./bot

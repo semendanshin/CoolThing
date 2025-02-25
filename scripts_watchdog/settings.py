@@ -70,6 +70,7 @@ class NotifierSettings(BaseSettings):
 
 class WatchdogSettings(BaseSettings):
     root_config_path: Path
+    interval_seconds: int
 
 
 class Settings(BaseSettings):

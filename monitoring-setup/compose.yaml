@@ -1,0 +1,113 @@
+services:
+  # ==============================
+  # 1) Prometheus (host network)
+  # ==============================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    network_mode: "host"         # Используем сеть хоста
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+    # ports: здесь не нужны, т.к. host-сеть = 9090 уже «занят» на уровне хоста
+    # Тем не менее можно оставить "9090:9090" — Docker просто проигнорирует
+    restart: unless-stopped
+
+  # ==============================
+  # 2) Node Exporter (host network)
+  # ==============================
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    network_mode: "host"
+    # pid: host  # При необходимости для дополнительных метрик /proc/1
+    # privileged: true # Обычно не нужно, попробуйте без
+    # ports: не нужны в host-сети
+    restart: unless-stopped
+
+  # ==============================
+  # 3) cAdvisor (host network)
+  # ==============================
+  cadvisor:
+    image: gcr.io/google-containers/cadvisor:latest
+    container_name: cadvisor
+    network_mode: "host"
+    privileged: true  # Чтобы видеть cgroup/метрики Docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    # ports: не нужны в host-сети (по умолчанию cAdvisor слушает 8080)
+    restart: unless-stopped
+
+  # ==============================
+  # 4) Alertmanager (bridge network)
+  # ==============================
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    networks:
+      - monitoring
+    ports:
+      - "9093:9093"   # Чтобы на хосте было http://<server_ip>:9093
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    restart: unless-stopped
+
+  # ==============================
+  # 5) Grafana (bridge network)
+  # ==============================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    networks:
+      - monitoring
+    ports:
+      - "3000:3000"   # Графана на http://<server_ip>:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+
+  # ==============================
+  # 6) PostgreSQL Exporter (bridge)
+  # ==============================
+  postgres-exporter:
+    image: wrouesnel/postgres_exporter
+    container_name: postgres-exporter
+    networks:
+      - monitoring
+    ports:
+      - "9187:9187"   # Хост: http://<server_ip>:9187/metrics
+    env_file:
+      - ./exporters/postgres_exporter.env
+    restart: unless-stopped
+
+  # ==============================
+  # 7) MongoDB Exporter (bridge)
+  # ==============================
+  mongo-exporter:
+    image: percona/mongodb_exporter:0.43.1
+    container_name: mongo-exporter
+    networks:
+      - monitoring
+    ports:
+      - "9216:9216"
+    env_file:
+      - ./exporters/mongodb_exporter.env
+    restart: unless-stopped
+
+volumes:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  monitoring:
+    driver: bridge
+    name: monitoring
+    attachable: true
