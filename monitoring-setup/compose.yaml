@@ -34,7 +34,7 @@ services:
   # 3) cAdvisor (host network)
   # ==============================
   cadvisor:
-    image: gcr.io/google-containers/cadvisor:latest
+    image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
     network_mode: "host"
     privileged: true  # Чтобы видеть cgroup/метрики Docker
