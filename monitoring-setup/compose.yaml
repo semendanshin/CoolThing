@@ -81,6 +81,8 @@ services:
     networks:
       - monitoring
       - default
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "3000:3000"   # Графана на http://<server_ip>:3000
     volumes:
