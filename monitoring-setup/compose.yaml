@@ -25,9 +25,9 @@ services:
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
-#    network_mode: "host"
-    networks:
-      - host
+    network_mode: "host"
+#    networks:
+#      - host
     # pid: host  # При необходимости для дополнительных метрик /proc/1
     # privileged: true # Обычно не нужно, попробуйте без
     # ports: не нужны в host-сети
