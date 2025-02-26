@@ -18,6 +18,7 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention.time=30d'
       - '--web.enable-lifecycle'
+      - '--web.config.file=web.yml'
       - '--web.basic-auth-user=admin'
       - '--web.basic-auth-password=$PROMETHEUS_PASSWORD'
     restart: unless-stopped
