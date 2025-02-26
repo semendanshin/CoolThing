@@ -81,8 +81,6 @@ services:
     networks:
       - monitoring
       - default
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     ports:
       - "3000:3000"   # Графана на http://<server_ip>:3000
     volumes:
@@ -95,13 +93,16 @@ services:
   postgres-exporter:
     image: wrouesnel/postgres_exporter
     container_name: postgres-exporter
-    networks:
-      - monitoring
+    restart: unless-stopped
     ports:
-      - "9187:9187"   # Хост: http://<server_ip>:9187/metrics
+      - "9187:9187"  # Prometheus будет собирать метрики через этот порт
     env_file:
       - ./exporters/postgres_exporter.env
-    restart: unless-stopped
+    # Формируем DSN для подключения к PostgreSQL. Здесь используется имя хоста "db" (alias для сервиса db)
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable"
+    networks:
+      infrastructure:
 
   # ==============================
   # 7) MongoDB Exporter (bridge)

@@ -17,7 +17,29 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - bridge
+      infrastructure:
+        aliases:
+          - db
+
+  db-init:
+    image: postgres:15
+    container_name: db-init
+    depends_on:
+      - db
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    command: >
+      bash -c "until pg_isready -h db -p 5432 -U ${POSTGRES_USER}; do echo waiting for db; sleep 5; done;
+      psql -h db -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c 'ALTER USER ${POSTGRES_USER} WITH pg_monitor;'"
+    networks:
+      - infrastructure
+    restart: "no"
 
 volumes:
   cool_thing_postgres_data_2:
+
+networks:
+  infrastructure:
+    driver: bridge
+    name: infrastructure
+    attachable: true
