@@ -39,9 +39,9 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
-#    network_mode: "host"
-    networks:
-      - host
+    network_mode: "host"
+#    networks:
+#      - host
     privileged: true  # Чтобы видеть cgroup/метрики Docker
     command:
       - "--port=8081"
