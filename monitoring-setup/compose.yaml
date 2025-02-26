@@ -2,21 +2,21 @@ services:
   # ==============================
   # 1) Prometheus (host network)
   # ==============================
-prometheus:
-  image: prom/prometheus:latest
-  container_name: prometheus
-  network_mode: "host"
-  volumes:
-    - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    - prometheus_data:/prometheus
-  command:
-    - '--config.file=/etc/prometheus/prometheus.yml'
-    - '--storage.tsdb.path=/prometheus'
-    - '--storage.tsdb.retention.time=30d'
-    - '--web.enable-lifecycle'
-    - '--web.basic-auth-user=admin'
-    - '--web.basic-auth-password=SuperSecretPassword'
-  restart: unless-stopped
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    network_mode: "host"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+      - '--web.basic-auth-user=admin'
+      - '--web.basic-auth-password=SuperSecretPassword'
+    restart: unless-stopped
 
 
   # ==============================
