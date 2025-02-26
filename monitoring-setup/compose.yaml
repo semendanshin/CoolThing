@@ -128,4 +128,3 @@ networks:
     name: monitoring
     attachable: true
   infrastructure:
-    external: true
