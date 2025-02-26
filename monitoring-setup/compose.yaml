@@ -97,7 +97,7 @@ services:
     ports:
       - "9187:9187"  # Prometheus будет собирать метрики через этот порт
     env_file:
-      - ./exporters/postgres_exporter.env
+      - ./monitoring-setup/exporters/postgres_exporter.env
     # Формируем DSN для подключения к PostgreSQL. Здесь используется имя хоста "db" (alias для сервиса db)
     environment:
       DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable"
