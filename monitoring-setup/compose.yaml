@@ -2,24 +2,22 @@ services:
   # ==============================
   # 1) Prometheus (host network)
   # ==============================
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-#    network_mode: "host"         # Используем сеть хоста
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - prometheus_data:/prometheus
-    networks:
-      - host
-      - monitoring
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=30d'
-      - '--web.enable-lifecycle'
-    # ports: здесь не нужны, т.к. host-сеть = 9090 уже «занят» на уровне хоста
-    # Тем не менее можно оставить "9090:9090" — Docker просто проигнорирует
-    restart: unless-stopped
+prometheus:
+  image: prom/prometheus:latest
+  container_name: prometheus
+  network_mode: "host"
+  volumes:
+    - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    - prometheus_data:/prometheus
+  command:
+    - '--config.file=/etc/prometheus/prometheus.yml'
+    - '--storage.tsdb.path=/prometheus'
+    - '--storage.tsdb.retention.time=30d'
+    - '--web.enable-lifecycle'
+    - '--web.basic-auth-user=admin'
+    - '--web.basic-auth-password=SuperSecretPassword'
+  restart: unless-stopped
+
 
   # ==============================
   # 2) Node Exporter (host network)
