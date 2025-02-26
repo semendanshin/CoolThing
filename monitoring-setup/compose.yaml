@@ -14,6 +14,7 @@ services:
       PROMETHEUS_USER: ${PROMETHEUS_USER}
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.listen-address=0.0.0.0:9090'
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention.time=30d'
       - '--web.enable-lifecycle'
