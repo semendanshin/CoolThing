@@ -11,6 +11,7 @@ services:
       - prometheus_data:/prometheus
     environment:
       PROMETHEUS_PASSWORD: ${PROMETHEUS_PASSWORD}
+      PROMETHEUS_USER: ${PROMETHEUS_USER}
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
