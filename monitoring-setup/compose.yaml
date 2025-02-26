@@ -8,7 +8,7 @@ services:
     network_mode: "host"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ./prometheus/web.yml:/etc/prometheus/web.yml:ro
+      - ./web.yml:/etc/prometheus/web.yml:ro
       - prometheus_data:/prometheus
     environment:
       PROMETHEUS_PASSWORD: ${PROMETHEUS_PASSWORD}
