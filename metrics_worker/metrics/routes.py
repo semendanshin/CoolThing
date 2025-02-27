@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Response
 from prometheus_client import generate_latest, CollectorRegistry, Gauge
 
-from scripts_watchdog.abstractions.repositories.CampaignRepositoryInterface import CampaignRepositoryInterface
-from scripts_watchdog.abstractions.repositories.ScriptsForCampaignRepositoryInterface import \
+from abstractions.repositories.CampaignRepositoryInterface import CampaignRepositoryInterface
+from abstractions.repositories.ScriptsForCampaignRepositoryInterface import \
     ScriptsForCampaignRepositoryInterface
-from scripts_watchdog.abstractions.repositories.ScriptsRepositoryInterface import ScriptsRepositoryInterface
-from scripts_watchdog.abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
+from abstractions.repositories.ScriptsRepositoryInterface import ScriptsRepositoryInterface
+from abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
 # Импортируем MetricsService с вашими зависимостями
 from .service import MetricsService
 
