@@ -85,6 +85,8 @@ services:
       - "3000:3000"   # Графана на http://<server_ip>:3000
     volumes:
       - grafana_data:/var/lib/grafana
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
 
   # ==============================
