@@ -7,7 +7,7 @@ from abstractions.repositories.WorkersRepositoryInterface import WorkersReposito
 
 
 @dataclass
-class MetricsService():
+class MetricsService:
     scripts_repo: ScriptsRepositoryInterface
     scripts_for_campaign_repo: ScriptsForCampaignRepositoryInterface
     campaign_repo: CampaignRepositoryInterface
@@ -33,6 +33,7 @@ class MetricsService():
 
     async def get_grouped_scripts_by_bots(self):
         return self.scripts_for_campaign_repo.get_grouped_scripts_by_bots()
+
     async def get_grouped_scripts_by_chats(self):
         return self.scripts_for_campaign_repo.get_grouped_scripts_by_chats()
 
@@ -41,4 +42,3 @@ class MetricsService():
 
     async def get_chats_statistics(self, n: int):
         return self.scripts_for_campaign_repo.get_chats_statistics_by_n_last_days(n=n)
-

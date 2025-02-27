@@ -6,6 +6,10 @@ from abstractions.repositories.ScriptsForCampaignRepositoryInterface import \
     ScriptsForCampaignRepositoryInterface
 from abstractions.repositories.ScriptsRepositoryInterface import ScriptsRepositoryInterface
 from abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
+from repositories.beanie.ScriptsForCampaignRepository import ScriptsForCampaignRepository
+from repositories.beanie.ScriptsRepository import ScriptsRepository
+from repositories.sqlalchemy.CampaignRepository import CampaignRepository
+from repositories.sqlalchemy.WorkersRepository import SQLAlchemyWorkerRepository
 # Импортируем MetricsService с вашими зависимостями
 from .service import MetricsService
 
@@ -46,10 +50,10 @@ chats_skipped_last_7 = Gauge('chats_skipped_last_7_days', 'Количество 
 
 # Инициализируйте MetricsService, передав в него реальные реализации репозиториев
 metrics_service = MetricsService(
-    scripts_repo=ScriptsRepositoryInterface(),
-    scripts_for_campaign_repo=ScriptsForCampaignRepositoryInterface(),
-    campaign_repo=CampaignRepositoryInterface(),
-    workers_repo=WorkersRepositoryInterface()
+    scripts_repo=ScriptsRepository(),
+    scripts_for_campaign_repo=ScriptsForCampaignRepository(),
+    campaign_repo=CampaignRepository(),
+    workers_repo=SQLAlchemyWorkerRepository()
 )
 
 
