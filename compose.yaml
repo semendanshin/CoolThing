@@ -176,6 +176,21 @@ services:
       options:
         fluentd-address: 127.0.0.1:24224
         tag: notifier
+  metrics-worker:
+    app:
+      build: ./metrics_worker
+      container_name: coolthing_metrics_app
+      ports:
+        - "8000:8080"
+      networks:
+        - default
+        - monitoring
+      restart: unless-stopped
+      logging:
+        driver: fluentd
+        options:
+          fluentd-address: 127.0.0.1:24224
+          tag: metrics-worker
 
 
 networks:

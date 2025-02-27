@@ -1,14 +1,13 @@
-import uvicorn
-from fastapi import APIRouter, FastAPI, Response
+from fastapi import APIRouter, Response
 from prometheus_client import generate_latest, CollectorRegistry, Gauge
-# Импортируем MetricsService с вашими зависимостями
-from .service import MetricsService
 
 from scripts_watchdog.abstractions.repositories.CampaignRepositoryInterface import CampaignRepositoryInterface
 from scripts_watchdog.abstractions.repositories.ScriptsForCampaignRepositoryInterface import \
     ScriptsForCampaignRepositoryInterface
 from scripts_watchdog.abstractions.repositories.ScriptsRepositoryInterface import ScriptsRepositoryInterface
 from scripts_watchdog.abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
+# Импортируем MetricsService с вашими зависимостями
+from .service import MetricsService
 
 router = APIRouter()
 registry = CollectorRegistry()
@@ -114,10 +113,3 @@ async def update_business_metrics():
 async def metrics():
     await update_business_metrics()
     return Response(generate_latest(registry), media_type='text/plain')
-
-
-app = FastAPI()
-app.include_router(router)
-
-if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=8000)
