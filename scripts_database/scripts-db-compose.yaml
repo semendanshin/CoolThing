@@ -1,6 +1,6 @@
 services:
   scripts-db:
-    image: mongodb/mongodb-community-server:5.0.2-ubuntu2004
+    image: mongodb/mongodb-community-server:latest
     container_name: coolthing-scripts-db
     ports:
       - "27017:27017"
