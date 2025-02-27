@@ -120,6 +120,16 @@ services:
       - ./exporters/mongodb_exporter.env
     restart: unless-stopped
 
+  app:
+    build: ./app
+    container_name: fastapi_metrics_app
+    ports:
+      - "8000:8000"
+    networks:
+      - default
+      - monitoring
+    restart: unless-stopped
+
 volumes:
   prometheus_data:
   grafana_data:
