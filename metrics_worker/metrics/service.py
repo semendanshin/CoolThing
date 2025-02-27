@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
-from scripts_watchdog.abstractions.repositories.CampaignRepositoryInterface import CampaignRepositoryInterface
-from scripts_watchdog.abstractions.repositories.ScriptsForCampaignRepositoryInterface import ScriptsForCampaignRepositoryInterface
-from scripts_watchdog.abstractions.repositories.ScriptsRepositoryInterface import ScriptsRepositoryInterface
-from scripts_watchdog.abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
+from abstractions.repositories.CampaignRepositoryInterface import CampaignRepositoryInterface
+from abstractions.repositories.ScriptsForCampaignRepositoryInterface import ScriptsForCampaignRepositoryInterface
+from abstractions.repositories.ScriptsRepositoryInterface import ScriptsRepositoryInterface
+from abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
 
 
 @dataclass
@@ -12,6 +12,7 @@ class MetricsService():
     scripts_for_campaign_repo: ScriptsForCampaignRepositoryInterface
     campaign_repo: CampaignRepositoryInterface
     workers_repo: WorkersRepositoryInterface
+
     async def get_today_scripts(self):
         return self.scripts_repo.get_scripts_by_n_last_days(n=1)
 
