@@ -7,6 +7,7 @@ services:
     env_file: .env
     networks:
       - bridge
+      - monitoring
     volumes:
       - type: bind
         source: ./data
