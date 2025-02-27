@@ -29,7 +29,7 @@ class ScriptForCampaign(Document):
     id: uuid.UUID
     script_id: uuid.UUID
     campaign_id: uuid.UUID
-    bots_mapping: dict[str, str]
+    bots_mapping: dict[str, str] #порядковый номер бота, id воркера
     created_at: datetime
     updated_at: datetime
 

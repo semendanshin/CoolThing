@@ -25,7 +25,7 @@ class BaseEntity(Base):
         self.deleted_at = None
 
 
-class Worker(BaseEntity):
+class Worker(BaseEntity):# это бот
     __tablename__ = 'workers'
 
     app_id: Mapped[str]

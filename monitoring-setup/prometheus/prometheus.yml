@@ -13,24 +13,28 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9100']
 
-  # cAdvisor на хосте, порт 8080
+  # cAdvisor на хосте, порт 8081
   - job_name: 'cadvisor'
     static_configs:
       - targets: ['localhost:8081']
 
-  # PostgreSQL Exporter (в bridge) => порт 9187 проброшен на хост => localhost:9187
+  # Бизнес-метрики (ваше приложение)
+  - job_name: 'business_metrics'
+    static_configs:
+      - targets: ['localhost:8000']
+
+  # PostgreSQL Exporter
   - job_name: 'postgres_exporter'
     static_configs:
       - targets: ['localhost:9187']
 
-  # MongoDB Exporter => localhost:9216
+  # MongoDB Exporter
   - job_name: 'mongodb_exporter'
     static_configs:
       - targets: ['localhost:9216']
 
 alerting:
   alertmanagers:
-    # Alertmanager проброшен на 9093 => http://localhost:9093
     - static_configs:
         - targets: ['localhost:9093']
 
