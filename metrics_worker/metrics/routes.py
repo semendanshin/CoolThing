@@ -1,6 +1,7 @@
 import asyncio
 from fastapi import APIRouter, Response
 from prometheus_client import generate_latest, CollectorRegistry, Gauge
+import ast
 
 from infrastructure.repositories.sqlalchemy import session_maker
 from repositories.beanie.ScriptsForCampaignRepository import ScriptsForCampaignRepository
@@ -84,19 +85,31 @@ metrics_service = MetricsService(
 )
 
 # Функция для получения имени кампании по campaign_id с декодированием, если необходимо
+
 async def get_campaign_name(campaign_id: str) -> str:
     try:
         campaign = await metrics_service.campaign_repo.get(campaign_id)
         if campaign and hasattr(campaign, 'name'):
             name = campaign.name
-            # Если имя хранится как байтовая строка – декодируем
+            # Если значение уже объект bytes – декодируем
             if isinstance(name, bytes):
                 return name.decode('utf-8')
+            # Если значение строка и выглядит как литерал байтов (например, "b'Campaign Name'")
+            if isinstance(name, str) and name.startswith("b'") and name.endswith("'"):
+                try:
+                    # Преобразуем строку в объект bytes с помощью ast.literal_eval
+                    evaluated = ast.literal_eval(name)
+                    if isinstance(evaluated, bytes):
+                        return evaluated.decode('utf-8')
+                except Exception:
+                    # Если не удалось оценить – просто удаляем префикс и суффикс
+                    return name[2:-1]
             return name
         else:
             return campaign_id
     except Exception:
         return campaign_id
+
 
 # Функция для получения username бота с декодированием, если необходимо
 def get_bot_username(raw_username) -> str:
