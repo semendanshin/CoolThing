@@ -114,7 +114,7 @@ async def update_business_metrics():
 
     # Обновляем метрики по чатам (используем campaign_name напрямую)
     for entry in grouped_chats:
-        campaign_name = entry['_id']
+        campaign_name = entry['name']
         total_runs = entry.get('total_runs', 0)
         skipped_runs = entry.get('skipped_runs', 0)
         chat_runs_total.labels(campaign_name=campaign_name).set(total_runs)

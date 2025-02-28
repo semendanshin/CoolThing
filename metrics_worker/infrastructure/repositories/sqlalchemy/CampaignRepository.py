@@ -4,6 +4,8 @@ from domain.models import Campaign as CampaignModel
 from infrastructure.entities import Campaign
 from infrastructure.repositories.sqlalchemy import AbstractSQLAlchemyRepository
 
+from sqlalchemy import select
+
 
 class CampaignRepository(
     AbstractSQLAlchemyRepository[
@@ -36,3 +38,14 @@ class CampaignRepository(
             new_lead_wait_interval_seconds=model.new_lead_wait_interval_seconds,
             chat_answer_wait_interval_seconds=model.chat_answer_wait_interval_seconds,
         )
+
+    async def get_campaign_names_by_ids(self, campaign_ids: list[str]) -> dict[str, str]:
+        """Fetch campaign names for a list of campaign IDs."""
+        async with self.session_maker() as session:
+            result = await session.execute(
+                select(Campaign.id, Campaign.name).where(Campaign.id.in_(campaign_ids))
+            )
+            campaigns = result.all()
+
+        # Convert list of tuples to dictionary {campaign_id: campaign_name}
+        return {str(campaign_id): campaign_name for campaign_id, campaign_name in campaigns}
