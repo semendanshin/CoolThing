@@ -23,3 +23,7 @@ class WorkersRepositoryInterface(
     @abstractmethod
     async def get_by_role(self, role: Literal['manager', 'parser']) -> list[Worker]:
         ...
+    @abstractmethod
+    async def get_bots_statistics(self) -> list:
+        ...
+

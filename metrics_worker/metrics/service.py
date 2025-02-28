@@ -14,31 +14,31 @@ class MetricsService:
     workers_repo: WorkersRepositoryInterface
 
     async def get_today_scripts(self):
-        return self.scripts_repo.get_scripts_by_n_last_days(n=1)
+        return await self.scripts_repo.get_scripts_by_n_last_days(n=1)
 
     async def get_week_scripts(self):
-        return self.scripts_repo.get_scripts_by_n_last_days(n=7)
+        return await self.scripts_repo.get_scripts_by_n_last_days(n=7)
 
     async def get_month_scripts(self):
-        return self.scripts_repo.get_scripts_by_n_last_days(n=30)
+        return await self.scripts_repo.get_scripts_by_n_last_days(n=30)
 
     async def get_all_scripts(self):
-        return self.scripts_repo.get_all()
+        return await self.scripts_repo.get_all()
 
     async def get_active_scripts(self):
-        return self.scripts_repo.get_active_scripts()
+        return await self.scripts_repo.get_active_scripts()
 
     async def get_grouped_scripts_by_campaign(self):
-        return self.scripts_for_campaign_repo.get_grouped_scripts_by_campaign()
+        return await self.scripts_for_campaign_repo.get_grouped_scripts_by_campaign()
 
     async def get_grouped_scripts_by_bots(self):
-        return self.scripts_for_campaign_repo.get_grouped_scripts_by_bots()
+        return await self.scripts_for_campaign_repo.get_grouped_scripts_by_bots()
 
     async def get_grouped_scripts_by_chats(self):
-        return self.scripts_for_campaign_repo.get_grouped_scripts_by_chats()
+        return await self.scripts_for_campaign_repo.get_grouped_scripts_by_chats()
 
     async def get_bots_statistics(self):
-        return self.workers_repo.get_bots_statistics()
+        return await self.workers_repo.get_bots_statistics()
 
     async def get_chats_statistics(self, n: int):
-        return self.scripts_for_campaign_repo.get_chats_statistics_by_n_last_days(n=n)
+        return await self.scripts_for_campaign_repo.get_chats_statistics_by_n_last_days(n=n)

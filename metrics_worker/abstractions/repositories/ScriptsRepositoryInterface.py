@@ -1,4 +1,5 @@
-from abc import ABC
+from abc import ABC, abstractmethod
+from typing import List
 
 from abstractions.repositories import CRUDRepositoryInterface
 from domain.dto.script import ScriptCreateDTO, ScriptUpdateDTO
@@ -11,4 +12,10 @@ class ScriptsRepositoryInterface(
     ],
     ABC,
 ):
-    ...
+    @abstractmethod
+    async def get_scripts_by_n_last_days(self, n: int) -> List[Script]:
+        ...
+
+    @abstractmethod
+    async def get_active_scripts(self, active_minutes: int = 15) -> List[Script]:
+        ...
