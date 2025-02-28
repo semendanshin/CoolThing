@@ -20,6 +20,7 @@ class ScriptsRepository(
         threshold = datetime.now() - timedelta(days=n)
         logger.info("лол")
         logger.info(self.entity.__dict__)
+        logger.info(self.entity.find_all())
         # Фильтруем по дате создания
         scripts = await self.entity.find(self.entity.created_at >= threshold).to_list()
         return [self.entity_to_model(script) for script in scripts]
