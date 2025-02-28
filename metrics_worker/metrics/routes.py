@@ -138,4 +138,6 @@ async def update_business_metrics():
 @router.get('/metrics')
 async def metrics():
     await update_business_metrics()
-    return Response(generate_latest(registry), media_type='text/plain')
+    a = generate_latest(registry)
+    print(a)
+    return Response(a, media_type='text/plain')
