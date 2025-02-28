@@ -184,6 +184,7 @@ services:
     networks:
       - default
       - monitoring
+      - infrastructure
     restart: unless-stopped
     logging:
       driver: fluentd
