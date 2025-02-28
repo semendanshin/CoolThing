@@ -21,7 +21,7 @@ class ScriptsRepository(
         logger.info("лол")
         logger.info(self.entity.__dict__)
         logger.info("тут")
-        logger.info(self.entity.find_all())
+        logger.info(await self.entity.find_all())
         logger.info("там")
         # Фильтруем по дате создания
         scripts = await self.entity.find(self.entity.created_at >= threshold).to_list()
