@@ -1,17 +1,12 @@
+import asyncio
 from fastapi import APIRouter, Response
 from prometheus_client import generate_latest, CollectorRegistry, Gauge
 
-from abstractions.repositories.CampaignRepositoryInterface import CampaignRepositoryInterface
-from abstractions.repositories.ScriptsForCampaignRepositoryInterface import \
-    ScriptsForCampaignRepositoryInterface
-from abstractions.repositories.ScriptsRepositoryInterface import ScriptsRepositoryInterface
-from abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
 from infrastructure.repositories.sqlalchemy import session_maker
 from repositories.beanie.ScriptsForCampaignRepository import ScriptsForCampaignRepository
 from repositories.beanie.ScriptsRepository import ScriptsRepository
 from repositories.sqlalchemy.CampaignRepository import CampaignRepository
 from repositories.sqlalchemy.WorkersRepository import SQLAlchemyWorkerRepository
-# Импортируем MetricsService с вашими зависимостями
 from .service import MetricsService
 
 router = APIRouter()
@@ -25,31 +20,63 @@ scripts_all = Gauge('scripts_all_total', 'Общее количество скр
 scripts_active = Gauge('scripts_active_total', 'Количество активных скриптов', registry=registry)
 
 # --- Группировка по кампаниям ---
-# Для каждой кампании обновляем значение с меткой campaign_id
-scripts_by_campaign = Gauge('scripts_by_campaign_total', 'Количество скриптов по кампаниям', ['campaign_id'],
-                            registry=registry)
+# Теперь используем лейбл campaign_name для отображения имени кампании
+scripts_by_campaign = Gauge(
+    'scripts_by_campaign_total',
+    'Количество скриптов по кампаниям',
+    ['campaign_name'],
+    registry=registry
+)
 
 # --- Группировка по ботам ---
-scripts_by_bot = Gauge('scripts_by_bot_total', 'Количество скриптов по ботам', ['bot_id'], registry=registry)
+# Для ботов выводим username, а не raw id
+scripts_by_bot = Gauge(
+    'scripts_by_bot_total',
+    'Количество скриптов по ботам',
+    ['username'],
+    registry=registry
+)
 
 # --- Группировка по чатам (на основе агрегированных данных) ---
-chat_runs_total = Gauge('scripts_chat_total', 'Количество запусков скриптов по чатам (группировка по кампании)',
-                        ['campaign_id'], registry=registry)
-chat_runs_skipped = Gauge('scripts_chat_skipped_total',
-                          'Количество пропущенных запусков скриптов по чатам (группировка по кампании)',
-                          ['campaign_id'], registry=registry)
+# Конвертируем campaign_id в campaign_name
+chat_runs_total = Gauge(
+    'scripts_chat_total',
+    'Количество запусков скриптов по чатам (группировка по кампании)',
+    ['campaign_name'],
+    registry=registry
+)
+chat_runs_skipped = Gauge(
+    'scripts_chat_skipped_total',
+    'Количество пропущенных запусков скриптов по чатам (группировка по кампании)',
+    ['campaign_name'],
+    registry=registry
+)
 
 # --- Статистика по ботам ---
-bot_chats_count = Gauge('bot_chats_count', 'Количество чатов, с которыми работает бот', ['bot_id', 'username'],
-                        registry=registry)
+# Выводим только username для понятной легенды
+bot_chats_count = Gauge(
+    'bot_chats_count',
+    'Количество чатов, с которыми работает бот',
+    ['username'],
+    registry=registry
+)
 
 # --- Статистика по чатам за последние 7 дней ---
-chats_total_last_7 = Gauge('chats_total_last_7_days', 'Общее количество запусков чатов за последние 7 дней',
-                           ['campaign_id'], registry=registry)
-chats_skipped_last_7 = Gauge('chats_skipped_last_7_days', 'Количество пропущенных запусков чатов за последние 7 дней',
-                             ['campaign_id'], registry=registry)
+# Аналогично преобразуем campaign_id в campaign_name
+chats_total_last_7 = Gauge(
+    'chats_total_last_7_days',
+    'Общее количество запусков чатов за последние 7 дней',
+    ['campaign_name'],
+    registry=registry
+)
+chats_skipped_last_7 = Gauge(
+    'chats_skipped_last_7_days',
+    'Количество пропущенных запусков чатов за последние 7 дней',
+    ['campaign_name'],
+    registry=registry
+)
 
-# Инициализируйте MetricsService, передав в него реальные реализации репозиториев
+# Инициализируем MetricsService с реальными репозиториями
 metrics_service = MetricsService(
     scripts_repo=ScriptsRepository(),
     scripts_for_campaign_repo=ScriptsForCampaignRepository(),
@@ -57,9 +84,17 @@ metrics_service = MetricsService(
     workers_repo=SQLAlchemyWorkerRepository(session_maker=session_maker)
 )
 
+# Функция для получения имени кампании по campaign_id.
+# Если не найдено, возвращает исходное значение.
+async def get_campaign_name(campaign_id: str) -> str:
+    try:
+        campaign = await metrics_service.campaign_repo.get(campaign_id)
+        return campaign.name if campaign and hasattr(campaign, 'name') else campaign_id
+    except Exception:
+        return campaign_id
 
 async def update_business_metrics():
-    # Получаем данные из MetricsService (каждый метод возвращает список или агрегированные данные)
+    # Получаем данные из MetricsService
     today = await metrics_service.get_today_scripts()
     week = await metrics_service.get_week_scripts()
     month = await metrics_service.get_month_scripts()
@@ -78,41 +113,55 @@ async def update_business_metrics():
     scripts_all.set(len(all_scripts))
     scripts_active.set(len(active_scripts))
 
-    # Обновляем метрику группировки по кампаниям
+    # --- Обновляем метрику по кампаниям ---
+    # Для каждого campaign_id получаем имя кампании
+    campaign_tasks = []
     for entry in grouped_campaign:
         campaign_id = entry['_id']
         count = entry.get('count', 0)
-        scripts_by_campaign.labels(campaign_id=campaign_id).set(count)
+        campaign_tasks.append((campaign_id, count))
+    campaign_names = await asyncio.gather(*[get_campaign_name(cid) for cid, _ in campaign_tasks])
+    for (campaign_id, count), campaign_name in zip(campaign_tasks, campaign_names):
+        scripts_by_campaign.labels(campaign_name=campaign_name).set(count)
 
-    # Обновляем метрику группировки по ботам
+    # --- Обновляем метрику по ботам (группировка по username) ---
     for entry in grouped_bots:
-        bot_id = entry['_id']
+        username = entry.get('username')
         count = entry.get('count', 0)
-        scripts_by_bot.labels(bot_id=bot_id).set(count)
+        if username:
+            scripts_by_bot.labels(username=username).set(count)
 
-    # Обновляем метрики по чатам (total и skipped)
+    # --- Обновляем метрики по чатам ---
+    # Конвертируем campaign_id в campaign_name для каждой записи
+    chat_tasks = []
     for entry in grouped_chats:
         campaign_id = entry['_id']
         total_runs = entry.get('total_runs', 0)
         skipped_runs = entry.get('skipped_runs', 0)
-        chat_runs_total.labels(campaign_id=campaign_id).set(total_runs)
-        chat_runs_skipped.labels(campaign_id=campaign_id).set(skipped_runs)
+        chat_tasks.append((campaign_id, total_runs, skipped_runs))
+    chat_names = await asyncio.gather(*[get_campaign_name(cid) for cid, _, _ in chat_tasks])
+    for (campaign_id, total_runs, skipped_runs), campaign_name in zip(chat_tasks, chat_names):
+        chat_runs_total.labels(campaign_name=campaign_name).set(total_runs)
+        chat_runs_skipped.labels(campaign_name=campaign_name).set(skipped_runs)
 
-    # Обновляем статистику по ботам (количество чатов)
+    # --- Обновляем статистику по ботам (количество чатов) ---
     for entry in bots_stats:
-        bot_id = entry.get('worker_id')
         username = entry.get('username')
         count = entry.get('chats_count', 0)
-        bot_chats_count.labels(bot_id=bot_id, username=username).set(count)
+        if username:
+            bot_chats_count.labels(username=username).set(count)
 
-    # Обновляем статистику по чатам за последние 7 дней
+    # --- Обновляем статистику по чатам за последние 7 дней ---
+    chats_tasks = []
     for entry in chats_stats:
         campaign_id = entry['_id']
         total_runs = entry.get('total_runs', 0)
         skipped_runs = entry.get('skipped_runs', 0)
-        chats_total_last_7.labels(campaign_id=campaign_id).set(total_runs)
-        chats_skipped_last_7.labels(campaign_id=campaign_id).set(skipped_runs)
-
+        chats_tasks.append((campaign_id, total_runs, skipped_runs))
+    chats_names = await asyncio.gather(*[get_campaign_name(cid) for cid, _, _ in chats_tasks])
+    for (campaign_id, total_runs, skipped_runs), campaign_name in zip(chats_tasks, chats_names):
+        chats_total_last_7.labels(campaign_name=campaign_name).set(total_runs)
+        chats_skipped_last_7.labels(campaign_name=campaign_name).set(skipped_runs)
 
 @router.get('/metrics')
 async def metrics():
