@@ -19,7 +19,7 @@ class ScriptsDBSettings(BaseSettings):
 
     @property
     def url(self):
-        return f"mongodb://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/{self.name}" #?authSource=admin&directConnection=true
+        return f"mongodb://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/{self.name}?authSource=admin" #?authSource=admin&directConnection=true
 
 
 class DelaySettings(BaseSettings):
