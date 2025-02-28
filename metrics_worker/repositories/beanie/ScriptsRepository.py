@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 from typing import List
 
@@ -9,6 +10,7 @@ from infrastructure.entities import Script
 from infrastructure.entities import ScriptMessage as ScriptMessageEntity
 from infrastructure.repositories.beanie.AbstractRepository import AbstractBeanieRepository
 
+logger = logging.getLogger(__name__)
 
 class ScriptsRepository(
     AbstractBeanieRepository[Script, ScriptModel, ScriptCreateDTO, ScriptUpdateDTO],
@@ -16,6 +18,8 @@ class ScriptsRepository(
 ):
     async def get_scripts_by_n_last_days(self, n: int) -> List[ScriptModel]:
         threshold = datetime.now() - timedelta(days=n)
+        logger.info("лол")
+        logger.info(self.entity.__dict__)
         # Фильтруем по дате создания
         scripts = await self.entity.find(self.entity.created_at >= threshold).to_list()
         return [self.entity_to_model(script) for script in scripts]
