@@ -32,7 +32,6 @@ class ScriptForCampaign(Document):
     bots_mapping: dict[str, str] #порядковый номер бота, id воркера
     created_at: datetime
     updated_at: datetime
-
     done: bool
     stopped: bool
 

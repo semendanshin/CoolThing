@@ -1,6 +1,3 @@
-import ast
-import asyncio
-
 from fastapi import APIRouter, Response
 from prometheus_client import generate_latest, CollectorRegistry, Gauge
 
@@ -22,7 +19,6 @@ scripts_all = Gauge('scripts_all_total', 'Общее количество скр
 scripts_active = Gauge('scripts_active_total', 'Количество активных скриптов', registry=registry)
 
 # --- Группировка по кампаниям ---
-# Используем только один лейбл: campaign_name (человеко-читаемое имя кампании)
 scripts_by_campaign = Gauge(
     'scripts_by_campaign_total',
     'Количество скриптов по кампаниям',
@@ -31,7 +27,6 @@ scripts_by_campaign = Gauge(
 )
 
 # --- Группировка по ботам ---
-# Используем username вместо bot_id
 scripts_by_bot = Gauge(
     'scripts_by_bot_total',
     'Количество скриптов по ботам',
@@ -39,8 +34,7 @@ scripts_by_bot = Gauge(
     registry=registry
 )
 
-# --- Группировка по чатам (агрегированные данные) ---
-# Преобразуем campaign_id в campaign_name
+# --- Группировка по чатам ---
 chat_runs_total = Gauge(
     'scripts_chat_total',
     'Количество запусков скриптов по чатам (группировка по кампании)',
@@ -55,7 +49,6 @@ chat_runs_skipped = Gauge(
 )
 
 # --- Статистика по ботам ---
-# Используем только username для понятной подписи
 bot_chats_count = Gauge(
     'bot_chats_count',
     'Количество чатов, с которыми работает бот',
@@ -77,7 +70,6 @@ chats_skipped_last_7 = Gauge(
     registry=registry
 )
 
-# Инициализируем MetricsService с реальными репозиториями
 metrics_service = MetricsService(
     scripts_repo=ScriptsRepository(),
     scripts_for_campaign_repo=ScriptsForCampaignRepository(),
@@ -86,32 +78,7 @@ metrics_service = MetricsService(
 )
 
 
-# Функция для получения имени кампании по campaign_id с декодированием, если необходимо
-async def get_campaign_name(campaign_id: str) -> str:
-    if isinstance(campaign_id, bytes):
-        return campaign_id.decode("utf-8")
-
-    # Handling cases where campaign_id is a string representation of bytes
-    if campaign_id.startswith("b'") and campaign_id.endswith("'"):
-        try:
-            evaluated = ast.literal_eval(campaign_id)
-            if isinstance(evaluated, bytes):
-                return evaluated.decode("utf-8")
-        except Exception:
-            return campaign_id[2:-1]  # Remove "b'" and "'"
-
-    return campaign_id  # Return as-is if it's already a normal string
-
-
-# Функция для получения username бота с декодированием, если необходимо
-def get_bot_username(raw_username) -> str:
-    if raw_username:
-        return raw_username.decode('utf-8') if isinstance(raw_username, bytes) else raw_username
-    return "unknown"
-
-
 async def update_business_metrics():
-    # Получаем данные из MetricsService
     today = await metrics_service.get_today_scripts()
     week = await metrics_service.get_week_scripts()
     month = await metrics_service.get_month_scripts()
@@ -123,60 +90,38 @@ async def update_business_metrics():
     bots_stats = await metrics_service.get_bots_statistics()
     chats_stats = await metrics_service.get_chats_statistics(n=7)
 
-    # Обновляем простые счетчики
     scripts_today.set(len(today))
     scripts_week.set(len(week))
     scripts_month.set(len(month))
     scripts_all.set(len(all_scripts))
     scripts_active.set(len(active_scripts))
 
-    # Обновляем метрику группировки по кампаниям: конвертация campaign_id -> campaign_name
-    campaign_tasks = []
     for entry in grouped_campaign:
-        campaign_id = entry['_id']
+        campaign_name = entry.get('campaign_name', 'unknown')
         count = entry.get('count', 0)
-        campaign_tasks.append((campaign_id, count))
-    campaign_names = await asyncio.gather(*[get_campaign_name(cid) for cid, _ in campaign_tasks])
-    for (campaign_id, count), campaign_name in zip(campaign_tasks, campaign_names):
         scripts_by_campaign.labels(campaign_name=campaign_name).set(count)
 
-    # Обновляем метрику группировки по ботам: используем username
     for entry in grouped_bots:
-        raw_username = entry.get('username')
+        username = entry.get('username', 'unknown')
         count = entry.get('count', 0)
-        username = get_bot_username(raw_username)
-        if username:
-            scripts_by_bot.labels(username=username).set(count)
+        scripts_by_bot.labels(username=username).set(count)
 
-    # Обновляем метрики по чатам: конвертация campaign_id -> campaign_name
-    chat_tasks = []
     for entry in grouped_chats:
-        campaign_id = entry['_id']
+        campaign_name = entry.get('campaign_name', 'unknown')
         total_runs = entry.get('total_runs', 0)
         skipped_runs = entry.get('skipped_runs', 0)
-        chat_tasks.append((campaign_id, total_runs, skipped_runs))
-    chat_names = await asyncio.gather(*[get_campaign_name(cid) for cid, _, _ in chat_tasks])
-    for (campaign_id, total_runs, skipped_runs), campaign_name in zip(chat_tasks, chat_names):
         chat_runs_total.labels(campaign_name=campaign_name).set(total_runs)
         chat_runs_skipped.labels(campaign_name=campaign_name).set(skipped_runs)
 
-    # Обновляем статистику по ботам (количество чатов): используем username
     for entry in bots_stats:
-        raw_username = entry.get('username')
-        count = entry.get('chats_count', 0)
-        username = get_bot_username(raw_username)
-        if username:
-            bot_chats_count.labels(username=username).set(count)
+        username = entry.get('username', 'unknown')
+        chats_count = entry.get('chats_count', 0)
+        bot_chats_count.labels(username=username).set(chats_count)
 
-    # Обновляем статистику по чатам за последние 7 дней: конвертация campaign_id -> campaign_name
-    chats_tasks = []
     for entry in chats_stats:
-        campaign_id = entry['_id']
+        campaign_name = entry.get('campaign_name', 'unknown')
         total_runs = entry.get('total_runs', 0)
         skipped_runs = entry.get('skipped_runs', 0)
-        chats_tasks.append((campaign_id, total_runs, skipped_runs))
-    chats_names = await asyncio.gather(*[get_campaign_name(cid) for cid, _, _ in chats_tasks])
-    for (campaign_id, total_runs, skipped_runs), campaign_name in zip(chats_tasks, chats_names):
         chats_total_last_7.labels(campaign_name=campaign_name).set(total_runs)
         chats_skipped_last_7.labels(campaign_name=campaign_name).set(skipped_runs)
 
