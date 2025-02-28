@@ -1,3 +1,5 @@
+import ast
+import asyncio
 from fastapi import APIRouter, Response
 from prometheus_client import generate_latest, CollectorRegistry, Gauge
 
@@ -77,6 +79,17 @@ metrics_service = MetricsService(
     workers_repo=SQLAlchemyWorkerRepository(session_maker=session_maker)
 )
 
+def decode_campaign_id(campaign_id):
+    if isinstance(campaign_id, bytes):
+        return campaign_id.decode("utf-8")
+    if isinstance(campaign_id, str) and campaign_id.startswith("b'") and campaign_id.endswith("'"):
+        try:
+            evaluated = ast.literal_eval(campaign_id)
+            if isinstance(evaluated, bytes):
+                return evaluated.decode("utf-8")
+        except Exception:
+            return campaign_id[2:-1]  # Remove "b'" and "'"
+    return campaign_id
 
 async def update_business_metrics():
     today = await metrics_service.get_today_scripts()
@@ -97,7 +110,8 @@ async def update_business_metrics():
     scripts_active.set(len(active_scripts))
 
     for entry in grouped_campaign:
-        campaign_name = entry.get('campaign_name', 'unknown')
+        campaign_id = entry.get('campaign_id', 'unknown')
+        campaign_name = decode_campaign_id(campaign_id)
         count = entry.get('count', 0)
         scripts_by_campaign.labels(campaign_name=campaign_name).set(count)
 
@@ -107,7 +121,8 @@ async def update_business_metrics():
         scripts_by_bot.labels(username=username).set(count)
 
     for entry in grouped_chats:
-        campaign_name = entry.get('campaign_name', 'unknown')
+        campaign_id = entry.get('campaign_id', 'unknown')
+        campaign_name = decode_campaign_id(campaign_id)
         total_runs = entry.get('total_runs', 0)
         skipped_runs = entry.get('skipped_runs', 0)
         chat_runs_total.labels(campaign_name=campaign_name).set(total_runs)
@@ -119,12 +134,12 @@ async def update_business_metrics():
         bot_chats_count.labels(username=username).set(chats_count)
 
     for entry in chats_stats:
-        campaign_name = entry.get('campaign_name', 'unknown')
+        campaign_id = entry.get('campaign_id', 'unknown')
+        campaign_name = decode_campaign_id(campaign_id)
         total_runs = entry.get('total_runs', 0)
         skipped_runs = entry.get('skipped_runs', 0)
         chats_total_last_7.labels(campaign_name=campaign_name).set(total_runs)
         chats_skipped_last_7.labels(campaign_name=campaign_name).set(skipped_runs)
-
 
 @router.get('/metrics')
 async def metrics():
