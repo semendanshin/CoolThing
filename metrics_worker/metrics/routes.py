@@ -1,7 +1,8 @@
+import ast
 import asyncio
+
 from fastapi import APIRouter, Response
 from prometheus_client import generate_latest, CollectorRegistry, Gauge
-import ast
 
 from infrastructure.repositories.sqlalchemy import session_maker
 from repositories.beanie.ScriptsForCampaignRepository import ScriptsForCampaignRepository
@@ -84,31 +85,22 @@ metrics_service = MetricsService(
     workers_repo=SQLAlchemyWorkerRepository(session_maker=session_maker)
 )
 
-# Функция для получения имени кампании по campaign_id с декодированием, если необходимо
 
+# Функция для получения имени кампании по campaign_id с декодированием, если необходимо
 async def get_campaign_name(campaign_id: str) -> str:
-    try:
-        campaign = await metrics_service.campaign_repo.get(campaign_id)
-        if campaign and hasattr(campaign, 'name'):
-            name = campaign.name
-            # Если значение уже объект bytes – декодируем
-            if isinstance(name, bytes):
-                return name.decode('utf-8')
-            # Если значение строка и выглядит как литерал байтов (например, "b'Campaign Name'")
-            if isinstance(name, str) and name.startswith("b'") and name.endswith("'"):
-                try:
-                    # Преобразуем строку в объект bytes с помощью ast.literal_eval
-                    evaluated = ast.literal_eval(name)
-                    if isinstance(evaluated, bytes):
-                        return evaluated.decode('utf-8')
-                except Exception:
-                    # Если не удалось оценить – просто удаляем префикс и суффикс
-                    return name[2:-1]
-            return name
-        else:
-            return campaign_id
-    except Exception:
-        return campaign_id
+    if isinstance(campaign_id, bytes):
+        return campaign_id.decode("utf-8")
+
+    # Handling cases where campaign_id is a string representation of bytes
+    if campaign_id.startswith("b'") and campaign_id.endswith("'"):
+        try:
+            evaluated = ast.literal_eval(campaign_id)
+            if isinstance(evaluated, bytes):
+                return evaluated.decode("utf-8")
+        except Exception:
+            return campaign_id[2:-1]  # Remove "b'" and "'"
+
+    return campaign_id  # Return as-is if it's already a normal string
 
 
 # Функция для получения username бота с декодированием, если необходимо
@@ -116,6 +108,7 @@ def get_bot_username(raw_username) -> str:
     if raw_username:
         return raw_username.decode('utf-8') if isinstance(raw_username, bytes) else raw_username
     return "unknown"
+
 
 async def update_business_metrics():
     # Получаем данные из MetricsService
@@ -186,6 +179,7 @@ async def update_business_metrics():
     for (campaign_id, total_runs, skipped_runs), campaign_name in zip(chats_tasks, chats_names):
         chats_total_last_7.labels(campaign_name=campaign_name).set(total_runs)
         chats_skipped_last_7.labels(campaign_name=campaign_name).set(skipped_runs)
+
 
 @router.get('/metrics')
 async def metrics():
