@@ -2,6 +2,8 @@ import logging
 from datetime import datetime, timedelta
 from uuid import UUID
 
+from bson.binary import Binary
+
 from abstractions.repositories.ScriptsForCampaignRepositoryInterface import ScriptsForCampaignRepositoryInterface
 from domain.dto.script import ScriptForCampaignCreateDTO, ScriptForCampaignUpdateDTO
 from domain.models import ScriptForCampaign as ScriptForCampaignModel
@@ -109,7 +111,9 @@ class ScriptsForCampaignRepository(
     def convert_binary_ids(self, objects: list[dict]) -> list[dict]:
         res = []
         for obj in objects:
-            obj['_id'] = str(UUID(obj['_id']))
+            # [ScriptForCampaignModel(**x) for x in res]
+            obj['id'] = str(obj['_id'].as_uuid())
+            del obj['_id']
             res.append(obj)
         return res
 
@@ -129,7 +133,7 @@ class ScriptsForCampaignRepository(
         ]
         res = await self.entity.aggregate(pipeline).to_list()
         logger.info(res)
-        res = [ScriptForCampaignModel(**x) for x in res]
+        res = self.convert_binary_ids(res)
         logger.info(res)
         return res
 
