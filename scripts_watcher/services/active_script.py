@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 class ProcessStatus(BaseModel):
     last_activity: datetime
-    max_delay: int
+    max_delay: Optional[int] = None
 
     disabled: Optional[bool] = None
 
@@ -59,7 +59,14 @@ class ActiveScriptProcessService(
             obj=dto,
         )
 
-        return str(dto.id)
+        process_id = str(dto.id)
+
+        self.active_processes[process_id] = ProcessStatus(
+            last_activity=datetime.now(),
+            max_delay=6000,
+        )
+
+        return process_id
 
     def _get_fail_time(self, process_delay: int) -> int:
         return process_delay + self.decision_delay

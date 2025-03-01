@@ -47,7 +47,6 @@ async def set_target_chats(
 
     logger.info(req.model_dump())
 
-
     process = await service.set_target_chats(
         process_id=req.process_id,
         target_chats=req.target_chats,
