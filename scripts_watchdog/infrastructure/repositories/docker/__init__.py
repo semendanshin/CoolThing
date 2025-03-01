@@ -37,6 +37,9 @@ class AsyncDockerAPIRepository(ContainerManagerInterface):
         )
         await container.start()
 
+        network = await self.client.networks.get("infrastructure")
+        await network.connect(container)
+
         bot = WorkerContainer(
             id=worker_id,
             config_path=config_path,
