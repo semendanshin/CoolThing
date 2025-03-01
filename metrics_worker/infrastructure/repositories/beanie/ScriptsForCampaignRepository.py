@@ -109,7 +109,6 @@ class ScriptsForCampaignRepository(
     def convert_binary_ids(self, objects: list[dict]) -> list[dict]:
         res = []
         for obj in objects:
-            print(type(obj['_id']), obj['_id'].__dict__)
             obj['_id'] = str(UUID(obj['_id']))
             res.append(obj)
         return res
@@ -130,7 +129,7 @@ class ScriptsForCampaignRepository(
         ]
         res = await self.entity.aggregate(pipeline).to_list()
         logger.info(res)
-        res = self.convert_binary_ids(res)
+        res = [ScriptForCampaignModel(**x.model_dump()) for x in res]
         logger.info(res)
         return res
 
