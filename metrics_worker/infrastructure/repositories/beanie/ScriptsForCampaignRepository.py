@@ -108,7 +108,7 @@ class ScriptsForCampaignRepository(
     def convert_binary_ids(self, objects: list[dict]) -> list[dict]:
         res = []
         for obj in objects:
-            obj['_id'] = str(obj['_id'])
+            obj['_id'] = obj['_id'].decode()
             res.append(obj)
         return res
 
