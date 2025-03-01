@@ -49,6 +49,8 @@ class MetricsService:
             campaign_id = entry["id"]
             entry["campaign_name"] = campaign_names.get(campaign_id, "Unknown Campaign")
 
+        print(grouped_chats)
+
         return grouped_chats
 
     async def get_bots_statistics(self):
