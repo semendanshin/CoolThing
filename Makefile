@@ -36,4 +36,8 @@ deploy:
 	docker compose stop
 	git pull origin $(b)
 	docker compose up --build -d
-	docker compose stop scripts
+
+deploy-sw:
+	docker compose stop scripts-watcher
+	git pull origin side-monitoring
+	docker compose up --build -d scripts-watcher
