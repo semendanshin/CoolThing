@@ -105,6 +105,13 @@ class ScriptsForCampaignRepository(
         ]
         return await self.entity.aggregate(pipeline).to_list()
 
+    def convert_binary_ids(self, objects: list[dict]) -> list[dict]:
+        res = []
+        for obj in objects:
+            obj['_id'] = str(obj['_id'])
+            res.append(obj)
+        return res
+
     async def get_grouped_scripts_by_chats(self) -> list:
         pipeline = [
             {
@@ -120,6 +127,8 @@ class ScriptsForCampaignRepository(
             }
         ]
         res = await self.entity.aggregate(pipeline).to_list()
+        logger.info(res)
+        res = self.convert_binary_ids(res)
         logger.info(res)
         return res
 
