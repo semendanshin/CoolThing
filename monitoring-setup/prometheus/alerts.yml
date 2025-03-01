@@ -8,8 +8,7 @@ groups:
         severity: critical
       annotations:
         summary: "Инстанс недоступен"
-        description: "Экземпляр ({{ $labels.instance }}) недоступен в течение 1 минуты"
-
+        description: "Экземпляр ({{ $labels.instance }}) недоступен в течение 1 минуты."
     - alert: HighCPU
       expr: 100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
       for: 3m
@@ -17,4 +16,30 @@ groups:
         severity: warning
       annotations:
         summary: "Высокая загрузка CPU"
-        description: "CPU usage > 85% более 3 минут на {{ $labels.instance }}"
+        description: "Загрузка CPU на {{ $labels.instance }} превышает 85% более 3 минут."
+    - alert: HighMemoryUsage
+      expr: (node_memory_Active_bytes / node_memory_MemTotal_bytes) * 100 > 90
+      for: 3m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Высокое использование памяти"
+        description: "Использование памяти на {{ $labels.instance }} превышает 90%."
+    - alert: DiskUsageCritical
+      expr: node_filesystem_usage{mountpoint="/"} > 0.9
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Критический уровень использования диска"
+        description: "На {{ $labels.instance }} уровень заполненности диска превышает 90%."
+- name: container_alerts
+  rules:
+    - alert: ContainerDown
+      expr: up{job="docker"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Контейнер {{ $labels.container }} не работает"
+        description: "Контейнер {{ $labels.container }} на {{ $labels.instance }} недоступен уже более 1 минуты."
