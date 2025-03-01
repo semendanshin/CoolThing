@@ -80,7 +80,7 @@ class ActiveScriptProcessService(
 
         process = self.active_processes[process_id]
 
-        print(process.max_delay + self.decision_delay)
+        logger.info(f"greatest possible delay for process {process_id} is {process.max_delay + self.decision_delay}")
         if (process.last_activity + timedelta(
                 seconds=process.max_delay + self.decision_delay
         ) < datetime.now()):

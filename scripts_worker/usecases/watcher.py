@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from typing import Annotated, Optional
@@ -10,6 +11,8 @@ from abstractions.usecases.watcher import WatcherInterface
 from domain.models import ChatProcess
 from domain.reports import SetChatStatusRequest, SetMessageStatusRequest, SetScriptStatusRequest, SetTargetChatsRequest
 
+
+logger = logging.getLogger(__name__)
 
 @dataclass
 class Watcher(WatcherInterface):
@@ -58,13 +61,16 @@ class Watcher(WatcherInterface):
                 json=report.model_dump(),
             )
 
+            logger.info(response.request.content)
+
             if not fail_silent:
                 response.raise_for_status()
 
             try:
                 return response.json()
             except:
-                ...
+                if not fail_silent:
+                    raise
 
     async def report_target_chats(self, report: SetTargetChatsRequest) -> list[ChatProcess]:
         res = await self._report(
