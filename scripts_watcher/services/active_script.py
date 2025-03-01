@@ -113,7 +113,9 @@ class ActiveScriptProcessService(
         await self.process_repository.set_target_chats(process_id, target_chats)
 
         process = await self.process_repository.get(process_id)
-
+        logger.info(process_id)
+        logger.info(process.id)
+        logger.info(process.sfc_id)
         sfc = await self.sfc_repository.get(process.sfc_id)
         script = await self.script_repository.get(sfc.script_id)
 
