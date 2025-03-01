@@ -119,7 +119,9 @@ class ScriptsForCampaignRepository(
                 }
             }
         ]
-        return await self.entity.aggregate(pipeline).to_list()
+        res = await self.entity.aggregate(pipeline).to_list()
+        logger.info(res)
+        return res
 
     async def get_chats_statistics_by_n_last_days(self, n: int) -> list:
         threshold = datetime.now() - timedelta(days=n)

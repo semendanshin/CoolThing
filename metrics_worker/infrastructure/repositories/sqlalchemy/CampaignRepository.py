@@ -1,10 +1,10 @@
+from sqlalchemy import select
+
 from abstractions.repositories.CampaignRepositoryInterface import CampaignRepositoryInterface
 from domain.dto.campaign import CampaignCreateDTO, CampaignUpdateDTO
 from domain.models import Campaign as CampaignModel
 from infrastructure.entities import Campaign
 from infrastructure.repositories.sqlalchemy import AbstractSQLAlchemyRepository
-
-from sqlalchemy import select
 
 
 class CampaignRepository(

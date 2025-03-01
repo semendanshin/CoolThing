@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from metrics.routes import router
-from repositories.beanie import init_db
+from infrastructure.repositories.beanie import init_db
 
 logging.basicConfig(
     level=logging.INFO,

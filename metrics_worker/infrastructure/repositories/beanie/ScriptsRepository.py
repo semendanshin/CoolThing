@@ -16,7 +16,6 @@ class ScriptsRepository(
 ):
     async def get_scripts_by_n_last_days(self, n: int) -> List[ScriptModel]:
         threshold = datetime.now() - timedelta(days=n)
-        # Фильтруем по дате создания
         scripts = await self.entity.find(self.entity.created_at >= threshold).to_list()
         return [self.entity_to_model(script) for script in scripts]
 

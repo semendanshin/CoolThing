@@ -1,13 +1,11 @@
-import asyncio
-
 from fastapi import APIRouter, Response
 from prometheus_client import generate_latest, CollectorRegistry, Gauge
 
+from infrastructure.repositories.beanie.ScriptsForCampaignRepository import ScriptsForCampaignRepository
+from infrastructure.repositories.beanie.ScriptsRepository import ScriptsRepository
 from infrastructure.repositories.sqlalchemy import session_maker
-from repositories.beanie.ScriptsForCampaignRepository import ScriptsForCampaignRepository
-from repositories.beanie.ScriptsRepository import ScriptsRepository
-from repositories.sqlalchemy.CampaignRepository import CampaignRepository
-from repositories.sqlalchemy.WorkersRepository import SQLAlchemyWorkerRepository
+from infrastructure.repositories.sqlalchemy.CampaignRepository import CampaignRepository
+from infrastructure.repositories.sqlalchemy.WorkersRepository import SQLAlchemyWorkerRepository
 from .service import MetricsService
 
 router = APIRouter()
