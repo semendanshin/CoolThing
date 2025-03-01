@@ -14,13 +14,13 @@ receivers:
     telegram_configs:
       - send_resolved: true
         bot_token: "7085730278:AAFAPHZ8OSlX0Rk7TpPdi-iZB7ue_flo6sM"
-        chat_id: -4774607221
+        chat_id: -7085730278
         parse_mode: "Markdown"
         message: "{{ template \"telegram.default.message\" . }}"
   - name: 'critical-receiver'
     telegram_configs:
       - send_resolved: true
         bot_token: "7085730278:AAFAPHZ8OSlX0Rk7TpPdi-iZB7ue_flo6sM"
-        chat_id: -4774607221
+        chat_id: -7085730278
         parse_mode: "Markdown"
         message: "{{ template \"telegram.critical.message\" . }}"
