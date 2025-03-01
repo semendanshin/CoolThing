@@ -91,7 +91,6 @@ services:
     networks:
       - bridge
       - infrastructure
-      - infrastructure
     volumes:
       - ./scripts_watchdog/settings.json:/app/settings.json
       - /etc/localtime:/etc/localtime:ro
