@@ -1,8 +1,5 @@
 import logging
 from datetime import datetime, timedelta
-from uuid import UUID
-
-from bson.binary import Binary
 
 from abstractions.repositories.ScriptsForCampaignRepositoryInterface import ScriptsForCampaignRepositoryInterface
 from domain.dto.script import ScriptForCampaignCreateDTO, ScriptForCampaignUpdateDTO
@@ -30,6 +27,16 @@ class ScriptsForCampaignRepository(
             return
 
         logger.info(f"No sfc with id {sfc_id}")
+
+    async def get_active(self) -> list[dict]:
+        """
+        Получить все активные скрипты кампаний (не завершенные и не остановленные).
+        """
+        active_scripts = await self.entity.find(
+            {"done": False, "stopped": False}
+        ).to_list()
+
+        return [x.model_dump() for x in active_scripts]
 
     def entity_to_model(self, entity: ScriptForCampaign) -> ScriptForCampaignModel:
         return ScriptForCampaignModel(

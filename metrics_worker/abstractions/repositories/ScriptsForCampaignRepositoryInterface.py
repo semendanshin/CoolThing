@@ -34,3 +34,7 @@ class ScriptsForCampaignRepositoryInterface(
     @abstractmethod
     async def get_chats_statistics_by_n_last_days(self, n: int) -> list:
         ...
+
+    @abstractmethod
+    async def get_active(self) -> list[dict]:
+        ...

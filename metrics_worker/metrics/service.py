@@ -26,7 +26,7 @@ class MetricsService:
         return await self.scripts_repo.get_all()
 
     async def get_active_scripts(self):
-        return await self.scripts_repo.get_active_scripts()
+        return await self.scripts_for_campaign_repo.get_active()
 
     async def get_grouped_scripts_by_campaign(self):
         return await self.scripts_for_campaign_repo.get_grouped_scripts_by_campaign()
