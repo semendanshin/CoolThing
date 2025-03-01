@@ -113,6 +113,7 @@ services:
     image: percona/mongodb_exporter:0.43.1
     container_name: mongo-exporter
     networks:
+      - bridge
       - monitoring
     ports:
       - "9216:9216"
