@@ -136,5 +136,4 @@ networks:
     driver: bridge
     name: monitoring
     attachable: true
-  infrastructure:
-    driver: bridge
+
