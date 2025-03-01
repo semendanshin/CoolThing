@@ -35,11 +35,31 @@ groups:
         description: "На {{ $labels.instance }} уровень заполненности диска превышает 90%."
 - name: container_alerts
   rules:
-    - alert: ContainerDown
-      expr: up{job="docker"} == 0
+    # Пример для контейнера Prometheus (замените на нужный сервис, если хотите мониторить другой)
+    - alert: PrometheusContainerStopped
+      expr: absent(container_last_seen{container_label_com_docker_compose_service="prometheus"})
       for: 1m
       labels:
         severity: critical
       annotations:
-        summary: "Контейнер {{ $labels.container }} не работает"
-        description: "Контейнер {{ $labels.container }} на {{ $labels.instance }} недоступен уже более 1 минуты."
+        summary: "Контейнер Prometheus остановлен"
+        description: "Контейнер с сервисным именем 'prometheus' не отправляет метрики с cAdvisor. Вероятно, контейнер остановлен."
+
+    # Пример для контейнера Grafana
+    - alert: GrafanaContainerStopped
+      expr: absent(container_last_seen{container_label_com_docker_compose_service="grafana"})
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Контейнер Grafana остановлен"
+        description: "Контейнер с сервисным именем 'grafana' не отправляет метрики с cAdvisor. Вероятно, контейнер остановлен."
+
+    - alert: SomeContainerStopped
+      expr: absent(container_last_seen{container_label_com_docker_compose_service=~".+"})
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Один из контейнеров остановлен"
+        description: "Контейнер с именем {{ $labels.container_label_com_docker_compose_service }} не отправляет метрики, вероятно, остановлен."
