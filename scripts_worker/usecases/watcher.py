@@ -56,9 +56,11 @@ class Watcher(WatcherInterface):
 
     async def _report(self, report: BaseModel, endpoint: str, fail_silent: bool = True) -> Optional[dict]:
         async with self._get_client() as client:  # type: AsyncClient
+            request_json = report.model_dump()
+            logger.info(request_json)
             response = await client.post(
                 url=endpoint,
-                json=report.model_dump(),
+                json=request_json,
             )
 
             logger.info(response.request.content)
