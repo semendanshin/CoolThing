@@ -39,14 +39,14 @@ class MetricsService:
         grouped_chats = await self.scripts_for_campaign_repo.get_grouped_scripts_by_chats()
 
         # Step 2: Extract campaign IDs
-        campaign_ids = [entry["_id"] for entry in grouped_chats]
+        campaign_ids = [entry["id"] for entry in grouped_chats]
 
         # Step 3: Fetch campaign names from PostgreSQL
         campaign_names = await self.campaign_repo.get_campaign_names_by_ids(campaign_ids)
 
         # Step 4: Append campaign names to the results
         for entry in grouped_chats:
-            campaign_id = entry["_id"]
+            campaign_id = entry["id"]
             entry["campaign_name"] = campaign_names.get(campaign_id, "Unknown Campaign")
 
         return grouped_chats
