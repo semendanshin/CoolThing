@@ -21,7 +21,7 @@ class AbstractBeanieRepository[Entity, Model, CreateDTO, UpdateDTO](
         await instance.create()
 
     async def get(self, obj_id: str) -> Model:
-        instance = await self.entity.get(obj_id)
+        instance = await self.entity.get(UUID(obj_id))
         return self.entity_to_model(instance)
 
     async def update(self, obj_id: str, obj: UpdateDTO) -> None:
