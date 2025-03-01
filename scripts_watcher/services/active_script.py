@@ -66,6 +66,9 @@ class ActiveScriptProcessService(
             max_delay=6000,
         )
 
+        logger.info(process_id)
+        logger.info(sfc_id)
+
         return process_id
 
     def _get_fail_time(self, process_delay: int) -> int:
