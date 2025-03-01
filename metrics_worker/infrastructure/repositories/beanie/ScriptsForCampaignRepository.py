@@ -129,7 +129,7 @@ class ScriptsForCampaignRepository(
         ]
         res = await self.entity.aggregate(pipeline).to_list()
         logger.info(res)
-        res = [ScriptForCampaignModel(**x.model_dump()) for x in res]
+        res = [ScriptForCampaignModel(**x) for x in res]
         logger.info(res)
         return res
 
