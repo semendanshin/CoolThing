@@ -1,3 +1,4 @@
+import logging
 from typing import Annotated
 
 from fastapi import APIRouter
@@ -17,6 +18,8 @@ router = APIRouter(
     tags=['Script process state'],
 )
 
+logger = logging.getLogger(__name__)
+
 
 @router.post('/received')
 async def activation_received(
@@ -24,6 +27,7 @@ async def activation_received(
 ) -> Annotated[str, 'Process ID']:
     service = get_active_script_process_service()
 
+    logger.info(req.model_dump())
     process_id = await service.new_activation_received(
         sfc_id=req.sfc_id,
     )

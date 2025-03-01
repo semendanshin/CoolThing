@@ -81,6 +81,7 @@ class ScriptProcessUseCase:
         target_chats = await self._get_target_chats(sfc)
         logger.info(f"Target chats: {target_chats}")
 
+        logger.info(self.process_id)
         process = await self.watcher.report_target_chats(  # TODO: refactor to method
             report=SetTargetChatsRequest(
                 process_id=self.process_id,
