@@ -120,6 +120,12 @@ services:
     env_file:
       - ./exporters/mongodb_exporter.env
     restart: unless-stopped
+    command:
+      - "--collect-all"  # Enable all collectors
+      - "--collector.dbstats"
+      - "--collector.collstats"
+      - "--collector.indexstats"
+      - "--collector.topmetrics"
 
 volumes:
   prometheus_data:
