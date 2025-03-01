@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timedelta
+from uuid import UUID
 
 from abstractions.repositories.ScriptsForCampaignRepositoryInterface import ScriptsForCampaignRepositoryInterface
 from domain.dto.script import ScriptForCampaignCreateDTO, ScriptForCampaignUpdateDTO
@@ -109,7 +110,7 @@ class ScriptsForCampaignRepository(
         res = []
         for obj in objects:
             print(type(obj['_id']), obj['_id'].__dict__)
-            obj['_id'] = obj['_id'].decode()
+            obj['_id'] = str(UUID(obj['_id']))
             res.append(obj)
         return res
 
