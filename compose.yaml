@@ -15,6 +15,7 @@ services:
 #    restart: unless-stopped
 #    networks:
 #      - bridge
+#      - infrastructure
 #    volumes:
 #      - ./watchdog/tmp:/app/tmp
 #      - ./watchdog/settings.json:/app/settings.json
@@ -41,6 +42,7 @@ services:
 #    restart: unless-stopped
 #    networks:
 #      - bridge
+#      - infrastructure
 #    volumes:
 #      - ./bot/settings.json:/app/settings.json
 #      - /etc/localtime:/etc/localtime:ro
@@ -63,6 +65,7 @@ services:
 #    restart: unless-stopped
 #    networks:
 #      - bridge
+#      - infrastructure
 #    volumes:
 #      - ./scripts/settings.json:/app/settings.json
 #      - /etc/localtime:/etc/localtime:ro
@@ -87,6 +90,8 @@ services:
     restart: unless-stopped
     networks:
       - bridge
+      - infrastructure
+      - infrastructure
     volumes:
       - ./scripts_watchdog/settings.json:/app/settings.json
       - /etc/localtime:/etc/localtime:ro
@@ -111,6 +116,7 @@ services:
     restart: unless-stopped
     networks:
       - bridge
+      - infrastructure
     volumes:
 #      - ./scripts_watcher/settings.json:/app/settings.json
 #      - /etc/localtime:/etc/localtime:ro
@@ -135,6 +141,7 @@ services:
     restart: unless-stopped
     networks:
       - bridge
+      - infrastructure
     volumes:
       - ./admin/settings.json:/app/settings.json
       - /etc/localtime:/etc/localtime:ro
@@ -160,6 +167,7 @@ services:
     restart: unless-stopped
     networks:
       - bridge
+      - infrastructure
     volumes:
       - ./notifier/settings.json:/app/settings.json
       - /etc/localtime:/etc/localtime:ro
