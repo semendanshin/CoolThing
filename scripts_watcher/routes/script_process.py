@@ -41,7 +41,12 @@ async def set_target_chats(
 ) -> list[ChatProcess]:
     service = get_active_script_process_service()
 
+    logger.info(req.model_dump())
+
     req.process_id = req.process_id.strip('"')
+
+    logger.info(req.model_dump())
+
 
     process = await service.set_target_chats(
         process_id=req.process_id,
