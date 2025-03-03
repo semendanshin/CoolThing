@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from infrastructure.repositories.beanie import init_db
-from metrics.routes import router
+from routes import metrics_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -22,4 +22,4 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(router)
+app.include_router(metrics_router)

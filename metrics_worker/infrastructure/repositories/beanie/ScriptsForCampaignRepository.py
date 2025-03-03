@@ -29,9 +29,6 @@ class ScriptsForCampaignRepository(
         logger.info(f"No sfc with id {sfc_id}")
 
     async def get_active(self) -> list[dict]:
-        """
-        Получить все активные скрипты кампаний (не завершенные и не остановленные).
-        """
         active_scripts = await self.entity.find(
             {"done": False, "stopped": False}
         ).to_list()

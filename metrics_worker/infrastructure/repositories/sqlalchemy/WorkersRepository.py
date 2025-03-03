@@ -56,7 +56,6 @@ class SQLAlchemyWorkerRepository(
                 stats.append({
                     "worker_id": str(w.id),
                     "username": w.username,
-                    # Например, количество чатов, с которыми работает бот
                     "chats_count": len(w.chats) if w.chats else 0,
                 })
             return stats

@@ -3,32 +3,26 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  # Prometheus сам себя, localhost:9090
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
 
-  # Node Exporter на том же хосте, порт 9100
   - job_name: 'node_exporter'
     static_configs:
       - targets: ['localhost:9100']
 
-  # cAdvisor на хосте, порт 8081
   - job_name: 'cadvisor'
     static_configs:
       - targets: ['localhost:8081']
 
-  # Бизнес-метрики (ваше приложение)
   - job_name: 'business_metrics'
     static_configs:
       - targets: ['localhost:8000']
 
-  # PostgreSQL Exporter
   - job_name: 'postgres_exporter'
     static_configs:
       - targets: ['localhost:9187']
 
-  # MongoDB Exporter
   - job_name: 'mongodb_exporter'
     static_configs:
       - targets: ['localhost:9216']

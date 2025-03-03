@@ -1,7 +1,4 @@
 services:
-  # ==============================
-  # 1) Prometheus (host network)
-  # ==============================
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -23,10 +20,6 @@ services:
     restart: unless-stopped
 
 
-
-  # ==============================
-  # 2) Node Exporter (host network)
-  # ==============================
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
@@ -38,9 +31,6 @@ services:
     # ports: не нужны в host-сети
     restart: unless-stopped
 
-  # ==============================
-  # 3) cAdvisor (host network)
-  # ==============================
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
@@ -56,25 +46,21 @@ services:
     # ports: не нужны в host-сети (по умолчанию cAdvisor слушает 8080)
     restart: unless-stopped
 
-  # ==============================
-  # 4) Alertmanager (bridge network)
-  # ==============================
+
   alertmanager:
     image: prom/alertmanager:latest
     container_name: alertmanager
     networks:
       - monitoring
     ports:
-      - "9093:9093"   # Чтобы на хосте было http://<server_ip>:9093
+      - "9093:9093"
     volumes:
       - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yml'
     restart: unless-stopped
 
-  # ==============================
-  # 5) Grafana (bridge network)
-  # ==============================
+
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
@@ -82,22 +68,20 @@ services:
       - monitoring
       - default
     ports:
-      - "3000:3000"   # Графана на http://<server_ip>:3000
+      - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
 
-  # ==============================
-  # 6) PostgreSQL Exporter (bridge)
-  # ==============================
+
   postgres-exporter:
     image: wrouesnel/postgres_exporter
     container_name: postgres-exporter
     restart: unless-stopped
     ports:
-      - "9187:9187"  # Prometheus будет собирать метрики через этот порт
+      - "9187:9187"
     env_file:
       - ./exporters/postgres_exporter.env
     # Формируем DSN для подключения к PostgreSQL. Здесь используется имя хоста "db" (alias для сервиса db)
@@ -106,9 +90,7 @@ services:
     networks:
       infrastructure:
 
-  # ==============================
-  # 7) MongoDB Exporter (bridge)
-  # ==============================
+
   mongo-exporter:
     image: percona/mongodb_exporter:0.43.1
     container_name: mongo-exporter
@@ -121,7 +103,7 @@ services:
       - ./exporters/mongodb_exporter.env
     restart: unless-stopped
     command:
-      - "--collect-all"  # Enable all collectors
+      - "--collect-all"
       - "--collector.dbstats"
       - "--collector.collstats"
       - "--collector.indexstats"

@@ -21,7 +21,6 @@ class ScriptsRepository(
 
     async def get_active_scripts(self, active_minutes: int = 15) -> List[ScriptModel]:
         threshold = datetime.now() - timedelta(minutes=active_minutes)
-        # Здесь предполагается, что «активность» определяется по updated_at
         scripts = await self.entity.find(self.entity.updated_at >= threshold).to_list()
         return [self.entity_to_model(script) for script in scripts]
 
