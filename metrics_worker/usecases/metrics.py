@@ -50,7 +50,7 @@ class MetricsService:
 
         logger.info(grouped_campaigns)
 
-        return campaign_names
+        return grouped_campaigns
 
     async def get_grouped_scripts_by_bots(self):
         return await self.scripts_for_campaign_repo.get_grouped_scripts_by_bots()
