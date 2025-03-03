@@ -1,9 +1,12 @@
+import logging
 from dataclasses import dataclass
 
 from abstractions.repositories.CampaignRepositoryInterface import CampaignRepositoryInterface
 from abstractions.repositories.ScriptsForCampaignRepositoryInterface import ScriptsForCampaignRepositoryInterface
 from abstractions.repositories.ScriptsRepositoryInterface import ScriptsRepositoryInterface
 from abstractions.repositories.WorkersRepositoryInterface import WorkersRepositoryInterface
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -37,10 +40,15 @@ class MetricsService:
         # Step 3: Fetch campaign names from PostgreSQL
         campaign_names = await self.campaign_repo.get_campaign_names_by_ids(campaign_ids)
 
+        logger.info(grouped_campaigns)
+        logger.info(campaign_names)
+
         # Step 4: Append campaign names to the results
         for entry in grouped_campaigns:
             campaign_id = entry["id"]
             entry["campaign_name"] = campaign_names.get(campaign_id, "Unknown Campaign")
+
+        logger.info(grouped_campaigns)
 
         return campaign_names
 

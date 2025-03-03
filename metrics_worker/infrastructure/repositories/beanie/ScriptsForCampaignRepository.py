@@ -93,7 +93,9 @@ class ScriptsForCampaignRepository(
                 }
             }
         ]
-        return await self.entity.aggregate(pipeline).to_list()
+        res = await self.entity.aggregate(pipeline).to_list()
+        res = self.convert_binary_ids(res)
+        return res
 
     async def get_grouped_scripts_by_bots(self) -> list:
         pipeline = [
@@ -136,9 +138,7 @@ class ScriptsForCampaignRepository(
             }
         ]
         res = await self.entity.aggregate(pipeline).to_list()
-        logger.info(res)
         res = self.convert_binary_ids(res)
-        logger.info(res)
         return res
 
     async def get_chats_statistics_by_n_last_days(self, n: int) -> list:
