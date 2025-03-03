@@ -96,7 +96,7 @@ async def update_business_metrics():
     scripts_active.set(len(active_scripts))
 
     for entry in grouped_campaign:
-        campaign_name = entry['_id']
+        campaign_name = entry['campaign_name']
         count = entry.get('count', 0)
         scripts_by_campaign.labels(campaign_name=campaign_name).set(count)
 
