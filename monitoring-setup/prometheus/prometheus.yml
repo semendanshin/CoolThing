@@ -6,6 +6,9 @@ scrape_configs:
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
+    basic_auth:
+      username: admin
+      password_file: ./.env.password
 
   - job_name: 'node_exporter'
     static_configs:
