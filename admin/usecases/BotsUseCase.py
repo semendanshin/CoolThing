@@ -1,8 +1,6 @@
 from contextlib import suppress
 from dataclasses import dataclass
 
-from matplotlib.style.core import available
-
 from abstractions.repositories.ScriptsForCampaignRepositoryInterface import ScriptsForCampaignRepositoryInterface
 from abstractions.repositories.TelegramSessionRepositoryInterface import (
     TelegramSessionRepositoryInterface,
