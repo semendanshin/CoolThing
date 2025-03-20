@@ -2,8 +2,8 @@ include:
   - ./database/db-compose-side.yaml
   - rabbit_mq/rabbit-compose.yaml
   - fluentd/fluentd-compose.yaml
-  - scripts_database/scripts-db-compose.yaml
-  - monitoring-setup/compose.yaml
+#  - scripts_database/scripts-db-compose.yaml
+#  - monitoring-setup/compose.yaml
 
 
 services:
@@ -90,7 +90,7 @@ services:
     restart: unless-stopped
     networks:
       - bridge
-      - infrastructure
+#      - infrastructure
     volumes:
       - ./scripts_watchdog/settings.json:/app/settings.json
       - /etc/localtime:/etc/localtime:ro
@@ -115,7 +115,7 @@ services:
     restart: unless-stopped
     networks:
       - bridge
-      - infrastructure
+#      - infrastructure
     volumes:
 #      - ./scripts_watcher/settings.json:/app/settings.json
 #      - /etc/localtime:/etc/localtime:ro
@@ -140,7 +140,7 @@ services:
     restart: unless-stopped
     networks:
       - bridge
-      - infrastructure
+#      - infrastructure
     volumes:
       - ./admin/settings.json:/app/settings.json
       - /etc/localtime:/etc/localtime:ro
@@ -166,7 +166,7 @@ services:
     restart: unless-stopped
     networks:
       - bridge
-      - infrastructure
+#      - infrastructure
     volumes:
       - ./notifier/settings.json:/app/settings.json
       - /etc/localtime:/etc/localtime:ro
@@ -183,21 +183,21 @@ services:
       options:
         fluentd-address: 127.0.0.1:24224
         tag: notifier
-  metrics-worker:
-    build: ./metrics_worker
-    container_name: coolthing_metrics_app
-    ports:
-      - "8000:8080"
-    networks:
-      - default
-      - monitoring
-      - infrastructure
-    restart: unless-stopped
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: 127.0.0.1:24224
-        tag: metrics-worker
+#  metrics-worker:
+#    build: ./metrics_worker
+#    container_name: coolthing_metrics_app
+#    ports:
+#      - "8000:8080"
+#    networks:
+#      - default
+#      - monitoring
+#      - infrastructure
+#    restart: unless-stopped
+#    logging:
+#      driver: fluentd
+#      options:
+#        fluentd-address: 127.0.0.1:24224
+#        tag: metrics-worker
 
 
 networks:
