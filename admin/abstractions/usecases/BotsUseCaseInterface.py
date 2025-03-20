@@ -42,3 +42,7 @@ class BotsUseCaseInterface(ABC):
     @abstractmethod
     async def delete(self, bot_id: str) -> None:
         ...
+
+    @abstractmethod
+    async def get_available_bots(self) -> list[Worker]:
+        ...

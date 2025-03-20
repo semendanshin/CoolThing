@@ -42,12 +42,12 @@ async def get_bots(
 
 @router.get("/entities")
 async def get_bots_entities(
-        bots: BotsUseCaseInterface = Depends(get_bots_usecase),
+        bots_usecase: BotsUseCaseInterface = Depends(get_bots_usecase),
 ) -> list[dict[str, Any]]:
     usernames = [
         {
             "username": x.username if x.username else "",
             "chats": x.chats if x.chats else [],
-        } for x in await bots.get_all_bots()]
+        } for x in await bots_usecase.get_available_bots()]
     print(usernames)
     return usernames

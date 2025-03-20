@@ -17,6 +17,13 @@ class ScriptsForCampaignRepository(
     ScriptsForCampaignRepositoryInterface,
 ):
 
+    async def get_active(self) -> list[ScriptForCampaignModel]:
+        res = []
+        async for sfc in self.entity.find(self.entity.done == False, self.entity.stopped == False):  # noqa
+            res.append(self.entity_to_model(sfc))
+
+        return res
+
     async def stop_active_script(self, sfc_id: str) -> bool:
         sfc = await self.entity.get(sfc_id)
 

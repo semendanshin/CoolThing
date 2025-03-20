@@ -14,3 +14,7 @@ class ScriptsForCampaignRepositoryInterface(
     @abstractmethod
     async def stop_active_script(self, sfc_id: str) -> bool:
         ...
+
+    @abstractmethod
+    async def get_active(self) -> list[ScriptForCampaign]:
+        ...
