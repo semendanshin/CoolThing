@@ -29,5 +29,5 @@ class NotificationsService(NotificationsServiceInterface):
                 notification=notification,
             )
             notification.sent_at = datetime.now()
-            # TODO: log notification sending with complete info (probably to db)
+            # todo: log notification sending with complete info (probably to db)
             logger.info(f'Notification sent, {notification}')
