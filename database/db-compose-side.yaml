@@ -36,12 +36,12 @@ services:
 volumes:
   cool_thing_postgres_data_2:
 
-networks:
-  infrastructure:
-    driver: bridge
-    name: infrastructure
-    attachable: true
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
-          gateway: 172.20.0.1
+#networks:
+#  infrastructure:
+#    driver: bridge
+#    name: infrastructure
+#    attachable: true
+#    ipam:
+#      config:
+#        - subnet: 172.20.0.0/16
+#          gateway: 172.20.0.1
