@@ -1,71 +1,71 @@
-# 🚀 CoolThing - Advanced Telegram Automation Platform
+# 🚀 CoolThing - Продвинутая платформа автоматизации Telegram
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111+-green.svg)](https://fastapi.tiangolo.com/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](https://docs.docker.com/compose/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> 🎯 **Pet Project** - A sophisticated microservices-based Telegram automation platform showcasing modern Python development practices, AI integration, and distributed architecture.
+> 🎯 **Пет-проект** - Сложная платформа автоматизации Telegram на основе микросервисов, демонстрирующая современные практики разработки на Python, интеграцию с ИИ и распределённую архитектуру.
 
-## 📋 Table of Contents
+## 📋 Содержание
 
-- [Overview](#-overview)
-- [Features](#-features)
-- [Architecture](#-architecture)
-- [Technologies](#-technologies)
-- [Getting Started](#-getting-started)
-- [Configuration](#-configuration)
-- [Usage](#-usage)
-- [API Documentation](#-api-documentation)
-- [Monitoring](#-monitoring)
-- [Development](#-development)
-- [Contributing](#-contributing)
-- [License](#-license)
+- [Обзор](#-обзор)
+- [Возможности](#-возможности)
+- [Архитектура](#-архитектура)
+- [Технологии](#-технологии)
+- [Быстрый старт](#-быстрый-старт)
+- [Конфигурация](#️-конфигурация)
+- [Использование](#-использование)
+- [Документация API](#-документация-api)
+- [Мониторинг](#-мониторинг)
+- [Разработка](#-разработка)
+- [Участие в проекте](#-участие-в-проекте)
+- [Лицензия](#-лицензия)
 
-## 🌟 Overview
+## 🌟 Обзор
 
-CoolThing is a comprehensive Telegram automation platform built as a demonstration of modern software engineering practices. It combines multiple microservices to create a powerful system for managing Telegram interactions, processing messages with AI, and providing administrative capabilities through a web interface.
+CoolThing — это комплексная платформа автоматизации Telegram, созданная для демонстрации современных практик разработки программного обеспечения. Она объединяет несколько микросервисов для создания мощной системы управления взаимодействиями в Telegram, обработки сообщений с помощью ИИ и предоставления административных возможностей через веб-интерфейс.
 
-### 🎯 Project Goals
+### 🎯 Цели проекта
 
-This pet project was designed to showcase:
-- **Microservices Architecture** - Modular, scalable service design
-- **AI Integration** - OpenAI GPT-powered message processing
-- **Modern Python Stack** - FastAPI, SQLAlchemy, AsyncIO
-- **DevOps Practices** - Docker containerization, monitoring, logging
-- **Telegram API Mastery** - Both Bot API and MTProto implementation
+Этот пет-проект был разработан для демонстрации:
+- **Микросервисной архитектуры** - Модульный, масштабируемый дизайн сервисов
+- **Интеграции с ИИ** - Обработка сообщений с помощью OpenAI GPT
+- **Современного Python-стека** - FastAPI, SQLAlchemy, AsyncIO
+- **DevOps практик** - Контейнеризация Docker, мониторинг, логирование
+- **Мастерства Telegram API** - Реализация как Bot API, так и MTProto
 
-## ✨ Features
+## ✨ Возможности
 
-### 🤖 Telegram Automation
-- **Multi-bot Management** - Handle multiple Telegram bots simultaneously
-- **Group Message Parsing** - Monitor and process messages from Telegram groups
-- **Automated Responses** - AI-powered intelligent message responses
-- **Campaign Management** - Organize and track messaging campaigns
-- **Real-time Notifications** - Instant alerts for important events
+### 🤖 Автоматизация Telegram
+- **Управление множественными ботами** - Одновременная работа с несколькими Telegram-ботами
+- **Парсинг сообщений в группах** - Мониторинг и обработка сообщений из Telegram-групп
+- **Автоматические ответы** - Интеллектуальные ответы на сообщения с помощью ИИ
+- **Управление кампаниями** - Организация и отслеживание рассылочных кампаний
+- **Уведомления в реальном времени** - Мгновенные оповещения о важных событиях
 
-### 🧠 AI Integration
-- **OpenAI GPT Integration** - Natural language processing and generation
-- **Custom Assistants** - Support for OpenAI Assistants API
-- **Message Analysis** - Intelligent message categorization and processing
-- **NLTK Text Processing** - Advanced text analysis and stemming
+### 🧠 Интеграция с ИИ
+- **Интеграция с OpenAI GPT** - Обработка и генерация естественного языка
+- **Пользовательские ассистенты** - Поддержка OpenAI Assistants API
+- **Анализ сообщений** - Интеллектуальная категоризация и обработка сообщений
+- **Обработка текста NLTK** - Продвинутый анализ текста и стемминг
 
-### 🏗️ Infrastructure
-- **Microservices Architecture** - Independently deployable services
-- **Message Queue** - RabbitMQ for reliable inter-service communication
-- **Database Management** - PostgreSQL with Alembic migrations
-- **Comprehensive Logging** - Fluentd-based centralized logging
-- **Monitoring & Metrics** - Grafana dashboards for system health
-- **Load Balancing** - Nginx reverse proxy configuration
+### 🏗️ Инфраструктура
+- **Микросервисная архитектура** - Независимо развёртываемые сервисы
+- **Очередь сообщений** - RabbitMQ для надёжной связи между сервисами
+- **Управление базой данных** - PostgreSQL с миграциями Alembic
+- **Комплексное логирование** - Централизованное логирование на основе Fluentd
+- **Мониторинг и метрики** - Дашборды Grafana для здоровья системы
+- **Балансировка нагрузки** - Конфигурация обратного прокси Nginx
 
-### 🌐 Web Interface
-- **Admin Dashboard** - Comprehensive management interface
-- **Authentication System** - JWT-based secure access
-- **Real-time Updates** - Live monitoring of system activity
-- **Responsive Design** - Mobile-friendly interface
-- **WebApp Integration** - Telegram Mini Apps support
+### 🌐 Веб-интерфейс
+- **Панель администратора** - Комплексный интерфейс управления
+- **Система аутентификации** - Безопасный доступ на основе JWT
+- **Обновления в реальном времени** - Живой мониторинг активности системы
+- **Адаптивный дизайн** - Интерфейс, дружественный к мобильным устройствам
+- **Интеграция WebApp** - Поддержка Telegram Mini Apps
 
-## 🏛️ Architecture
+## 🏛️ Архитектура
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -97,78 +97,78 @@ This pet project was designed to showcase:
                     └─────────────────────────┘
 ```
 
-### 📦 Services Overview
+### 📦 Обзор сервисов
 
-1. **Parser Service** - Monitors Telegram groups and extracts target messages
-2. **Manager Service** - Processes messages with AI and handles responses
-3. **Bot Service** - Telegram bot interface for notifications and user interaction
-4. **Admin Service** - Web-based administration panel
-5. **Watchdog Service** - System monitoring and health checks
+1. **Parser Service** - Мониторит Telegram-группы и извлекает целевые сообщения
+2. **Manager Service** - Обрабатывает сообщения с помощью ИИ и управляет ответами
+3. **Bot Service** - Интерфейс Telegram-бота для уведомлений и взаимодействия с пользователем
+4. **Admin Service** - Веб-панель администрирования
+5. **Watchdog Service** - Мониторинг системы и проверки работоспособности
 
-## 🛠️ Technologies
+## 🛠️ Технологии
 
-### Backend & Core
-- **Python 3.11+** - Primary programming language
-- **FastAPI** - Modern, fast web framework for APIs
-- **SQLAlchemy 2.0** - SQL toolkit and ORM with async support
-- **Alembic** - Database migration tool
-- **AsyncPG** - Asynchronous PostgreSQL driver
-- **Pydantic** - Data validation using Python type hints
+### Backend и Core
+- **Python 3.11+** - Основной язык программирования
+- **FastAPI** - Современный, быстрый веб-фреймворк для API
+- **SQLAlchemy 2.0** - SQL-тулкит и ORM с поддержкой async
+- **Alembic** - Инструмент миграции базы данных
+- **AsyncPG** - Асинхронный драйвер PostgreSQL
+- **Pydantic** - Валидация данных с использованием типов Python
 
 ### Telegram APIs
-- **Telethon** - Full-featured Telegram client library (MTProto)
-- **python-telegram-bot** - Telegram Bot API wrapper
-- **Telegram WebApps** - Mini Apps integration
+- **Telethon** - Полнофункциональная библиотека клиента Telegram (MTProto)
+- **python-telegram-bot** - Обёртка для Telegram Bot API
+- **Telegram WebApps** - Интеграция Mini Apps
 
-### AI & NLP
-- **OpenAI API** - GPT models integration
-- **OpenAI Assistants** - Advanced AI assistant capabilities
-- **NLTK** - Natural Language Toolkit for text processing
+### ИИ и NLP
+- **OpenAI API** - Интеграция моделей GPT
+- **OpenAI Assistants** - Продвинутые возможности ИИ-ассистентов
+- **NLTK** - Toolkit для обработки естественного языка
 
-### Message Queue & Communication
-- **RabbitMQ** - Reliable message broker
-- **aio-pika** - Asynchronous RabbitMQ client
+### Очередь сообщений и коммуникация
+- **RabbitMQ** - Надёжный брокер сообщений
+- **aio-pika** - Асинхронный клиент RabbitMQ
 
-### Database
-- **PostgreSQL** - Primary database
-- **Redis** - Caching and session storage
+### База данных
+- **PostgreSQL** - Основная база данных
+- **Redis** - Кэширование и хранение сессий
 
-### DevOps & Infrastructure
-- **Docker & Docker Compose** - Containerization
-- **Nginx** - Reverse proxy and load balancer
-- **Fluentd** - Log collection and processing
-- **Grafana** - Monitoring and visualization
+### DevOps и инфраструктура
+- **Docker & Docker Compose** - Контейнеризация
+- **Nginx** - Обратный прокси и балансировщик нагрузки
+- **Fluentd** - Сбор и обработка логов
+- **Grafana** - Мониторинг и визуализация
 
-### Development Tools
-- **Uvicorn** - ASGI server
-- **Pytest** - Testing framework
-- **Poetry/pip** - Dependency management
+### Инструменты разработки
+- **Uvicorn** - ASGI-сервер
+- **Pytest** - Фреймворк тестирования
+- **Poetry/pip** - Управление зависимостями
 
-## 🚀 Getting Started
+## 🚀 Быстрый старт
 
-### Prerequisites
+### Предварительные требования
 
-- Docker and Docker Compose
-- Python 3.11+ (for local development)
-- Telegram API credentials
-- OpenAI API key (optional)
+- Docker и Docker Compose
+- Python 3.11+ (для локальной разработки)
+- Учётные данные Telegram API
+- Ключ OpenAI API (опционально)
 
-### Quick Start
+### Быстрый запуск
 
-1. **Clone the repository**
+1. **Клонируйте репозиторий**
    ```bash
    git clone https://github.com/semendanshin/CoolThing.git
    cd CoolThing
    ```
 
-2. **Create the Docker network**
+2. **Создайте Docker-сеть**
    ```bash
    make mn
    ```
 
-3. **Configure services**
+3. **Настройте сервисы**
    ```bash
-   # Copy example configurations
+   # Скопируйте примеры конфигураций
    cp bot/example.settings.json bot/settings.json
    cp manager/example.settings.json manager/settings.json
    cp admin/example.settings.json admin/settings.json
@@ -176,35 +176,35 @@ This pet project was designed to showcase:
    cp database/.env.example database/.env
    ```
 
-4. **Build images**
+4. **Соберите образы**
    ```bash
-   make bm  # Build manager
-   make bp  # Build parser
+   make bm  # Собрать manager
+   make bp  # Собрать parser
    ```
 
-5. **Start services**
+5. **Запустите сервисы**
    ```bash
    docker-compose up -d
    ```
 
-6. **Access the admin panel**
+6. **Получите доступ к панели администратора**
    ```
    http://localhost:8081
    ```
 
-### Manual Build Options
+### Варианты ручной сборки
 
 ```bash
-# Build specific services
-make bm    # Build manager image
-make bp    # Build parser image
-make mn    # Create network
+# Собрать конкретные сервисы
+make bm    # Собрать образ manager
+make bp    # Собрать образ parser
+make mn    # Создать сеть
 
-# Or build all at once
+# Или собрать всё сразу
 docker-compose build
 ```
 
-## ⚙️ Configuration
+## ⚙️ Конфигурация
 
 ### Bot Service (`bot/settings.json`)
 ```json
@@ -250,9 +250,9 @@ docker-compose build
 }
 ```
 
-### Environment Variables
+### Переменные окружения
 
-Set up the database environment:
+Настройка окружения базы данных:
 ```bash
 # database/.env
 POSTGRES_USER=postgres
@@ -260,61 +260,61 @@ POSTGRES_PASSWORD=postgres
 POSTGRES_DB=postgres
 ```
 
-## 📱 Usage
+## 📱 Использование
 
-### Admin Dashboard
+### Панель администратора
 
-1. **Access the dashboard** at `http://localhost:8081`
-2. **Login** with your credentials
-3. **Manage bots** - Add, configure, and monitor Telegram bots
-4. **Monitor campaigns** - Track message campaigns and performance
-5. **View analytics** - Check system metrics and message statistics
+1. **Откройте панель** по адресу `http://localhost:8081`
+2. **Войдите** с вашими учётными данными
+3. **Управляйте ботами** - Добавляйте, настраивайте и мониторьте Telegram-ботов
+4. **Мониторьте кампании** - Отслеживайте рассылочные кампании и производительность
+5. **Просматривайте аналитику** - Проверяйте метрики системы и статистику сообщений
 
-### Telegram Bot Commands
+### Команды Telegram-бота
 
-- `/start` - Initialize bot and get admin panel access
-- The bot provides notifications about detected target messages
-- Access the web interface through the inline keyboard
+- `/start` - Инициализация бота и получение доступа к панели администратора
+- Бот предоставляет уведомления об обнаруженных целевых сообщениях
+- Доступ к веб-интерфейсу через встроенную клавиатуру
 
 ### API Endpoints
 
-The admin service exposes several REST API endpoints:
+Сервис администрирования предоставляет несколько REST API эндпоинтов:
 
-- `GET /api/bots` - List all configured bots
-- `GET /api/campaigns` - List campaigns
-- `GET /api/chats` - List monitored chats
-- `POST /api/gpt-settings` - Configure AI settings
+- `GET /api/bots` - Список всех настроенных ботов
+- `GET /api/campaigns` - Список кампаний
+- `GET /api/chats` - Список отслеживаемых чатов
+- `POST /api/gpt-settings` - Настройка параметров ИИ
 
-## 📊 API Documentation
+## 📊 Документация API
 
-Once the services are running, access the interactive API documentation:
+После запуска сервисов, получите доступ к интерактивной документации API:
 
 - **FastAPI Swagger UI**: `http://localhost:8081/docs`
 - **ReDoc**: `http://localhost:8081/redoc`
 
-## 📈 Monitoring
+## 📈 Мониторинг
 
-### Grafana Dashboard
+### Дашборд Grafana
 
-Access Grafana at the configured port to monitor:
-- Service health and uptime
-- Message processing rates
-- Database performance
-- Queue metrics
-- Error rates and logs
+Получите доступ к Grafana на настроенном порту для мониторинга:
+- Здоровья и времени работы сервисов
+- Скорости обработки сообщений
+- Производительности базы данных
+- Метрик очереди
+- Частоты ошибок и логов
 
-### Fluentd Logging
+### Логирование Fluentd
 
-All services send logs to Fluentd for centralized processing:
-- Structured JSON logging
-- Log aggregation and routing
-- Integration with monitoring systems
+Все сервисы отправляют логи в Fluentd для централизованной обработки:
+- Структурированное JSON-логирование
+- Агрегация и маршрутизация логов
+- Интеграция с системами мониторинга
 
-## 🔧 Development
+## 🔧 Разработка
 
-### Local Development Setup
+### Настройка локальной разработки
 
-1. **Install dependencies**
+1. **Установите зависимости**
    ```bash
    cd manager && pip install -r requirements.txt
    cd ../bot && pip install -r requirements.txt
@@ -322,78 +322,78 @@ All services send logs to Fluentd for centralized processing:
    cd ../parser && pip install -r requirements.txt
    ```
 
-2. **Set up the database**
+2. **Настройте базу данных**
    ```bash
-   # Run migrations
+   # Запустите миграции
    cd database
    alembic upgrade head
    ```
 
-3. **Run services individually**
+3. **Запустите сервисы по отдельности**
    ```bash
-   # Terminal 1 - Manager
+   # Терминал 1 - Manager
    cd manager && python main.py
 
-   # Terminal 2 - Bot
+   # Терминал 2 - Bot
    cd bot && python main.py
 
-   # Terminal 3 - Admin
+   # Терминал 3 - Admin
    cd admin && uvicorn main:app --reload --port 8080
 
-   # Terminal 4 - Parser
+   # Терминал 4 - Parser
    cd parser && python main.py
    ```
 
-### Testing
+### Тестирование
 
 ```bash
-# Run tests for each service
+# Запустите тесты для каждого сервиса
 pytest manager/tests/
 pytest bot/tests/
 pytest admin/tests/
 pytest parser/tests/
 ```
 
-### Code Style
+### Стиль кода
 
-The project follows PEP 8 standards with:
-- Type hints throughout the codebase
-- Async/await patterns for I/O operations
-- Clean architecture principles
-- SOLID design patterns
+Проект следует стандартам PEP 8 с:
+- Типовыми аннотациями по всему коду
+- Паттернами async/await для I/O операций
+- Принципами чистой архитектуры
+- Паттернами проектирования SOLID
 
-## 🤝 Contributing
+## 🤝 Участие в проекте
 
-This is a pet project, but contributions are welcome! Please feel free to:
+Это пет-проект, но вклад приветствуется! Пожалуйста, не стесняйтесь:
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Сделать форк репозитория
+2. Создать ветку для функции (`git checkout -b feature/amazing-feature`)
+3. Зафиксировать изменения (`git commit -m 'Add amazing feature'`)
+4. Отправить в ветку (`git push origin feature/amazing-feature`)
+5. Открыть Pull Request
 
-### Development Guidelines
+### Руководство по разработке
 
-- Follow existing code style and patterns
-- Add tests for new functionality
-- Update documentation as needed
-- Ensure Docker builds work correctly
+- Следуйте существующему стилю кода и паттернам
+- Добавляйте тесты для новой функциональности
+- Обновляйте документацию по мере необходимости
+- Убедитесь, что Docker-сборки работают корректно
 
-## 📄 License
+## 📄 Лицензия
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Этот проект лицензирован под лицензией MIT - смотрите файл [LICENSE](LICENSE) для подробностей.
 
-## 🙏 Acknowledgments
+## 🙏 Благодарности
 
-- **Telegram** for providing excellent APIs
-- **OpenAI** for GPT integration capabilities
-- **FastAPI** team for the amazing web framework
-- **Python async** ecosystem contributors
+- **Telegram** за предоставление отличных API
+- **OpenAI** за возможности интеграции GPT
+- **Команде FastAPI** за потрясающий веб-фреймворк
+- **Участникам экосистемы Python async** за их вклад
 
-## 📞 Contact
+## 📞 Контакты
 
-Created as a pet project by [@semendanshin](https://github.com/semendanshin)
+Создано как пет-проект [@semendanshin](https://github.com/semendanshin)
 
 ---
 
-⭐ **If you found this project interesting, please give it a star!** ⭐
+⭐ **Если вы нашли этот проект интересным, поставьте ему звёздочку!** ⭐
